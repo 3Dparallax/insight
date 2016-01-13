@@ -3,8 +3,24 @@
   "description": "The best WebGL extension ever!",
   "manifest_version": 2,
   "version": "0.1",
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "index.html",
+    "default_title": "Click here!"
+  },
+  "background": {
+    "persistent": false,
+    "scripts": ["popup.js"]
+  },
+  "sandbox": {
+    "pages": [
+      "index.html"
+    ]
+  },
+  "web_accessible_resources": ["script.js"],
   "content_scripts": [
     {
+      "run_at": "document_start",
       "matches": ["<all_urls>"],
       "js": ["external/jquery.js", "main.js"]
     }

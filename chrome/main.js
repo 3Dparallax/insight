@@ -1,8 +1,6 @@
-$(document).ready(function() {
-    var context = $("canvas")[0].getContext("webgl")
-    for (var propertyName in context) {
-        if (/^[A-Z_]+$/.test(propertyName)) {
-            console.log(propertyName, context[propertyName]);
-        }
-    }
-});
+var s = document.createElement('script');
+s.src = chrome.extension.getURL('script.js');
+s.onload = function() {
+    this.parentNode.removeChild(this);
+};
+(document.head || document.documentElement).appendChild(s);
