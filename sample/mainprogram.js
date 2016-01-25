@@ -312,9 +312,7 @@ function webGLStart() {
   initBuffers();
 
   gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
-  // gl.enable( gl.DEPTH_TEST );
-  gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+  gl.enable(gl.DEPTH_TEST);
 
   drawFrame();
 }

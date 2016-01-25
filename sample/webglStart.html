@@ -15,10 +15,10 @@
     varying vec4 vColor;
 
     void main(void) {
-        gl_FragColor = vec4(1.0, 0.0, 0.0, 0.10); 
+        gl_FragColor = vColor; 
     }
 
-</script>
+</script> 
 
 <script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
