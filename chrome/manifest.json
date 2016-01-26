@@ -17,6 +17,7 @@
       "index.html"
     ]
   },
+  "all_frames": true,
   "web_accessible_resources": ["script.js"],
   "content_scripts": [
     {
