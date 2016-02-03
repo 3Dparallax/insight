@@ -1,6 +1,5 @@
 function _bind(origFunc, newFunc, name) {
     return function() {
-        console.log(name);
         return newFunc.apply(this, [origFunc, arguments, name]);
     }
 }
@@ -35,7 +34,6 @@ var fcnBindings = {
         return original.apply(this, args);
     },
     default: function(original, args, name) {
-        console.log(name);
         return original.apply(this, args);
     }
 }
