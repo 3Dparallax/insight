@@ -17,12 +17,12 @@
       "index.html"
     ]
   },
-  "all_frames": true,
   "web_accessible_resources": ["script.js"],
   "content_scripts": [
     {
       "run_at": "document_start",
       "matches": ["<all_urls>"],
+      "all_frames": true,
       "js": ["external/jquery.js", "main.js"]
     }
   ]
