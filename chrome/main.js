@@ -61,6 +61,7 @@ WebGLRenderingContext.prototype.glpEnablePixelInspector = function() {
     this.blendFunc(this.SRC_ALPHA, this.ONE);
     this.disable(this.DEPTH_TEST);
     this.pixelInspectorEnabled = true;
+    this.clearColor( 0.0, 0.0, 0.0, 1.0 );
     return this.glpGetPixelInspectFragShader();
 }
 
