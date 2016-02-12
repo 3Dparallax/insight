@@ -58,10 +58,10 @@ var glpFcnBindings = {
  */
 WebGLRenderingContext.prototype.glpEnablePixelInspector = function() {
     this.enable(this.BLEND);
-    this.blendFunc(this.SRC_ALPHA, this.ONE);
+    this.blendFunc(this.SRC_ALPHA, this.ONE_MINUS_SRC_ALPHA);
     this.disable(this.DEPTH_TEST);
     this.pixelInspectorEnabled = true;
-    this.clearColor( 0.0, 0.0, 0.0, 1.0 );
+    this.clearColor( 0.0, 1.0, 0.0, 1.0 );
     return this.glpGetPixelInspectFragShader();
 }
 
