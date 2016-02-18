@@ -1,5 +1,26 @@
 var glpVerboseLogs = false;
-var glpPixelInspectorEnabled = true;
+var glpPixelInspectorEnabled = false;
+
+// Instantiate messaging
+function init() {
+    window.postMessage({ type: "init" }, "*");
+}
+init();
+
+function sendMessage(data) {
+    window.postMessage({ source:"content", data: data}, "*");
+}
+
+window.addEventListener('message', function(event) {
+  var message = event.data;
+
+  // Only accept messages that we know are ours
+  if (typeof message !== 'object' || message === null || message.source != "panel") {
+    return;
+  }
+
+  console.log(message);
+});
 
 var glpFcnBindings = {
     default: function(original, args, name) {

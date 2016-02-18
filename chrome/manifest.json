@@ -1,15 +1,22 @@
 {
-  "name": "FYDP WebGL Extension",
-  "description": "The best WebGL extension ever!",
+  "name": "WebGL Insight",
+  "description": "Helpful tools for WebGL development",
   "manifest_version": 2,
-  "version": "0.1",
+  "version": "1.0",
   "web_accessible_resources": ["main.js"],
+  "devtools_page": "devtools.html",
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": [
+        "tabs"
+    ],
   "content_scripts": [
     {
       "run_at": "document_start",
       "matches": ["<all_urls>"],
       "all_frames": true,
-      "js": ["external/jquery.js", "bind.js"]
+      "js": ["content_script.js"]
     }
   ]
 }
