@@ -1,5 +1,4 @@
 var glpVerboseLogs = false;
-var glpPixelInspectorEnabled = false;
 
 /**
  * Instantiates messaging with the devtools panel
@@ -197,6 +196,9 @@ WebGLRenderingContext.prototype.glpEnablePixelInspector = function() {
  * @return {WebGLShader} Pixel Inspector Shader
  */
 WebGLRenderingContext.prototype.glpDisablePixelInspector = function() {
+    if (!this.pixelInspectorEnabled) {
+      return;
+    }
     this.pixelInspectorEnabled = false;
 
     if (!this.glpPixelInspectorBlendProp) {
