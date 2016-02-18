@@ -1,5 +1,4 @@
 var connections = {};
-var contentTabID = null;
 
 // Pass messages from DevTools panel to content script
 chrome.runtime.onConnect.addListener(function (port) {
@@ -10,11 +9,21 @@ chrome.runtime.onConnect.addListener(function (port) {
           return;
         }
 
+        var tabs = Object.keys(connections);
+        var contentTabID = null;
+        for (var i=0, len=tabs.length; i < len; i++) {
+          if (connections[tabs[i]] == port) {
+            contentTabID = tabs[i];
+            break;
+          }
+        }
+
         if (contentTabID == null) {
-          console.log("message sent before init")
+          console.log("unknown tab id")
           return;
         }
-        chrome.tabs.sendMessage(contentTabID, message, null);
+
+        chrome.tabs.sendMessage(Number(contentTabID), message, null);
     };
     port.onMessage.addListener(extensionListener);
 
@@ -35,12 +44,15 @@ chrome.runtime.onConnect.addListener(function (port) {
 // Pass messages from content script to DevTools panel
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     // Instantiate content tab ID for panel->content messaging
-    contentTabID = sender.tab.id;
-
-    // TODO: Send only to appropriate connection
-    //       We currently maintain one connection so this *should* be okay
-    for (connection in connections) {
-      connections[connection].postMessage(request);
+    if (sender.tab) {
+      var tabId = sender.tab.id;
+      if (tabId in connections) {
+        connections[tabId].postMessage(request);
+      } else {
+        console.log("Tab not found in connection list.");
+      }
+    } else {
+      console.log("sender.tab not defined.");
     }
     return true;
 });
