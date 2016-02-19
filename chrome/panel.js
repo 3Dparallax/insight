@@ -39,3 +39,9 @@ function testSend() {
 
 document.getElementById("send").addEventListener("click", testSend);
 
+function getCallStack(e) {
+    sendMessage("callStackRequest", null);
+}
+
+document.getElementById("callStack").addEventListener("click", getCallStack);
+

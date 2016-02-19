@@ -1,5 +1,6 @@
 var glpVerboseLogs = false;
-
+var glpCallStack = true;
+var last100Calls = []
 /**
  * Instantiates messaging with the devtools panel
  */
@@ -30,6 +31,8 @@ window.addEventListener('message', function(event) {
 
   if (message.type == "pixelInspector") {
     glpPixelInspectorToggle(message.data.enabled);
+  } else if (message.type == "callStackRequest") {
+    glpSendCallStack();
   } else {
     console.log(message.data);
   }
@@ -39,6 +42,12 @@ var glpFcnBindings = {
     default: function(original, args, name) {
         if (glpVerboseLogs) {
             console.log("Default Call: " + name)
+        }
+        if (glpCallStack) {
+            if (last100Calls.length > 100) {
+                last100Calls.shift();
+            }
+            last100Calls.push(name);
         }
         return original.apply(this, args);
     },
@@ -118,6 +127,13 @@ var glpFcnBindings = {
         }
 
         return original.apply(this, args);
+    }
+}
+
+function glpSendCallStack() {
+    console.log("Sending Call Stack");
+    for (var i = 0; i < last100Calls.length; i++) {
+        glpSendMessage("CallStack", {"FunctionName": last100Calls[i]})
     }
 }
 
