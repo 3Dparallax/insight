@@ -135,6 +135,24 @@ var glpFcnBindings = {
           this.glpSwitchToPixelInspectorProgram()
         }
         return retVal;
+    },
+    getUniform: function(original, args, name) {
+      if (this.pixelInspectorEnabled) {
+        var program = args[0];
+        var location = args[1];
+        if (program in glpPixelInspectorPrograms) {
+          if (location in this.glpPixelInspectorLocationMap[program]) {
+            // the program is the pixel inspector version and we're using the original location
+            args[1] = this.glpPixelInspectorLocationMap[program][location];
+          } else {
+          }
+        } else {
+          // the program is not a pixel inspector
+          // if they're using the wrong location, lets just swap programs
+          args[0] = this.getParameter(this.CURRENT_PROGRAM);
+        }
+      }
+      return original.apply(this, args);
     }
 }
 
@@ -158,7 +176,6 @@ var glpUniformFcn = function(original, args, name) {
   if (this.pixelInspectorEnabled) {
     var loc = args[0];
     var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
-    console.log(this.glpPixelInspectorLocationMap[currentProgram]);
     args[0] = this.glpPixelInspectorLocationMap[currentProgram][loc];
   }
   return original.apply(this, args);
@@ -383,8 +400,9 @@ WebGLRenderingContext.prototype.glpSwitchUniforms = function(oldProgram, program
 
       uniform.loc = newLocation;
       uniform.value = this.getUniform(oldProgram, oldLocation);
-
-      this.glpApplyUniform(uniform);
+      if (uniform.value != null) {
+        this.glpApplyUniform(uniform);
+      }
   }
 }
 
