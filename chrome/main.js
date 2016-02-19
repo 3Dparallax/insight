@@ -1,6 +1,8 @@
 var glpVerboseLogs = false;
 var glpCallStack = true;
 var last100Calls = []
+var callStackSinceLastDraw = []
+var lastCallWasDraw = false;
 /**
  * Instantiates messaging with the devtools panel
  */
@@ -15,7 +17,7 @@ glpInit();
  * @param {Dictionary} Message data
  */
 function glpSendMessage(type, data) {
-    window.postMessage({ source:"content", data: data}, "*");
+    window.postMessage({ source:"content", type: type, data: data}, "*");
 }
 
 /**
@@ -32,7 +34,7 @@ window.addEventListener('message', function(event) {
   if (message.type == "pixelInspector") {
     glpPixelInspectorToggle(message.data.enabled);
   } else if (message.type == "callStackRequest") {
-    glpSendCallStack();
+    glpSendCallStack(message.data);
   } else {
     console.log(message.data);
   }
@@ -48,6 +50,15 @@ var glpFcnBindings = {
                 last100Calls.shift();
             }
             last100Calls.push(name);
+            if (lastCallWasDraw) {
+                callStackSinceLastDraw = []
+            }
+            if (name == "drawElements" || name == "drawArrays") {
+                lastCallWasDraw = true;
+            } else {
+                lastCallWasDraw = false;
+            }
+            callStackSinceLastDraw.push(name)
         }
         return original.apply(this, args);
     },
@@ -130,11 +141,20 @@ var glpFcnBindings = {
     }
 }
 
-function glpSendCallStack() {
-    console.log("Sending Call Stack");
-    for (var i = 0; i < last100Calls.length; i++) {
-        glpSendMessage("CallStack", {"FunctionName": last100Calls[i]})
+function glpSendCallStack(type) {
+    var callStack = []
+    switch(type) {
+        case "Last100Calls":
+            callStack = last100Calls;
+            break;
+        case "SinceLastDraw":
+            callStack = callStackSinceLastDraw;
+            break;
+        default:
+            callStack = []
     }
+    console.log("Sending Call Stack");
+    glpSendMessage("CallStack", {"functionNames": callStack})
 }
 
 /**

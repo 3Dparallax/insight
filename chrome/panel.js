@@ -9,6 +9,12 @@ backgroundPageConnection.postMessage({
 });
 
 backgroundPageConnection.onMessage.addListener(function(msg) {
+    if (msg.type == "CallStack") {
+        console.log(msg.data.functionNames.length);
+        for (var i = 0; i < msg.data.functionNames.length; i++) {
+            console.log(msg.data.functionNames[i]);
+        }
+    }
     if (msg.source != "content") {
         return;
     }
@@ -39,9 +45,15 @@ function testSend() {
 
 document.getElementById("send").addEventListener("click", testSend);
 
-function getCallStack(e) {
-    sendMessage("callStackRequest", null);
+function getCallStackDraw(e) {
+    sendMessage("callStackRequest", "SinceLastDraw");
 }
 
-document.getElementById("callStack").addEventListener("click", getCallStack);
+document.getElementById("callStackDraw").addEventListener("click", getCallStackDraw);
+
+function getCallStack100(e) {
+    sendMessage("callStackRequest", "Last100Calls");
+}
+
+document.getElementById("callStack100").addEventListener("click", getCallStack100);
 
