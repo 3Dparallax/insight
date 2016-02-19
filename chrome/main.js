@@ -63,15 +63,13 @@ var glpFcnBindings = {
         return original.apply(this, args);
     },
     attachShader : function(original, args, name) {
-        var program = args[0].__uuid;
+        var program = args[0];
         var shader = args[1];
         var shaderType = this.getShaderParameter(shader, this.SHADER_TYPE);
 
         // TODO: verify valid input
-        // glpPixelInspector: store shaders associated with program
-        if (shaderType == this.FRAGMENT_SHADER) {
-          this.glpFragmentShaders[program] = shader;
-        } else {
+        // glpPixelInspector: store vertex shaders associated with program
+        if (shaderType == this.VERTEX_SHADER) {
           this.glpVertexShaders[program] = shader;
         }
 
@@ -131,13 +129,12 @@ var glpFcnBindings = {
         // TODO: Handle case where program provided is the pixel inspector program
         // TODO: verify valid input
         var program = args[0];
-        this.glpCurrentProgram = program;
 
-        if (this.pixelInspectorEnabled) {
-          args[0] = this.glpGetPixelInspectorProgram(program);
+        var retVal = original.apply(this, args);
+        if (this.pixelInspectorEnabled && !(program in this.glpPixelInspectorPrograms)) {
+          this.glpSwitchToPixelInspectorProgram()
         }
-
-        return original.apply(this, args);
+        return retVal;
     }
 }
 
@@ -155,6 +152,26 @@ function glpSendCallStack(type) {
     }
     console.log("Sending Call Stack");
     glpSendMessage("CallStack", {"functionNames": callStack})
+}
+
+var glpUniformFcn = function(original, args, name) {
+  if (this.pixelInspectorEnabled) {
+    var loc = args[0];
+    var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
+    console.log(this.glpPixelInspectorLocationMap[currentProgram]);
+    args[0] = this.glpPixelInspectorLocationMap[currentProgram][loc];
+  }
+  return original.apply(this, args);
+}
+var uniformMethods = [
+    'uniform1f', 'uniform1fv', 'uniform1i', 'uniform1iv',
+    'uniform2f', 'uniform2fv', 'uniform2i', 'uniform2iv',
+    'uniform3f', 'uniform3fv', 'uniform3i', 'uniform3iv',
+    'uniform4f', 'uniform4fv', 'uniform4i', 'uniform4iv',
+    'uniformMatrix2fv', 'uniformMatrix3fv', 'uniformMatrix4fv'
+];
+for (var i=0; i<uniformMethods.length; i++) {
+    glpFcnBindings[uniformMethods[i]] = glpUniformFcn;
 }
 
 /**
@@ -183,9 +200,85 @@ WebGLRenderingContext.prototype.glpPixelInspectorBlendFuncSFactor = null;
 WebGLRenderingContext.prototype.glpPixelInspectorBlendFuncDFactor = null;
 WebGLRenderingContext.prototype.glpPixelInspectorDepthTest = null;
 WebGLRenderingContext.prototype.glpPixelInspectorClearColor = null;
-WebGLRenderingContext.prototype.glpFragmentShaders = {};
 WebGLRenderingContext.prototype.glpVertexShaders = {};
-WebGLRenderingContext.prototype.glpCurrentProgram = null;
+WebGLRenderingContext.prototype.glpPixelInspectorPrograms = [];
+WebGLRenderingContext.prototype.glpPixelInspectorOriginalPrograms = {};
+WebGLRenderingContext.prototype.glpPixelInspectorLocationMap = {};
+
+/**
+ * Applies uniform to WebGL context
+ */
+WebGLRenderingContext.prototype.glpApplyUniform = function applyUniform(uniform) {
+    var loc = uniform.loc;
+    var type = uniform.type;
+    var value = uniform.value;
+    // console.log("APPLY");
+    // console.log(loc, type, value);
+    if (type == this.FLOAT) {
+      this.uniform1f(loc, value);
+      return;
+    }
+    if (type == this.FLOAT_VEC2) {
+      this.uniform2fv(loc, value);
+      return;
+    }
+    if (type == this.FLOAT_VEC3) {
+      this.uniform3fv(loc, value);
+      return;
+    }
+    if (type == this.FLOAT_VEC4) {
+      this.uniform4fv(loc, value);
+      return;
+    }
+    if (type == this.INT) {
+      this.uniform1i(loc, value);
+      return;
+    }
+    if (type == this.INT_VEC2) {
+      this.uniform2iv(loc, value);
+      return;
+    }
+    if (type == this.INT_VEC3) {
+      this.uniform3iv(loc, value);
+      return;
+    }
+    if (type == this.INT_VEC4) {
+      this.uniform4iv(loc, value);
+      return;
+    }
+    if (type == this.BOOL) {
+      this.uniform1i(loc, value);
+      return;
+    }
+    if (type == this.BOOL_VEC2) {
+      this.uniform2iv(loc, value);
+      return;
+    }
+    if (type == this.BOOL_VEC3) {
+      this.uniform3iv(loc, value);
+      return;
+    }
+    if (type == this.BOOL_VEC4) {
+      this.uniform4iv(loc, value);
+      return;
+    }
+    if (type == this.FLOAT_MAT2) {
+      this.uniformMatrix2fv(loc, false, value);
+      return;
+    }
+    if (type == this.FLOAT_MAT3) {
+      this.uniformMatrix3fv(loc, false, value);
+      return;
+    }
+    if (type == this.FLOAT_MAT4) {
+      this.uniformMatrix4fv(loc, false, value);
+      return;
+    }
+    if (type == this.SAMPLER_2D || type == this.SAMPLER_CUBE) {
+      this.uniform1i(loc, unit);
+      return;
+    }
+  }
 
 /**
  * Returns the appropriate pixel inspector program
@@ -195,12 +288,11 @@ WebGLRenderingContext.prototype.glpCurrentProgram = null;
 WebGLRenderingContext.prototype.glpGetPixelInspectorProgram = function(originalProgram) {
   var program = this.createProgram();
 
-  this.attachShader(program, this.glpVertexShaders[originalProgram.__uuid]);
-  this.attachShader(program, this.glpFragmentShaders[originalProgram.__uuid]);
+  this.attachShader(program, this.glpVertexShaders[originalProgram]);
+  this.attachShader(program, this.glpGetPixelInspectFragShader());
   this.linkProgram(program);
 
-  // TODO: FIX ORIGINAL -> INSPECTOR PROGRAM TRANSITION
-  // TODO: FIX INSPECTOR PROGRAM -> ORIGINAL PROGRAM TRANSITION
+  this.glpPixelInspectorPrograms.push(program);
 
   return program;
 }
@@ -223,8 +315,9 @@ WebGLRenderingContext.prototype.glpEnablePixelInspector = function() {
     this.glpPixelInspectorClearColor = this.getParameter(this.COLOR_CLEAR_VALUE);
     this.clearColor(0.0, 1.0, 0.0, 1.0);
 
+    this.glpSwitchToPixelInspectorProgram();
+
     this.pixelInspectorEnabled = true;
-    this.useProgram(this.glpCurrentProgram);
 }
 
 /**
@@ -253,20 +346,53 @@ WebGLRenderingContext.prototype.glpDisablePixelInspector = function() {
       this.clearColor.apply(this, this.glpPixelInspectorClearColor);
     }
 
-    if (this.glpCurrentProgram) {
-      this.useProgram(this.glpCurrentProgram);
+    var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
+    if (currentProgram in this.glpPixelInspectorOriginalPrograms) {
+      var newProgram = this.glpPixelInspectorOriginalPrograms[currentProgram];
+      this.useProgram(newProgram);
+      this.glpSwitchUniforms(currentProgram, newProgram);
     }
 }
 
 /**
+ * Swaps the current program and copies over location and attribute data
+ */
+WebGLRenderingContext.prototype.glpSwitchToPixelInspectorProgram = function() {
+  var oldProgram = this.getParameter(this.CURRENT_PROGRAM);
+  var program = this.glpGetPixelInspectorProgram(oldProgram);
+
+  this.useProgram(program);
+  this.glpPixelInspectorOriginalPrograms[program] = oldProgram;
+  this.glpSwitchUniforms(oldProgram, program);
+  // TODO: Swap attributes!
+}
+
+/**
+ * Swaps uniforms between programs
+ */
+WebGLRenderingContext.prototype.glpSwitchUniforms = function(oldProgram, program) {
+  var activeUniforms = this.getProgramParameter(program, this.ACTIVE_UNIFORMS);
+  var activeAttributes = this.getProgramParameter(program, this.ACTIVE_ATTRIBUTES);
+  var uniforms = [];
+  this.glpPixelInspectorLocationMap[program] = {};
+  for (var i=0; i < activeUniforms; i++) {
+      var uniform = this.getActiveUniform(program, i);
+      var oldLocation = this.getUniformLocation(oldProgram, uniform.name);
+      var newLocation = this.getUniformLocation(program, uniform.name);
+      this.glpPixelInspectorLocationMap[program][oldLocation] = newLocation;
+
+      uniform.loc = newLocation;
+      uniform.value = this.getUniform(oldProgram, oldLocation);
+
+      this.glpApplyUniform(uniform);
+  }
+}
+
+/**
  * Returns the pixel inspector fragment shader
- * @return {WebGLShader} Pixel Inspector Shader
+ * @return {WebGLShader} Pixel Inspector Fragment Shader
  */
 WebGLRenderingContext.prototype.glpGetPixelInspectFragShader = function() {
-    if (this.glpPixelInspectFragShader) {
-        return this.glpPixelInspectFragShader;
-    }
-
     var pixelInspectFragShader = this.createShader(this.FRAGMENT_SHADER);
     var shaderStr = 'precision mediump float;' +
         'void main(void) {' +
@@ -275,7 +401,6 @@ WebGLRenderingContext.prototype.glpGetPixelInspectFragShader = function() {
 
     this.shaderSource(pixelInspectFragShader, shaderStr);
     this.compileShader(pixelInspectFragShader);
-    this.glpPixelInspectFragShader = pixelInspectFragShader;
 
     return pixelInspectFragShader;
 }
