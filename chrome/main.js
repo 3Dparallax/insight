@@ -70,7 +70,9 @@ var glpFcnBindings = {
         // TODO: verify valid input
         // glpPixelInspector: store vertex shaders associated with program
         if (shaderType == this.VERTEX_SHADER) {
-          this.glpVertexShaders[program] = shader;
+          this.glpVertexShaders[program.__uuid] = shader;
+        } else {
+          this.glpFragmentShaders[program.__uuid] = shader;
         }
 
         return original.apply(this, args);
@@ -128,7 +130,7 @@ var glpFcnBindings = {
         // glpPixelInspector: replace the program with pixel inspector program
         // TODO: Handle case where program provided is the pixel inspector program
         // TODO: verify valid input
-        var program = args[0];
+        var program = args[0].__uuid;
 
         var retVal = original.apply(this, args);
         if (this.pixelInspectorEnabled && !(program in this.glpPixelInspectorPrograms)) {
@@ -141,9 +143,9 @@ var glpFcnBindings = {
         var program = args[0];
         var location = args[1];
         if (program in glpPixelInspectorPrograms) {
-          if (location in this.glpPixelInspectorLocationMap[program]) {
+          if (location in this.glpPixelInspectorLocationMap[program.__uuid]) {
             // the program is the pixel inspector version and we're using the original location
-            args[1] = this.glpPixelInspectorLocationMap[program][location];
+            args[1] = this.glpPixelInspectorLocationMap[program.__uuid][location.__uuid];
           } else {
           }
         } else {
@@ -153,7 +155,30 @@ var glpFcnBindings = {
         }
       }
       return original.apply(this, args);
-    }
+    },
+    createProgram: function(original, args, name) {
+      var program = original.apply(this, args);
+      program.__uuid = guid();
+      return program;
+    },
+    getUniformLocation: function(original, args, name) {
+      var program = args[0];
+      var n = args[1];
+      if (!(program.__uuid in this.glpProgramUniformLocations)) {
+        this.glpProgramUniformLocations[program.__uuid] = {}
+      }
+      if (!(n in this.glpProgramUniformLocations[program.__uuid])) {
+        var location = original.apply(this, args);
+        if (!location) {
+          return;
+        }
+        location.__uuid = guid();
+        this.glpProgramUniformLocations[program.__uuid][n] = location;
+        return location;
+      }
+
+      return this.glpProgramUniformLocations[program.__uuid][n];
+    },
 }
 
 function glpSendCallStack(type) {
@@ -176,7 +201,8 @@ var glpUniformFcn = function(original, args, name) {
   if (this.pixelInspectorEnabled) {
     var loc = args[0];
     var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
-    args[0] = this.glpPixelInspectorLocationMap[currentProgram][loc];
+    args[0] = this.glpPixelInspectorLocationMap[currentProgram.__uuid][loc.__uuid];
+    // TODO: do this only when necessary
   }
   return original.apply(this, args);
 }
@@ -218,7 +244,9 @@ WebGLRenderingContext.prototype.glpPixelInspectorBlendFuncDFactor = null;
 WebGLRenderingContext.prototype.glpPixelInspectorDepthTest = null;
 WebGLRenderingContext.prototype.glpPixelInspectorClearColor = null;
 WebGLRenderingContext.prototype.glpVertexShaders = {};
+WebGLRenderingContext.prototype.glpFragmentShaders = {};
 WebGLRenderingContext.prototype.glpPixelInspectorPrograms = [];
+WebGLRenderingContext.prototype.glpProgramUniformLocations = {};
 WebGLRenderingContext.prototype.glpPixelInspectorOriginalPrograms = {};
 WebGLRenderingContext.prototype.glpPixelInspectorLocationMap = {};
 
@@ -305,7 +333,7 @@ WebGLRenderingContext.prototype.glpApplyUniform = function applyUniform(uniform)
 WebGLRenderingContext.prototype.glpGetPixelInspectorProgram = function(originalProgram) {
   var program = this.createProgram();
 
-  this.attachShader(program, this.glpVertexShaders[originalProgram]);
+  this.attachShader(program, this.glpVertexShaders[originalProgram.__uuid]);
   this.attachShader(program, this.glpGetPixelInspectFragShader());
   this.linkProgram(program);
 
@@ -364,8 +392,8 @@ WebGLRenderingContext.prototype.glpDisablePixelInspector = function() {
     }
 
     var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
-    if (currentProgram in this.glpPixelInspectorOriginalPrograms) {
-      var newProgram = this.glpPixelInspectorOriginalPrograms[currentProgram];
+    if (currentProgram.__uuid in this.glpPixelInspectorOriginalPrograms) {
+      var newProgram = this.glpPixelInspectorOriginalPrograms[currentProgram.__uuid];
       this.useProgram(newProgram);
       this.glpSwitchUniforms(currentProgram, newProgram);
     }
@@ -379,9 +407,19 @@ WebGLRenderingContext.prototype.glpSwitchToPixelInspectorProgram = function() {
   var program = this.glpGetPixelInspectorProgram(oldProgram);
 
   this.useProgram(program);
-  this.glpPixelInspectorOriginalPrograms[program] = oldProgram;
+  this.glpPixelInspectorOriginalPrograms[program.__uuid] = oldProgram;
   this.glpSwitchUniforms(oldProgram, program);
   // TODO: Swap attributes!
+}
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
 }
 
 /**
@@ -391,12 +429,15 @@ WebGLRenderingContext.prototype.glpSwitchUniforms = function(oldProgram, program
   var activeUniforms = this.getProgramParameter(program, this.ACTIVE_UNIFORMS);
   var activeAttributes = this.getProgramParameter(program, this.ACTIVE_ATTRIBUTES);
   var uniforms = [];
-  this.glpPixelInspectorLocationMap[program] = {};
+  this.glpPixelInspectorLocationMap[program.__uuid] = {};
   for (var i=0; i < activeUniforms; i++) {
       var uniform = this.getActiveUniform(program, i);
       var oldLocation = this.getUniformLocation(oldProgram, uniform.name);
       var newLocation = this.getUniformLocation(program, uniform.name);
-      this.glpPixelInspectorLocationMap[program][oldLocation] = newLocation;
+      if (!oldLocation) {
+        continue;
+      }
+      this.glpPixelInspectorLocationMap[program.__uuid][oldLocation.__uuid] = newLocation;
 
       uniform.loc = newLocation;
       uniform.value = this.getUniform(oldProgram, oldLocation);
