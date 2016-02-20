@@ -398,7 +398,7 @@ WebGLRenderingContext.prototype.glpDisablePixelInspector = function() {
     if (currentProgram.__uuid in this.glpPixelInspectorOriginalPrograms) {
       var newProgram = this.glpPixelInspectorOriginalPrograms[currentProgram.__uuid];
       this.useProgram(newProgram);
-      this.glpSwitchUniforms(currentProgram, newProgram);
+      this.glpCopyUniforms(currentProgram, newProgram);
     }
 }
 
@@ -411,7 +411,8 @@ WebGLRenderingContext.prototype.glpSwitchToPixelInspectorProgram = function() {
 
   this.useProgram(program);
   this.glpPixelInspectorOriginalPrograms[program.__uuid] = oldProgram;
-  this.glpSwitchUniforms(oldProgram, program);
+  this.glpCopyUniforms(oldProgram, program);
+  this.glpCopyAttributes(oldProgram, program);
   // TODO: Swap attributes!
 }
 
@@ -426,9 +427,9 @@ function guid() {
 }
 
 /**
- * Swaps uniforms between programs
+ * Copies uniforms from oldProgram to newProgram
  */
-WebGLRenderingContext.prototype.glpSwitchUniforms = function(oldProgram, program) {
+WebGLRenderingContext.prototype.glpCopyUniforms = function(oldProgram, program) {
   var activeUniforms = this.getProgramParameter(program, this.ACTIVE_UNIFORMS);
   this.glpPixelInspectorLocationMap[program.__uuid] = {};
 
@@ -446,6 +447,26 @@ WebGLRenderingContext.prototype.glpSwitchUniforms = function(oldProgram, program
       if (uniform.value != null) {
         this.glpApplyUniform(uniform);
       }
+  }
+}
+
+/**
+ * Copies attributes from oldProgram to newProgram
+ */
+WebGLRenderingContext.prototype.glpCopyAttributes = function(oldProgram, program) {
+  var activeAttributes = this.getProgramParameter(program, this.ACTIVE_ATTRIBUTES);
+
+  for (var i=0; i < activeAttributes; i++) {
+      var attribute = this.getActiveAttrib(program, i);
+      var oldLocation = this.getAttribLocation(oldProgram, attribute.name);
+      var newLocation = this.getAttribLocation(program, attribute.name);
+
+      this.bindAttribLocation(program, attribute.index, attribute.name);
+      if (attribute.size > 1) {
+        this.vertexAttribPointer(attribute.index, attribute.size, attribute.type, attribute.normalized, attribute.stride, attribute.offset);
+      }
+
+      this.enableVertexAttribArray(attribute.index);
   }
 }
 
