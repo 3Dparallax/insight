@@ -198,8 +198,8 @@ function glpSendCallStack(type) {
 }
 
 var glpUniformFcn = function(original, args, name) {
-  if (this.pixelInspectorEnabled ) {
-    if (this.glpPixelInspectorPrograms.indexOf(this.getParameter(this.CURRENT_PROGRAM).__uuid) >= 0) {
+  if (this.pixelInspectorEnabled) {
+    if (args[0] && this.glpPixelInspectorPrograms.indexOf(this.getParameter(this.CURRENT_PROGRAM).__uuid) >= 0) {
       args[0] = this.glpPixelInspectorLocationMap[this.getParameter(this.CURRENT_PROGRAM).__uuid][args[0].__uuid];
     }
   }
