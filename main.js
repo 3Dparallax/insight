@@ -51,7 +51,7 @@ var glpFcnBindings = {
             console.log("Function Call: " + name)
         }
         if (this.glpCallstackEnabled) {
-            var callDetails = [name];
+            var callDetails = [name, JSON.stringify(args)];
 
             if (this.glpMostRecentCalls.length > this.glpCallstackMaxSize) {
                 this.glpMostRecentCalls.shift();
