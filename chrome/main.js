@@ -317,7 +317,7 @@ WebGLRenderingContext.prototype.glpApplyUniform = function applyUniform(uniform)
       return;
     }
     if (type == this.SAMPLER_2D || type == this.SAMPLER_CUBE) {
-      this.uniform1i(loc, unit);
+      this.uniform1i(loc, value);
       return;
     }
   }
