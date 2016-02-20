@@ -130,10 +130,10 @@ var glpFcnBindings = {
         // glpPixelInspector: replace the program with pixel inspector program
         // TODO: Handle case where program provided is the pixel inspector program
         // TODO: verify valid input
-        var program = args[0].__uuid;
+        var program = args[0];
 
         var retVal = original.apply(this, args);
-        if (this.pixelInspectorEnabled && !(program in this.glpPixelInspectorPrograms)) {
+        if (this.pixelInspectorEnabled && this.glpPixelInspectorPrograms.indexOf(program.__uuid) < 0) {
           this.glpSwitchToPixelInspectorProgram()
         }
         return retVal;
@@ -142,7 +142,7 @@ var glpFcnBindings = {
       if (this.pixelInspectorEnabled) {
         var program = args[0];
         var location = args[1];
-        if (program in glpPixelInspectorPrograms) {
+        if (this.glpPixelInspectorPrograms.indexOf(program.__uuid) >= 0) {
           if (location in this.glpPixelInspectorLocationMap[program.__uuid]) {
             // the program is the pixel inspector version and we're using the original location
             args[1] = this.glpPixelInspectorLocationMap[program.__uuid][location.__uuid];
@@ -199,10 +199,8 @@ function glpSendCallStack(type) {
 
 var glpUniformFcn = function(original, args, name) {
   if (this.pixelInspectorEnabled) {
-    var loc = args[0];
-    var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
-    args[0] = this.glpPixelInspectorLocationMap[currentProgram.__uuid][loc.__uuid];
     // TODO: do this only when necessary
+    args[0] = this.glpPixelInspectorLocationMap[this.getParameter(this.CURRENT_PROGRAM).__uuid][args[0].__uuid];
   }
   return original.apply(this, args);
 }
@@ -246,6 +244,7 @@ WebGLRenderingContext.prototype.glpPixelInspectorClearColor = null;
 WebGLRenderingContext.prototype.glpVertexShaders = {};
 WebGLRenderingContext.prototype.glpFragmentShaders = {};
 WebGLRenderingContext.prototype.glpPixelInspectorPrograms = [];
+WebGLRenderingContext.prototype.glpPixelInspectorProgramsMap = {};
 WebGLRenderingContext.prototype.glpProgramUniformLocations = {};
 WebGLRenderingContext.prototype.glpPixelInspectorOriginalPrograms = {};
 WebGLRenderingContext.prototype.glpPixelInspectorLocationMap = {};
@@ -257,8 +256,6 @@ WebGLRenderingContext.prototype.glpApplyUniform = function applyUniform(uniform)
     var loc = uniform.loc;
     var type = uniform.type;
     var value = uniform.value;
-    // console.log("APPLY");
-    // console.log(loc, type, value);
     if (type == this.FLOAT) {
       this.uniform1f(loc, value);
       return;
@@ -331,13 +328,18 @@ WebGLRenderingContext.prototype.glpApplyUniform = function applyUniform(uniform)
  * @return {WebGLProgram} Pixel Inspector Progam
  */
 WebGLRenderingContext.prototype.glpGetPixelInspectorProgram = function(originalProgram) {
+  if (originalProgram.__uuid in this.glpPixelInspectorProgramsMap) {
+      return this.glpPixelInspectorProgramsMap[originalProgram.__uuid];
+  }
+
   var program = this.createProgram();
 
   this.attachShader(program, this.glpVertexShaders[originalProgram.__uuid]);
   this.attachShader(program, this.glpGetPixelInspectFragShader());
   this.linkProgram(program);
 
-  this.glpPixelInspectorPrograms.push(program);
+  this.glpPixelInspectorPrograms.push(program.__uuid);
+  this.glpPixelInspectorProgramsMap[originalProgram.__uuid] = program;
 
   return program;
 }
@@ -427,9 +429,8 @@ function guid() {
  */
 WebGLRenderingContext.prototype.glpSwitchUniforms = function(oldProgram, program) {
   var activeUniforms = this.getProgramParameter(program, this.ACTIVE_UNIFORMS);
-  var activeAttributes = this.getProgramParameter(program, this.ACTIVE_ATTRIBUTES);
-  var uniforms = [];
   this.glpPixelInspectorLocationMap[program.__uuid] = {};
+
   for (var i=0; i < activeUniforms; i++) {
       var uniform = this.getActiveUniform(program, i);
       var oldLocation = this.getUniformLocation(oldProgram, uniform.name);
