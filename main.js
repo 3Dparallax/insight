@@ -1,8 +1,5 @@
 var glpVerboseLogs = false;
-var glpCallStack = true;
-var last100Calls = []
-var callStackSinceLastDraw = []
-var lastCallWasDraw = false;
+
 /**
  * Instantiates messaging with the devtools panel
  */
@@ -40,25 +37,31 @@ window.addEventListener('message', function(event) {
   }
 });
 
+WebGLRenderingContext.prototype.glpCallstackEnabled = true;
+WebGLRenderingContext.prototype.glpCallstackMaxSize = 100;
+WebGLRenderingContext.prototype.glpMostRecentCalls = [];
+WebGLRenderingContext.prototype.glpCallsSinceDraw = [];
+/*
+ * Define all glp functions to be bound
+*/
 var glpFcnBindings = {
+    // The default function is called first before all other method calls
     default: function(original, args, name) {
         if (glpVerboseLogs) {
-            console.log("Default Call: " + name)
+            console.log("Function Call: " + name)
         }
-        if (glpCallStack) {
-            if (last100Calls.length > 100) {
-                last100Calls.shift();
+        if (this.glpCallstackEnabled) {
+            var callDetails = [name];
+
+            if (this.glpMostRecentCalls.length > this.glpCallstackMaxSize) {
+                this.glpMostRecentCalls.shift();
             }
-            last100Calls.push(name);
-            if (lastCallWasDraw) {
-                callStackSinceLastDraw = []
-            }
+            this.glpMostRecentCalls.push(callDetails);
+
             if (name == "drawElements" || name == "drawArrays") {
-                lastCallWasDraw = true;
-            } else {
-                lastCallWasDraw = false;
+                this.glpCallsSinceDraw = [];
             }
-            callStackSinceLastDraw.push(name)
+            this.glpCallsSinceDraw.push(callDetails);
         }
         return original.apply(this, args);
     },
@@ -181,22 +184,6 @@ var glpFcnBindings = {
     },
 }
 
-function glpSendCallStack(type) {
-    var callStack = []
-    switch(type) {
-        case "Last100Calls":
-            callStack = last100Calls;
-            break;
-        case "SinceLastDraw":
-            callStack = callStackSinceLastDraw;
-            break;
-        default:
-            callStack = []
-    }
-    console.log("Sending Call Stack");
-    glpSendMessage("CallStack", {"functionNames": callStack})
-}
-
 var glpUniformFcn = function(original, args, name) {
   if (this.pixelInspectorEnabled) {
     if (args[0] && this.glpPixelInspectorPrograms.indexOf(this.getParameter(this.CURRENT_PROGRAM).__uuid) >= 0) {
@@ -217,18 +204,57 @@ for (var i=0; i<uniformMethods.length; i++) {
 }
 
 /**
+ * Returns the WebGL contexts available in the dom
+ * @param {Array} WebGL Contexts
+ */
+function glpGetWebGLContexts() {
+  var canvases = document.getElementsByTagName("canvas");
+  var contexts = [];
+  for (var i = 0; i < canvases.length; i++) {
+    var canvas = canvases[i];
+    var webGLContext = canvas.getContext("webgl");
+    if (webGLContext == null) {
+      continue;
+    }
+    contexts.push(webGLContext);
+  }
+  return contexts;
+}
+
+/**
+ * Sends call stack information to the panel
+ * @param {String} Type of stack requested
+ */
+function glpSendCallStack(type) {
+    // TODO: Handle multiple contexts
+    var contexts = glpGetWebGLContexts();
+    if (contexts == null || contexts[0] == null) {
+        return;
+    }
+
+    var context = contexts[0];
+    var callStack;
+    if (type == "mostRecentCalls") {
+        callStack = context.glpMostRecentCalls;
+    } else {
+        callStack = context.glpCallsSinceDraw;
+    }
+
+    glpSendMessage("CallStack", {"functionNames": callStack})
+}
+
+/**
  * Toggles the status of the pixel inspector being enabled/disabled
  * @param {Bool} Enabled
  */
 function glpPixelInspectorToggle(enabled) {
-  var canvases = document.getElementsByTagName("canvas");
-  for(var i = 0; i < canvases.length; i++){
-    var canvas = canvases[i];
-    var webGLContext = canvas.getContext("webgl");
-    if (webGLContext == null) {
-      return;
-    }
+  var contexts = glpGetWebGLContexts();
+  if (contexts == null) {
+    return;
+  }
 
+  for (var i = 0; i < contexts.length; i++) {
+    var webGLContext = contexts[i];
     if (enabled) {
       webGLContext.glpEnablePixelInspector();
     } else {
@@ -416,16 +442,6 @@ WebGLRenderingContext.prototype.glpSwitchToPixelInspectorProgram = function() {
   // TODO: Swap attributes!
 }
 
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
-}
-
 /**
  * Copies uniforms from oldProgram to newProgram
  */
@@ -487,6 +503,16 @@ WebGLRenderingContext.prototype.glpGetPixelInspectFragShader = function() {
     return pixelInspectFragShader;
 }
 
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
 /**
  * Returns a function that calls newFunc with origFunc and all arguments
  * @param {Function} origFunc
@@ -502,23 +528,24 @@ function _glpBind(origFunc, newFunc, name) {
 
 /**
  * Bind WebGLRenderingContext functions to functions found in glpFcnBindings
- * Functions without a binding are bound to the "default function"
+ * If defined, functions are first bound the function found in glpFcnBindings
+ * Afterwards, they are then bound to the default func
  */
 for (var name in WebGLRenderingContext.prototype) {
     try {
-
         if (typeof WebGLRenderingContext.prototype[name] != 'function') {
             continue;
         }
 
-        var newFunc = glpFcnBindings["default"];
         if (glpFcnBindings[name] != null) {
-            newFunc = glpFcnBindings[name];
+            var newFunc = glpFcnBindings[name];
+            WebGLRenderingContext.prototype[name] =
+                _glpBind(WebGLRenderingContext.prototype[name], newFunc, name);
         }
 
+        var defaultFunc = glpFcnBindings["default"];
         WebGLRenderingContext.prototype[name] =
-            _glpBind(WebGLRenderingContext.prototype[name], newFunc, name);
-
+            _glpBind(WebGLRenderingContext.prototype[name], defaultFunc, name);
     } catch(err) {
         if (glpVerboseLogs) {
             console.log("Binding Error: " + name)

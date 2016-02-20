@@ -45,15 +45,15 @@ function testSend() {
 
 document.getElementById("send").addEventListener("click", testSend);
 
-function getCallStackDraw(e) {
-    sendMessage("callStackRequest", "SinceLastDraw");
+function getCallsSinceDraw(e) {
+    sendMessage("callStackRequest", "callsSinceDraw");
 }
 
-document.getElementById("callStackDraw").addEventListener("click", getCallStackDraw);
+document.getElementById("callsSinceDraw").addEventListener("click", getCallsSinceDraw);
 
-function getCallStack100(e) {
-    sendMessage("callStackRequest", "Last100Calls");
+function getMostRecentCalls(e) {
+    sendMessage("callStackRequest", "mostRecentCalls");
 }
 
-document.getElementById("callStack100").addEventListener("click", getCallStack100);
+document.getElementById("mostRecentCalls").addEventListener("click", getMostRecentCalls);
 
