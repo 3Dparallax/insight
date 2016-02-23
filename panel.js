@@ -15,6 +15,16 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
             console.log(msg.data.functionNames[i]);
         }
     }
+
+    if (msg.type == "FunctionHistogram") {
+        console.log("HISTOGRAM");
+        console.log(Object.keys(msg.data.histogram).length);
+        console.log("FUNCTIONHISTOGRAM");
+        for (var functionName in msg.data.histogram) {
+            console.log(functionName + " " + msg.data.histogram[functionName]);
+        }
+    }
+
     if (msg.source != "content") {
         return;
     }
@@ -57,3 +67,8 @@ function getMostRecentCalls(e) {
 
 document.getElementById("mostRecentCalls").addEventListener("click", getMostRecentCalls);
 
+function getFunctionHistogram(e) {
+    sendMessage("functionHistogramRequest", "");
+}
+
+document.getElementById("functionHistogram").addEventListener("click", getFunctionHistogram);

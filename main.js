@@ -32,6 +32,8 @@ window.addEventListener('message', function(event) {
     glpPixelInspectorToggle(message.data.enabled);
   } else if (message.type == "callStackRequest") {
     glpSendCallStack(message.data);
+  } else if (message.type == "functionHistogramRequest") {
+    glpSendFunctionHistogram();
   } else {
     console.log(message.data);
   }
@@ -39,6 +41,7 @@ window.addEventListener('message', function(event) {
 
 WebGLRenderingContext.prototype.glpCallstackEnabled = true;
 WebGLRenderingContext.prototype.glpCallstackMaxSize = 100;
+WebGLRenderingContext.prototype.glpFunctionHistogramEnabled = true;
 WebGLRenderingContext.prototype.glpMostRecentCalls = [];
 WebGLRenderingContext.prototype.glpCallsSinceDraw = [];
 /*
@@ -62,6 +65,16 @@ var glpFcnBindings = {
                 this.glpCallsSinceDraw = [];
             }
             this.glpCallsSinceDraw.push(callDetails);
+        }
+        if (this.glpFunctionHistogramEnabled) {
+          if (!this.glpFunctionHistogram) {
+            this.glpFunctionHistogram = {};
+          }
+          if (!this.glpFunctionHistogram[name]) {
+            this.glpFunctionHistogram[name] = 1;
+          } else {
+            this.glpFunctionHistogram[name] += 1;
+          }
         }
         return original.apply(this, args);
     },
@@ -241,6 +254,19 @@ function glpSendCallStack(type) {
     }
 
     glpSendMessage("CallStack", {"functionNames": callStack})
+}
+
+/**
+ * Sends histogram of function calls to the panel
+ */
+function glpSendFunctionHistogram() {
+    // TODO: Handle multiple contexts
+    var contexts = glpGetWebGLContexts();
+    if (contexts == null || contexts[0] == null) {
+        return;
+    }
+    var context = contexts[0];
+    glpSendMessage("FunctionHistogram", {"histogram": context.glpFunctionHistogram})
 }
 
 /**
