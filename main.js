@@ -496,12 +496,10 @@ WebGLRenderingContext.prototype.glpCopyUniforms = function(oldProgram, program) 
  * Copies attributes from oldProgram to newProgram
  */
 WebGLRenderingContext.prototype.glpCopyAttributes = function(oldProgram, program) {
-  var activeAttributes = this.getProgramParameter(program, this.ACTIVE_ATTRIBUTES);
+  var activeAttributes = this.getProgramParameter(oldProgram, this.ACTIVE_ATTRIBUTES);
 
   for (var i=0; i < activeAttributes; i++) {
-      var attribute = this.getActiveAttrib(program, i);
-      var oldLocation = this.getAttribLocation(oldProgram, attribute.name);
-      var newLocation = this.getAttribLocation(program, attribute.name);
+      var attribute = this.getActiveAttrib(oldProgram, i);
 
       this.bindAttribLocation(program, attribute.index, attribute.name);
       if (attribute.size > 1) {
