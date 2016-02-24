@@ -34,6 +34,14 @@ window.addEventListener('message', function(event) {
     glpSendCallStack(message.data);
   } else if (message.type == "functionHistogramRequest") {
     glpSendFunctionHistogram();
+  } else if (message.type == "beginProgramUsageCount") {
+    beginProgramUsageCount();
+  } else if (message.type == "stopProgramUsageCount") {
+    stopProgramUsageCount();
+  } else if (message.type == "resetProgramUsageCount") {
+    resetProgramUsageCount();
+  } else if (message.type == "getProgramUsageCount") {
+    getCurrentProgramUsageCount();
   } else {
     console.log(message.data);
   }
@@ -152,6 +160,11 @@ var glpFcnBindings = {
         if (this.pixelInspectorEnabled && this.glpPixelInspectorPrograms.indexOf(program.__uuid) < 0) {
           this.glpSwitchToPixelInspectorProgram()
         }
+
+        if (this.glpProgramUsageCounterEnabled) {
+
+          this.glpProgramUsageCountProgramUsages[program.__uuid]++;
+        }
         return retVal;
     },
     getUniform: function(original, args, name) {
@@ -175,6 +188,14 @@ var glpFcnBindings = {
     createProgram: function(original, args, name) {
       var program = original.apply(this, args);
       program.__uuid = guid();
+
+      // TODO we might want to figure out how to not collect this all the time if
+      // feature is not enabled. For now we have to becasue createProgram is usually
+      // called at the beginning of a WebGL application. Hence, if we only enable it
+      // in a timestep in the application, we will get undefined for these programs that
+      // were created at the beginning.
+      this.glpProgramUsageCountProgramUsages[program.__uuid] = 0;
+
       return program;
     },
     getUniformLocation: function(original, args, name) {
@@ -235,17 +256,65 @@ function glpGetWebGLContexts() {
 }
 
 /**
+ * TODO (gets different contexts for whatever UI we design it to be)
+ */
+function glpGetWebGLActiveContext() {
+  // TODO: Handle multiple contexts
+  var contexts = glpGetWebGLContexts();
+  if (contexts == null || contexts[0] == null) {
+        return;
+    }
+
+  return contexts[0];
+}
+
+// TODO (Dian) rename this so it doesn't collide with webglContext.programUsageCount
+function beginProgramUsageCount() {
+  var context = glpGetWebGLActiveContext();
+
+  if (!context)
+    return;
+
+  context.glpBeginProgramUsageCount();
+}
+
+function stopProgramUsageCount() {
+  var context = glpGetWebGLActiveContext();
+
+  if (!context)
+    return;
+
+  context.glpStopProgramUsageCount();
+}
+
+function resetProgramUsageCount() {
+  var context = glpGetWebGLActiveContext();
+
+  if (!context)
+    return;
+
+  context.glpResetProgramUsageCount();
+}
+
+function getCurrentProgramUsageCount() {
+  var context = glpGetWebGLActiveContext();
+
+  if (!context)
+    return;
+
+  context.glpGetCurrentProgramUsageCount();
+}
+
+/**
  * Sends call stack information to the panel
  * @param {String} Type of stack requested
  */
 function glpSendCallStack(type) {
-    // TODO: Handle multiple contexts
-    var contexts = glpGetWebGLContexts();
-    if (contexts == null || contexts[0] == null) {
-        return;
-    }
+    var context = glpGetWebGLActiveContext();
 
-    var context = contexts[0];
+    if (!context)
+      return;
+
     var callStack;
     if (type == "mostRecentCalls") {
         callStack = context.glpMostRecentCalls;
@@ -289,6 +358,7 @@ function glpPixelInspectorToggle(enabled) {
   }
 }
 
+// Overdraw Inspector variables
 WebGLRenderingContext.prototype.glpPixelInspectorBlendProp = null;
 WebGLRenderingContext.prototype.glpPixelInspectorBlendFuncSFactor = null;
 WebGLRenderingContext.prototype.glpPixelInspectorBlendFuncDFactor = null;
@@ -301,6 +371,11 @@ WebGLRenderingContext.prototype.glpPixelInspectorProgramsMap = {};
 WebGLRenderingContext.prototype.glpProgramUniformLocations = {};
 WebGLRenderingContext.prototype.glpPixelInspectorOriginalPrograms = {};
 WebGLRenderingContext.prototype.glpPixelInspectorLocationMap = {};
+WebGLRenderingContext.prototype.pixelInspectorEnabled = false;
+
+// Program usage count variables
+WebGLRenderingContext.prototype.glpProgramUsageCountProgramUsages = {}; // program.__uuid : usage
+WebGLRenderingContext.prototype.glpProgramUsageCounterEnabled = false;
 
 /**
  * Applies uniform to WebGL context
@@ -378,7 +453,7 @@ WebGLRenderingContext.prototype.glpApplyUniform = function applyUniform(uniform)
 /**
  * Returns the appropriate pixel inspector program
  * @param {WebGLProgram} Original Program
- * @return {WebGLProgram} Pixel Inspector Progam
+ * @return {WebGLProgram.__uuid} Pixel Inspector Progam
  */
 WebGLRenderingContext.prototype.glpGetPixelInspectorProgram = function(originalProgram) {
   if (originalProgram.__uuid in this.glpPixelInspectorProgramsMap) {
@@ -420,6 +495,25 @@ WebGLRenderingContext.prototype.glpEnablePixelInspector = function() {
     this.pixelInspectorEnabled = true;
 }
 
+WebGLRenderingContext.prototype.glpBeginProgramUsageCount = function() {
+  this.glpProgramUsageCounterEnabled = true;
+}
+
+WebGLRenderingContext.prototype.glpResetProgramUsageCount = function() {
+  this.glpProgramUsageCountProgramUsages = {};
+}
+
+WebGLRenderingContext.prototype.glpStopProgramUsageCount = function() {
+  this.glpProgramUsageCounterEnabled = false;
+}
+
+/**
+ * Gets the current program usage count since the last glpResetProgramUsageCount call
+ * @return a map from WebGLProgram to count
+ **/
+WebGLRenderingContext.prototype.glpGetCurrentProgramUsageCount = function() {
+  glpSendMessage("getProgramUsageCount", {"programUsageCount": JSON.stringify(this.glpProgramUsageCountProgramUsages)})
+}
 /**
  * Disable the pixel inspector and returns the appropriate fragment shader
  * @return {WebGLShader} Pixel Inspector Shader

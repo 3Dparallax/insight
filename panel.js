@@ -14,6 +14,10 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         for (var i = 0; i < msg.data.functionNames.length; i++) {
             console.log(msg.data.functionNames[i]);
         }
+    } else if (msg.type == "getProgramUsageCount") {
+        for( var programUsage in msg.data.programUsageCount ) {
+            console.log(msg.data.programUsageCount[programUsage]);
+        }
     }
 
     if (msg.type == "FunctionHistogram") {
@@ -65,6 +69,9 @@ function getMostRecentCalls(e) {
     sendMessage("callStackRequest", "mostRecentCalls");
 }
 
+
+// Program Usage Count
+
 document.getElementById("mostRecentCalls").addEventListener("click", getMostRecentCalls);
 
 function getFunctionHistogram(e) {
@@ -72,3 +79,27 @@ function getFunctionHistogram(e) {
 }
 
 document.getElementById("functionHistogram").addEventListener("click", getFunctionHistogram);
+
+function beginProgramUsageCount(e) {
+    sendMessage("beginProgramUsageCount", "beginProgramUsageCount")
+}
+
+document.getElementById("beginProgramUsageCount").addEventListener("click", beginProgramUsageCount);
+
+function stopProgramUsageCount(e) {
+    sendMessage("stopProgramUsageCount", "stopProgramUsageCount")
+}
+
+document.getElementById("stopProgramUsageCount").addEventListener("click", stopProgramUsageCount);
+
+function resetProgramUsageCount(e) {
+    sendMessage("resetProgramUsageCount", "resetProgramUsageCount")
+}
+
+document.getElementById("resetProgramUsageCount").addEventListener("click", resetProgramUsageCount);
+
+function getProgramUsageCount(e) {
+    sendMessage("getProgramUsageCount", "getProgramUsageCount")
+}
+
+document.getElementById("getProgramUsageCount").addEventListener("click", getProgramUsageCount);
