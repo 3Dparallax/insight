@@ -18,6 +18,10 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         for( var programUsage in msg.data.programUsageCount ) {
             console.log(msg.data.programUsageCount[programUsage]);
         }
+    } else if (msg.type == "getDuplicateProgramUsage") {
+        for( var duplicatedProgram in msg.data.duplicateProgramUses ) {
+            // console.log(duplicatedProgram);
+        }
     }
 
     if (msg.type == "FunctionHistogram") {
@@ -121,3 +125,17 @@ function getProgramUsageCount(e) {
 }
 
 document.getElementById("getProgramUsageCount").addEventListener("click", getProgramUsageCount);
+
+function toggleDuplicateProgramUsage(e) {
+    var checked = document.getElementById("toggleDuplicateProgramUsage").checked;
+    var data = {"enabled": checked};
+    sendMessage("toggleDuplicateProgramUsage", data)
+}
+
+document.getElementById("toggleDuplicateProgramUsage").addEventListener("click", toggleDuplicateProgramUsage);
+
+function getDuplicateProgramUse(e) {
+    sendMessage("getDuplicateProgramUse", "getDuplicateProgramUse")
+}
+
+document.getElementById("getDuplicateProgramUse").addEventListener("click", getDuplicateProgramUse);

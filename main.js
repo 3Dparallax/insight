@@ -42,6 +42,10 @@ window.addEventListener('message', function(event) {
     resetProgramUsageCount();
   } else if (message.type == "getProgramUsageCount") {
     getCurrentProgramUsageCount();
+  } else if (message.type == "toggleDuplicateProgramUsage") {
+    toggleDuplicateProgramUsage(message.data.enabled);
+  } else if (message.type == "getDuplicateProgramUse") {
+    getDuplicateProgramUsage();
   } else {
     console.log(message.data);
   }
@@ -156,15 +160,26 @@ var glpFcnBindings = {
         // TODO: verify valid input
         var program = args[0];
 
+        if (this.glpProgramDuplicateDetectionEnabled) {
+          var lineNumber = 100; // TODO actually calculate the line number that calls this function
+          var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
+          if( currentProgram != undefined &&
+              currentProgram.__uuid != undefined &&
+              currentProgram.__uuid == program.__uuid ) {
+            this.glpProgramDuplicatesList.push({"programId" : program.__uuid, "lineNumber" : 1})
+          }
+        }
+
         var retVal = original.apply(this, args);
+
         if (this.pixelInspectorEnabled && this.glpPixelInspectorPrograms.indexOf(program.__uuid) < 0) {
           this.glpSwitchToPixelInspectorProgram()
         }
 
         if (this.glpProgramUsageCounterEnabled) {
-
           this.glpProgramUsageCountProgramUsages[program.__uuid]++;
         }
+
         return retVal;
     },
     getUniform: function(original, args, name) {
@@ -305,6 +320,28 @@ function getCurrentProgramUsageCount() {
   context.glpGetCurrentProgramUsageCount();
 }
 
+function toggleDuplicateProgramUsage(enabled) {
+  var context = glpGetWebGLActiveContext();
+
+  if (!context)
+    return;
+
+  if (enabled) {
+    context.glpEnableDuplicateProgramUsage();
+  } else {
+    context.glpDisableDuplicateProgramUsage();
+  }
+}
+
+function getDuplicateProgramUsage() {
+  var context = glpGetWebGLActiveContext();
+
+  if (!context)
+    return;
+
+  context.glpGetDuplicateProgramUsage();
+}
+
 /**
  * Sends call stack information to the panel
  * @param {String} Type of stack requested
@@ -386,6 +423,52 @@ WebGLRenderingContext.prototype.pixelInspectorEnabled = false;
 // Program usage count variables
 WebGLRenderingContext.prototype.glpProgramUsageCountProgramUsages = {}; // program.__uuid : usage
 WebGLRenderingContext.prototype.glpProgramUsageCounterEnabled = false;
+
+// Duplicate program detection variables
+WebGLRenderingContext.prototype.glpProgramDuplicateDetectionEnabled = false;
+WebGLRenderingContext.prototype.glpProgramDuplicatesList = []; // list of { repeatedProgram : lineNumber }
+
+/*
+ * TODO: This should be moved to a completely different file because
+ * it has nothing to do with webgl debugging toolkit
+ * This section tries to figure out what line number called a certain function
+ * Other things we can see other than line number include but are not limited to:
+ * getThis, getTypeName, getFunction, getFunctionName, getMethodName, getFileName, getLineNumber,
+ * getColumnNumber, getEvalOrigin, isToplevel, isEval, isNative, isConstructor
+ *
+ * To see more details, go to
+ * http://stackoverflow.com/questions/11386492/accessing-line-number-in-v8-javascript-chrome-node-js
+ * https://github.com/v8/v8/wiki/Stack%20Trace%20API
+*/
+Object.defineProperty(window, '__stack', {
+  get: function(){
+    var orig = Error.prepareStackTrace;
+    Error.prepareStackTrace = function(_, stack){ return stack; };
+    var err = new Error;
+    // console.log(arguments.callee.caller);
+    Error.captureStackTrace(err, arguments.callee);
+    var stack = err.stack;
+    Error.prepareStackTrace = orig;
+    return stack;
+  }
+});
+
+Object.defineProperty(window, '__line', {
+  get: function(){
+    return __stack[__stack.length-1].getLineNumber();
+  }
+});
+
+printShit();
+
+function printShit()
+{
+  console.log(__line);
+}
+
+
+
+/* End stack trace code */
 
 /**
  * Applies uniform to WebGL context
@@ -515,6 +598,29 @@ WebGLRenderingContext.prototype.glpResetProgramUsageCount = function() {
 
 WebGLRenderingContext.prototype.glpStopProgramUsageCount = function() {
   this.glpProgramUsageCounterEnabled = false;
+}
+
+/**
+ * Enables duplicate program usage detection
+ */
+WebGLRenderingContext.prototype.glpEnableDuplicateProgramUsage = function() {
+  this.glpProgramDuplicateDetectionEnabled = true;
+}
+
+/**
+ * Disables duplicate program usage detection
+ */
+WebGLRenderingContext.prototype.glpDisableDuplicateProgramUsage = function() {
+  this.glpProgramDuplicateDetectionEnabled = false;
+  this.glpProgramDuplicatesList.length = 0;
+}
+
+/**
+ * Gets duplicate programs list from the time that enable is called
+ * Sends duplicated program list to the front end
+ */
+WebGLRenderingContext.prototype.glpGetDuplicateProgramUsage = function() {
+  glpSendMessage("getDuplicateProgramUsage", {"duplicateProgramUses": JSON.stringify(this.glpProgramDuplicatesList)})
 }
 
 /**
