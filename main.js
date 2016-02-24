@@ -1,8 +1,3 @@
-/*
- * TODO: we should make this into an object rather than global functions and variables
- * i.e: Insight.glpInit = function() {...}
- */
-
 var glpVerboseLogs = false;
 
 /**
@@ -12,53 +7,6 @@ function glpInit() {
     window.postMessage({ type: "init" }, "*");
 }
 glpInit();
-
-/*
- * TODO: This should be moved to a completely different file because
- * it has nothing to do with webgl debugging toolkit
- * This section tries to figure out what line number called a certain function
- * Other things we can see other than line number include but are not limited to:
- * getThis, getTypeName, getFunction, getFunctionName, getMethodName, getFileName, getLineNumber,
- * getColumnNumber, getEvalOrigin, isToplevel, isEval, isNative, isConstructor
- *
- * To see more details, go to
- * http://stackoverflow.com/questions/11386492/accessing-line-number-in-v8-javascript-chrome-node-js
- * https://github.com/v8/v8/wiki/Stack%20Trace%20API
-*/
-function glpGetStack() {
-    var orig = Error.prepareStackTrace;
-    Error.prepareStackTrace = function(_, stack){ return stack; };
-    var err = new Error;
-    // console.log(arguments.callee.caller);
-    Error.captureStackTrace(err, arguments.callee);
-    var stack = err.stack;
-    Error.prepareStackTrace = orig;
-    return stack;
-}
-
-// Uses the stack and gets the first call's line number
-function glpGetLineNumber() {
-  var stack = glpGetStack();
-  return stack[stack.length-1].getLineNumber();
-}
-
-// input: given a full stack trace down to glp
-// output: gives the first stack that's not
-// bug: if we refactor our code, we need to change this. not sure
-// how to fix until we have a consistent file naming scheme
-function glpGetFirstUserStack(fullStack) {
-  // The first item in the full stack is this file
-  var glpStackFileName = fullStack[0].getFileName();
-
-  for(var i = 1; i < fullStack.length; i++) {
-    if (fullStack[i].getFileName() != glpStackFileName)
-      return fullStack[i];
-  }
-
-  return null;
-}
-
-/* End stack trace code */
 
 /**
  * Sends messages to the devtools panel
@@ -218,27 +166,7 @@ var glpFcnBindings = {
           if( currentProgram != undefined &&
               currentProgram.__uuid != undefined &&
               currentProgram.__uuid == program.__uuid ) {
-            /*
-             * callStack gets the current call stack information up to this point
-             */
-            var callStack = glpGetStack();
-            var userStack = glpGetFirstUserStack(callStack);
-            var lineNumber = ""
-            var functionName = "";
-            if (userStack != null) {
-              lineNumber = userStack.getLineNumber();
-              // Sometimes the function name can be undefined if
-              // it's called from a global scope or from an object
-              if (userStack.getFunctionName() != undefined) {
-                functionName = userStack.getFunctionName()
-              }
-
-              fileName = userStack.getFileName();
-            }
-            this.glpProgramDuplicatesList.push({"programId" : program.__uuid,
-                                                "lineNumber" : lineNumber,
-                                                "functionName" : functionName,
-                                                "fileName" : fileName})
+            this.glpProgramDuplicatesList.push({"programId" : program.__uuid, "lineNumber" : 1})
           }
         }
 
@@ -277,7 +205,7 @@ var glpFcnBindings = {
       program.__uuid = guid();
 
       // TODO we might want to figure out how to not collect this all the time if
-      // feature is not enabled. For now we have to because createProgram is usually
+      // feature is not enabled. For now we have to becasue createProgram is usually
       // called at the beginning of a WebGL application. Hence, if we only enable it
       // in a timestep in the application, we will get undefined for these programs that
       // were created at the beginning.
@@ -500,6 +428,47 @@ WebGLRenderingContext.prototype.glpProgramUsageCounterEnabled = false;
 WebGLRenderingContext.prototype.glpProgramDuplicateDetectionEnabled = false;
 WebGLRenderingContext.prototype.glpProgramDuplicatesList = []; // list of { repeatedProgram : lineNumber }
 
+/*
+ * TODO: This should be moved to a completely different file because
+ * it has nothing to do with webgl debugging toolkit
+ * This section tries to figure out what line number called a certain function
+ * Other things we can see other than line number include but are not limited to:
+ * getThis, getTypeName, getFunction, getFunctionName, getMethodName, getFileName, getLineNumber,
+ * getColumnNumber, getEvalOrigin, isToplevel, isEval, isNative, isConstructor
+ *
+ * To see more details, go to
+ * http://stackoverflow.com/questions/11386492/accessing-line-number-in-v8-javascript-chrome-node-js
+ * https://github.com/v8/v8/wiki/Stack%20Trace%20API
+*/
+Object.defineProperty(window, '__stack', {
+  get: function(){
+    var orig = Error.prepareStackTrace;
+    Error.prepareStackTrace = function(_, stack){ return stack; };
+    var err = new Error;
+    // console.log(arguments.callee.caller);
+    Error.captureStackTrace(err, arguments.callee);
+    var stack = err.stack;
+    Error.prepareStackTrace = orig;
+    return stack;
+  }
+});
+
+Object.defineProperty(window, '__line', {
+  get: function(){
+    return __stack[__stack.length-1].getLineNumber();
+  }
+});
+
+printShit();
+
+function printShit()
+{
+  console.log(__line);
+}
+
+
+
+/* End stack trace code */
 
 /**
  * Applies uniform to WebGL context
