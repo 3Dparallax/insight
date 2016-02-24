@@ -21,11 +21,10 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
     }
 
     if (msg.type == "FunctionHistogram") {
-        console.log("HISTOGRAM");
-        console.log(Object.keys(msg.data.histogram).length);
-        console.log("FUNCTIONHISTOGRAM");
-        for (var functionName in msg.data.histogram) {
-            console.log(functionName + " " + msg.data.histogram[functionName]);
+        try {
+            displayHistogram(msg.data);
+        } catch(e) {
+            console.log(e);
         }
     }
 
@@ -75,7 +74,26 @@ function getMostRecentCalls(e) {
 document.getElementById("mostRecentCalls").addEventListener("click", getMostRecentCalls);
 
 function getFunctionHistogram(e) {
-    sendMessage("functionHistogramRequest", "");
+    sendMessage("functionHistogramRequest", {threshold: 10});
+}
+
+function displayHistogram(histogram) {
+    var data = {
+        labels: histogram.labels,
+        datasets: [
+            {
+                label: "Call Frequency",
+                fillColor: "rgba(151,187,205,0.5)",
+                strokeColor: "rgba(151,187,205,0.8)",
+                highlightFill: "rgba(151,187,205,0.75)",
+                highlightStroke: "rgba(151,187,205,1)",
+                data: histogram.values
+            }
+        ]
+    };
+    console.log("Displaying histogram");
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var myBarChart = new Chart(ctx).Bar(data, {});
 }
 
 document.getElementById("functionHistogram").addEventListener("click", getFunctionHistogram);

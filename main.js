@@ -33,7 +33,7 @@ window.addEventListener('message', function(event) {
   } else if (message.type == "callStackRequest") {
     glpSendCallStack(message.data);
   } else if (message.type == "functionHistogramRequest") {
-    glpSendFunctionHistogram();
+    glpSendFunctionHistogram(message.data.threshold);
   } else if (message.type == "beginProgramUsageCount") {
     beginProgramUsageCount();
   } else if (message.type == "stopProgramUsageCount") {
@@ -328,14 +328,24 @@ function glpSendCallStack(type) {
 /**
  * Sends histogram of function calls to the panel
  */
-function glpSendFunctionHistogram() {
+function glpSendFunctionHistogram(threshold) {
     // TODO: Handle multiple contexts
     var contexts = glpGetWebGLContexts();
     if (contexts == null || contexts[0] == null) {
         return;
     }
     var context = contexts[0];
-    glpSendMessage("FunctionHistogram", {"histogram": context.glpFunctionHistogram})
+
+    var dataSeries = []
+    var labels = []
+    var histogram = context.glpFunctionHistogram
+    for (var functionName in histogram) {
+        if (histogram[functionName] >= threshold) {
+            labels.push(functionName)
+            dataSeries.push(histogram[functionName])
+        }
+    }
+    glpSendMessage("FunctionHistogram", {"labels": labels, "values": dataSeries})
 }
 
 /**
