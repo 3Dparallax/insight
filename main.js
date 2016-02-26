@@ -87,17 +87,17 @@ window.addEventListener('message', function(event) {
   } else if (message.type == "functionHistogramRequest") {
     glpSendFunctionHistogram(message.data.threshold);
   } else if (message.type == "beginProgramUsageCount") {
-    beginProgramUsageCount();
+    glpBeginProgramUsageCount();
   } else if (message.type == "stopProgramUsageCount") {
-    stopProgramUsageCount();
+    glpStopProgramUsageCount();
   } else if (message.type == "resetProgramUsageCount") {
-    resetProgramUsageCount();
+    glpResetProgramUsageCount();
   } else if (message.type == "getProgramUsageCount") {
-    getCurrentProgramUsageCount();
+    glpGetCurrentProgramUsageCount();
   } else if (message.type == "toggleDuplicateProgramUsage") {
-    toggleDuplicateProgramUsage(message.data.enabled);
+    glpToggleDuplicateProgramUsage(message.data.enabled);
   } else if (message.type == "getDuplicateProgramUse") {
-    getDuplicateProgramUsage();
+    glpGetDuplicateProgramUsage();
   } else {
     console.log(message.data);
   }
@@ -213,7 +213,6 @@ var glpFcnBindings = {
         var program = args[0];
 
         if (this.glpProgramDuplicateDetectionEnabled) {
-          var lineNumber = 100; // TODO actually calculate the line number that calls this function
           var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
           if( currentProgram != undefined &&
               currentProgram.__uuid != undefined &&
@@ -249,7 +248,9 @@ var glpFcnBindings = {
         }
 
         if (this.glpProgramUsageCounterEnabled) {
-          this.glpProgramUsageCountProgramUsages[program.__uuid]++;
+          if (this.glpProgramUsageCountProgramUsages[program.__uuid] != undefined) {
+            this.glpProgramUsageCountProgramUsages[program.__uuid]++;
+          } // else happens when they didn't call create program, which shouldn't happen
         }
 
         return retVal;
@@ -276,11 +277,7 @@ var glpFcnBindings = {
       var program = original.apply(this, args);
       program.__uuid = guid();
 
-      // TODO we might want to figure out how to not collect this all the time if
-      // feature is not enabled. For now we have to because createProgram is usually
-      // called at the beginning of a WebGL application. Hence, if we only enable it
-      // in a timestep in the application, we will get undefined for these programs that
-      // were created at the beginning.
+      // If the user creates the program but never uses it, we want to return a 0
       this.glpProgramUsageCountProgramUsages[program.__uuid] = 0;
 
       return program;
@@ -356,7 +353,7 @@ function glpGetWebGLActiveContext() {
 }
 
 // TODO (Dian) rename this so it doesn't collide with webglContext.programUsageCount
-function beginProgramUsageCount() {
+function glpBeginProgramUsageCount() {
   var context = glpGetWebGLActiveContext();
 
   if (!context)
@@ -365,7 +362,7 @@ function beginProgramUsageCount() {
   context.glpBeginProgramUsageCount();
 }
 
-function stopProgramUsageCount() {
+function glpStopProgramUsageCount() {
   var context = glpGetWebGLActiveContext();
 
   if (!context)
@@ -374,7 +371,7 @@ function stopProgramUsageCount() {
   context.glpStopProgramUsageCount();
 }
 
-function resetProgramUsageCount() {
+function glpResetProgramUsageCount() {
   var context = glpGetWebGLActiveContext();
 
   if (!context)
@@ -383,7 +380,7 @@ function resetProgramUsageCount() {
   context.glpResetProgramUsageCount();
 }
 
-function getCurrentProgramUsageCount() {
+function glpGetCurrentProgramUsageCount() {
   var context = glpGetWebGLActiveContext();
 
   if (!context)
@@ -392,7 +389,7 @@ function getCurrentProgramUsageCount() {
   context.glpGetCurrentProgramUsageCount();
 }
 
-function toggleDuplicateProgramUsage(enabled) {
+function glpToggleDuplicateProgramUsage(enabled) {
   var context = glpGetWebGLActiveContext();
 
   if (!context)
@@ -405,7 +402,7 @@ function toggleDuplicateProgramUsage(enabled) {
   }
 }
 
-function getDuplicateProgramUsage() {
+function glpGetDuplicateProgramUsage() {
   var context = glpGetWebGLActiveContext();
 
   if (!context)
@@ -491,15 +488,6 @@ WebGLRenderingContext.prototype.glpProgramUniformLocations = {};
 WebGLRenderingContext.prototype.glpPixelInspectorOriginalPrograms = {};
 WebGLRenderingContext.prototype.glpPixelInspectorLocationMap = {};
 WebGLRenderingContext.prototype.pixelInspectorEnabled = false;
-
-// Program usage count variables
-WebGLRenderingContext.prototype.glpProgramUsageCountProgramUsages = {}; // program.__uuid : usage
-WebGLRenderingContext.prototype.glpProgramUsageCounterEnabled = false;
-
-// Duplicate program detection variables
-WebGLRenderingContext.prototype.glpProgramDuplicateDetectionEnabled = false;
-WebGLRenderingContext.prototype.glpProgramDuplicatesList = []; // list of { repeatedProgram : lineNumber }
-
 
 /**
  * Applies uniform to WebGL context
@@ -619,48 +607,6 @@ WebGLRenderingContext.prototype.glpEnablePixelInspector = function() {
     this.pixelInspectorEnabled = true;
 }
 
-WebGLRenderingContext.prototype.glpBeginProgramUsageCount = function() {
-  this.glpProgramUsageCounterEnabled = true;
-}
-
-WebGLRenderingContext.prototype.glpResetProgramUsageCount = function() {
-  this.glpProgramUsageCountProgramUsages = {};
-}
-
-WebGLRenderingContext.prototype.glpStopProgramUsageCount = function() {
-  this.glpProgramUsageCounterEnabled = false;
-}
-
-/**
- * Enables duplicate program usage detection
- */
-WebGLRenderingContext.prototype.glpEnableDuplicateProgramUsage = function() {
-  this.glpProgramDuplicateDetectionEnabled = true;
-}
-
-/**
- * Disables duplicate program usage detection
- */
-WebGLRenderingContext.prototype.glpDisableDuplicateProgramUsage = function() {
-  this.glpProgramDuplicateDetectionEnabled = false;
-  this.glpProgramDuplicatesList.length = 0;
-}
-
-/**
- * Gets duplicate programs list from the time that enable is called
- * Sends duplicated program list to the front end
- */
-WebGLRenderingContext.prototype.glpGetDuplicateProgramUsage = function() {
-  glpSendMessage("getDuplicateProgramUsage", {"duplicateProgramUses": JSON.stringify(this.glpProgramDuplicatesList)})
-}
-
-/**
- * Gets the current program usage count since the last glpResetProgramUsageCount call
- * @return a map from WebGLProgram to count
- **/
-WebGLRenderingContext.prototype.glpGetCurrentProgramUsageCount = function() {
-  glpSendMessage("getProgramUsageCount", {"programUsageCount": JSON.stringify(this.glpProgramUsageCountProgramUsages)})
-}
 /**
  * Disable the pixel inspector and returns the appropriate fragment shader
  * @return {WebGLShader} Pixel Inspector Shader
@@ -766,6 +712,58 @@ WebGLRenderingContext.prototype.glpGetPixelInspectFragShader = function() {
     this.compileShader(pixelInspectFragShader);
 
     return pixelInspectFragShader;
+}
+
+// Program usage count variables
+WebGLRenderingContext.prototype.glpProgramUsageCountProgramUsages = {}; // program.__uuid : usage
+WebGLRenderingContext.prototype.glpProgramUsageCounterEnabled = false;
+
+WebGLRenderingContext.prototype.glpBeginProgramUsageCount = function() {
+  this.glpProgramUsageCounterEnabled = true;
+}
+
+WebGLRenderingContext.prototype.glpResetProgramUsageCount = function() {
+  this.glpProgramUsageCountProgramUsages = {};
+}
+
+WebGLRenderingContext.prototype.glpStopProgramUsageCount = function() {
+  this.glpProgramUsageCounterEnabled = false;
+}
+
+
+// Duplicate program detection variables
+WebGLRenderingContext.prototype.glpProgramDuplicateDetectionEnabled = false;
+WebGLRenderingContext.prototype.glpProgramDuplicatesList = []; // list of { repeatedProgram : lineNumber }
+
+/**
+ * Enables duplicate program usage detection
+ */
+WebGLRenderingContext.prototype.glpEnableDuplicateProgramUsage = function() {
+  this.glpProgramDuplicateDetectionEnabled = true;
+}
+
+/**
+ * Disables duplicate program usage detection
+ */
+WebGLRenderingContext.prototype.glpDisableDuplicateProgramUsage = function() {
+  this.glpProgramDuplicateDetectionEnabled = false;
+  this.glpProgramDuplicatesList.length = 0;
+}
+
+/**
+ * Gets duplicate programs list from the time that enable is called
+ * Sends duplicated program list to the front end
+ */
+WebGLRenderingContext.prototype.glpGetDuplicateProgramUsage = function() {
+  glpSendMessage("getDuplicateProgramUsage", {"duplicateProgramUses": JSON.stringify(this.glpProgramDuplicatesList)})
+}
+
+/**
+ * Gets the current program usage count since the last glpResetProgramUsageCount call
+ * @return a map from WebGLProgram to count
+ **/
+WebGLRenderingContext.prototype.glpGetCurrentProgramUsageCount = function() {
+  glpSendMessage("getProgramUsageCount", {"programUsageCount": JSON.stringify(this.glpProgramUsageCountProgramUsages)})
 }
 
 function guid() {
