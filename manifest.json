@@ -3,7 +3,7 @@
   "description": "Helpful tools for WebGL development",
   "manifest_version": 2,
   "version": "1.0",
-  "web_accessible_resources": ["main.js"],
+  "web_accessible_resources": ["switch.js", "main.js"],
   "devtools_page": "devtools.html",
   "background": {
     "scripts": ["background.js"]

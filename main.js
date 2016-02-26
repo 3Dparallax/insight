@@ -159,7 +159,7 @@ var glpFcnBindings = {
     },
     enable: function(original, args, name) {
         // glpPixelInspector: save BLEND and DEPTH_TEST state
-        if (this.pixelInspectorEnabled) {
+        if (this.glpPixelInspectorEnabled) {
           if (args[0] == this.DEPTH_TEST) {
             this.glpPixelInspectorDepthTest = true;
             return;
@@ -173,7 +173,7 @@ var glpFcnBindings = {
     },
     disable: function(original, args, name) {
         // glpPixelInspector: save BLEND and DEPTH_TEST state
-        if (this.pixelInspectorEnabled) {
+        if (this.glpPixelInspectorEnabled) {
           if (args[0] == this.DEPTH_TEST) {
             this.glpPixelInspectorDepthTest = false;
             return;
@@ -188,7 +188,7 @@ var glpFcnBindings = {
     blendFunc: function(original, args, name) {
         // glpPixelInspector: save blendFunc state
         // TODO: verify valid input
-        if (this.pixelInspectorEnabled) {
+        if (this.glpPixelInspectorEnabled) {
             this.glpPixelInspectorBlendFuncSFactor = args[0];
             this.glpPixelInspectorBlendFuncDFactor = args[1];
             return;
@@ -199,7 +199,7 @@ var glpFcnBindings = {
     clearColor: function(original, args, name) {
         // glpPixelInspector: save clear color state
         // TODO: verify valid input
-        if (this.pixelInspectorEnabled) {
+        if (this.glpPixelInspectorEnabled) {
           this.glpPixelInspectorClearColor = args;
           return;
         }
@@ -243,7 +243,7 @@ var glpFcnBindings = {
 
         var retVal = original.apply(this, args);
 
-        if (this.pixelInspectorEnabled && this.glpPixelInspectorPrograms.indexOf(program.__uuid) < 0) {
+        if (this.glpPixelInspectorEnabled && this.glpPixelInspectorPrograms.indexOf(program.__uuid) < 0) {
           this.glpSwitchToPixelInspectorProgram()
         }
 
@@ -256,7 +256,7 @@ var glpFcnBindings = {
         return retVal;
     },
     getUniform: function(original, args, name) {
-      if (this.pixelInspectorEnabled) {
+      if (this.glpPixelInspectorEnabled) {
         var program = args[0];
         var location = args[1];
         if (this.glpPixelInspectorPrograms.indexOf(program.__uuid) >= 0) {
@@ -303,7 +303,7 @@ var glpFcnBindings = {
 }
 
 var glpUniformFcn = function(original, args, name) {
-  if (this.pixelInspectorEnabled) {
+  if (this.glpPixelInspectorEnabled) {
     if (args[0] && this.glpPixelInspectorPrograms.indexOf(this.getParameter(this.CURRENT_PROGRAM).__uuid) >= 0) {
       args[0] = this.glpPixelInspectorLocationMap[this.getParameter(this.CURRENT_PROGRAM).__uuid][args[0].__uuid];
     }
@@ -487,101 +487,79 @@ WebGLRenderingContext.prototype.glpPixelInspectorProgramsMap = {};
 WebGLRenderingContext.prototype.glpProgramUniformLocations = {};
 WebGLRenderingContext.prototype.glpPixelInspectorOriginalPrograms = {};
 WebGLRenderingContext.prototype.glpPixelInspectorLocationMap = {};
-WebGLRenderingContext.prototype.pixelInspectorEnabled = false;
+WebGLRenderingContext.prototype.glpPixelInspectorEnabled = false;
 
 /**
  * Applies uniform to WebGL context
  */
-WebGLRenderingContext.prototype.glpApplyUniform = function applyUniform(uniform) {
-    var loc = uniform.loc;
-    var type = uniform.type;
-    var value = uniform.value;
-    if (type == this.FLOAT) {
-      this.uniform1f(loc, value);
-      return;
-    }
-    if (type == this.FLOAT_VEC2) {
-      this.uniform2fv(loc, value);
-      return;
-    }
-    if (type == this.FLOAT_VEC3) {
-      this.uniform3fv(loc, value);
-      return;
-    }
-    if (type == this.FLOAT_VEC4) {
-      this.uniform4fv(loc, value);
-      return;
-    }
-    if (type == this.INT) {
-      this.uniform1i(loc, value);
-      return;
-    }
-    if (type == this.INT_VEC2) {
-      this.uniform2iv(loc, value);
-      return;
-    }
-    if (type == this.INT_VEC3) {
-      this.uniform3iv(loc, value);
-      return;
-    }
-    if (type == this.INT_VEC4) {
-      this.uniform4iv(loc, value);
-      return;
-    }
-    if (type == this.BOOL) {
-      this.uniform1i(loc, value);
-      return;
-    }
-    if (type == this.BOOL_VEC2) {
-      this.uniform2iv(loc, value);
-      return;
-    }
-    if (type == this.BOOL_VEC3) {
-      this.uniform3iv(loc, value);
-      return;
-    }
-    if (type == this.BOOL_VEC4) {
-      this.uniform4iv(loc, value);
-      return;
-    }
-    if (type == this.FLOAT_MAT2) {
-      this.uniformMatrix2fv(loc, false, value);
-      return;
-    }
-    if (type == this.FLOAT_MAT3) {
-      this.uniformMatrix3fv(loc, false, value);
-      return;
-    }
-    if (type == this.FLOAT_MAT4) {
-      this.uniformMatrix4fv(loc, false, value);
-      return;
-    }
-    if (type == this.SAMPLER_2D || type == this.SAMPLER_CUBE) {
-      this.uniform1i(loc, value);
-      return;
-    }
+WebGLRenderingContext.prototype.glpApplyUniform = function (uniform) {
+  var loc = uniform.loc;
+  var type = uniform.type;
+  var value = uniform.value;
+  if (type == this.FLOAT) {
+    this.uniform1f(loc, value);
+    return;
   }
-
-/**
- * Returns the appropriate pixel inspector program
- * @param {WebGLProgram} Original Program
- * @return {WebGLProgram.__uuid} Pixel Inspector Progam
- */
-WebGLRenderingContext.prototype.glpGetPixelInspectorProgram = function(originalProgram) {
-  if (originalProgram.__uuid in this.glpPixelInspectorProgramsMap) {
-      return this.glpPixelInspectorProgramsMap[originalProgram.__uuid];
+  if (type == this.FLOAT_VEC2) {
+    this.uniform2fv(loc, value);
+    return;
   }
-
-  var program = this.createProgram();
-
-  this.attachShader(program, this.glpVertexShaders[originalProgram.__uuid]);
-  this.attachShader(program, this.glpGetPixelInspectFragShader());
-  this.linkProgram(program);
-
-  this.glpPixelInspectorPrograms.push(program.__uuid);
-  this.glpPixelInspectorProgramsMap[originalProgram.__uuid] = program;
-
-  return program;
+  if (type == this.FLOAT_VEC3) {
+    this.uniform3fv(loc, value);
+    return;
+  }
+  if (type == this.FLOAT_VEC4) {
+    this.uniform4fv(loc, value);
+    return;
+  }
+  if (type == this.INT) {
+    this.uniform1i(loc, value);
+    return;
+  }
+  if (type == this.INT_VEC2) {
+    this.uniform2iv(loc, value);
+    return;
+  }
+  if (type == this.INT_VEC3) {
+    this.uniform3iv(loc, value);
+    return;
+  }
+  if (type == this.INT_VEC4) {
+    this.uniform4iv(loc, value);
+    return;
+  }
+  if (type == this.BOOL) {
+    this.uniform1i(loc, value);
+    return;
+  }
+  if (type == this.BOOL_VEC2) {
+    this.uniform2iv(loc, value);
+    return;
+  }
+  if (type == this.BOOL_VEC3) {
+    this.uniform3iv(loc, value);
+    return;
+  }
+  if (type == this.BOOL_VEC4) {
+    this.uniform4iv(loc, value);
+    return;
+  }
+  if (type == this.FLOAT_MAT2) {
+    this.uniformMatrix2fv(loc, false, value);
+    return;
+  }
+  if (type == this.FLOAT_MAT3) {
+    this.uniformMatrix3fv(loc, false, value);
+    return;
+  }
+  if (type == this.FLOAT_MAT4) {
+    this.uniformMatrix4fv(loc, false, value);
+    return;
+  }
+  if (type == this.SAMPLER_2D || type == this.SAMPLER_CUBE) {
+    this.uniform1i(loc, value);
+    return;
+  }
 }
 
 /**
@@ -604,7 +582,7 @@ WebGLRenderingContext.prototype.glpEnablePixelInspector = function() {
 
     this.glpSwitchToPixelInspectorProgram();
 
-    this.pixelInspectorEnabled = true;
+    this.glpPixelInspectorEnabled = true;
 }
 
 /**
@@ -612,10 +590,10 @@ WebGLRenderingContext.prototype.glpEnablePixelInspector = function() {
  * @return {WebGLShader} Pixel Inspector Shader
  */
 WebGLRenderingContext.prototype.glpDisablePixelInspector = function() {
-    if (!this.pixelInspectorEnabled) {
+    if (!this.glpPixelInspectorEnabled) {
       return;
     }
-    this.pixelInspectorEnabled = false;
+    this.glpPixelInspectorEnabled = false;
 
     if (!this.glpPixelInspectorBlendProp) {
       this.disable(this.BLEND);
@@ -639,20 +617,6 @@ WebGLRenderingContext.prototype.glpDisablePixelInspector = function() {
       this.useProgram(newProgram);
       this.glpCopyUniforms(currentProgram, newProgram);
     }
-}
-
-/**
- * Swaps the current program and copies over location and attribute data
- */
-WebGLRenderingContext.prototype.glpSwitchToPixelInspectorProgram = function() {
-  var oldProgram = this.getParameter(this.CURRENT_PROGRAM);
-  var program = this.glpGetPixelInspectorProgram(oldProgram);
-
-  this.useProgram(program);
-  this.glpPixelInspectorOriginalPrograms[program.__uuid] = oldProgram;
-  this.glpCopyUniforms(oldProgram, program);
-  this.glpCopyAttributes(oldProgram, program);
-  // TODO: Swap attributes!
 }
 
 /**
@@ -697,22 +661,6 @@ WebGLRenderingContext.prototype.glpCopyAttributes = function(oldProgram, program
   }
 }
 
-/**
- * Returns the pixel inspector fragment shader
- * @return {WebGLShader} Pixel Inspector Fragment Shader
- */
-WebGLRenderingContext.prototype.glpGetPixelInspectFragShader = function() {
-    var pixelInspectFragShader = this.createShader(this.FRAGMENT_SHADER);
-    var shaderStr = 'precision mediump float;' +
-        'void main(void) {' +
-            'gl_FragColor = vec4(1.0, 0.0, 0.0, 0.10);' +
-        '}';
-
-    this.shaderSource(pixelInspectFragShader, shaderStr);
-    this.compileShader(pixelInspectFragShader);
-
-    return pixelInspectFragShader;
-}
 
 // Program usage count variables
 WebGLRenderingContext.prototype.glpProgramUsageCountProgramUsages = {}; // program.__uuid : usage

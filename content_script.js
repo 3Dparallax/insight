@@ -1,10 +1,17 @@
-// From: http://stackoverflow.com/questions/9515704/building-a-chrome-extension-inject-code-in-a-page-using-a-content-script
-var s = document.createElement('script');
-s.src = chrome.extension.getURL('main.js');
-s.onload = function() {
-    this.parentNode.removeChild(this);
-};
-(document.head || document.documentElement).appendChild(s);
+// Note: Files are appended in order
+appendFiles(["switch.js", "main.js"])
+
+function appendFiles(files) {
+  for (var i=0; i<files.length; i++) {
+    // From: http://stackoverflow.com/questions/9515704/building-a-chrome-extension-inject-code-in-a-page-using-a-content-script
+    var s = document.createElement('script');
+    s.src = chrome.extension.getURL(files[i]);
+    s.onload = function() {
+      this.parentNode.removeChild(this);
+    };
+    (document.head || document.documentElement).appendChild(s);
+  }
+}
 
 // From: https://developer.chrome.com/extensions/devtools#injecting
 // Use window events to send messages between content script and main.js
