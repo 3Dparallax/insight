@@ -118,7 +118,12 @@ var glpFcnBindings = {
             console.log("Function Call: " + name)
         }
         if (this.glpCallstackEnabled) {
-            var callDetails = [name, JSON.stringify(args), window.performance.now()];
+          var d = new Date();
+          var timeString = d.getHours() + ":"
+              + ('00'+d.getMinutes()).substring(d.getMinutes().toString().length) + ":"
+              + ('00'+d.getSeconds()).substring(d.getSeconds().toString().length) + "."
+              + ('000'+d.getMilliseconds()).substring(d.getMilliseconds().toString().length);
+            var callDetails = [name, JSON.stringify(args), window.performance.now(), timeString];
 
             if (this.glpMostRecentCalls.length > this.glpCallstackMaxSize) {
                 this.glpMostRecentCalls.shift();
@@ -143,11 +148,15 @@ var glpFcnBindings = {
         var ret = original.apply(this, args);
         if (this.glpCallstackEnabled) {
           var endTime = window.performance.now();
-          if (this.glpCallsSinceDraw.length > 1) {
-            var lastInStack = this.glpCallsSinceDraw[this.glpCallsSinceDraw.length - 1];
-            if(lastInStack[0] == name) {
-              lastInStack[2] = (endTime - lastInStack[2]) * 1000
+          if (this.glpCallsSinceDraw.length > 0) {
+            var i = this.glpCallsSinceDraw.length - 1
+            // Most of the time we just need to update the last element on the stack,
+            // but there are rare cases of nesting where we have to trace backwards
+            while (i > 0 && this.glpCallsSinceDraw[i][0] != name) {
+              i--;
             }
+            // "| 0" truncates to an int.  "+ 0.5" is for rounding
+            this.glpCallsSinceDraw[i][2] = (((endTime - this.glpCallsSinceDraw[i][2]) * 1000) + 0.5) | 0
           }
         }
         return ret;

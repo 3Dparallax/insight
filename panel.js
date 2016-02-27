@@ -15,13 +15,21 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         while (callStackTable.firstChild) {
             callStackTable.removeChild(callStackTable.firstChild);
         }
-        var callStackInnerHTML = "<tr><th>Function</th><th>Duration(&mu;s)</th><th>Arguments</th></tr>";
+        var callStackInnerHTML = "<tr><th>Execution Time</th><th>Function</th><th>Duration(&mu;s)</th><th>Arguments</th></tr>";
         for (var i = 0; i < msg.data.functionNames.length; i++) {
             console.log(msg.data.functionNames[i]);
-            var functionName = msg.data.functionNames[i][0]
-            var functionArgs = msg.data.functionNames[i][1]
-            var functionDuration = msg.data.functionNames[i][2]
-            callStackInnerHTML += "<tr>";
+            var functionName = msg.data.functionNames[i][0];
+            var functionArgs = msg.data.functionNames[i][1];
+            var functionDuration = msg.data.functionNames[i][2];
+            var functionTimeOfExecution = msg.data.functionNames[i][3];
+            var rowClass = "callStack";
+            if (i > 0 && i < msg.data.functionNames.length - 1
+                && (msg.data.functionNames[i][0] == msg.data.functionNames[i - 1][0] ||
+                    msg.data.functionNames[i][0] == msg.data.functionNames[i + 1][0])) {
+                rowClass = "callStackRepeated";
+            }
+            callStackInnerHTML += "<tr class=\"" + rowClass +"\">";
+            callStackInnerHTML += "<td style=\"border-right:1px solid\">" + functionTimeOfExecution + "</td>";
             callStackInnerHTML += "<td>" + functionName + "</td>";
             callStackInnerHTML += "<td>" + functionDuration + "</td>";
             callStackInnerHTML += "<td>" + functionArgs + "</td>";
