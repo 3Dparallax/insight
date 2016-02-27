@@ -11,9 +11,23 @@ backgroundPageConnection.postMessage({
 backgroundPageConnection.onMessage.addListener(function(msg) {
     if (msg.type == "CallStack") {
         console.log(msg.data.functionNames.length);
+        var callStackTable = document.getElementById("callStackTable");
+        while (callStackTable.firstChild) {
+            callStackTable.removeChild(callStackTable.firstChild);
+        }
+        var callStackInnerHTML = "<tr><th>Function</th><th>Duration(&mu;s)</th><th>Arguments</th></tr>";
         for (var i = 0; i < msg.data.functionNames.length; i++) {
             console.log(msg.data.functionNames[i]);
+            var functionName = msg.data.functionNames[i][0]
+            var functionArgs = msg.data.functionNames[i][1]
+            var functionDuration = msg.data.functionNames[i][2]
+            callStackInnerHTML += "<tr>";
+            callStackInnerHTML += "<td>" + functionName + "</td>";
+            callStackInnerHTML += "<td>" + functionDuration + "</td>";
+            callStackInnerHTML += "<td>" + functionArgs + "</td>";
+            callStackInnerHTML += "</tr>";
         }
+        callStackTable.innerHTML = callStackInnerHTML;
     } else if (msg.type == "getProgramUsageCount") {
         for( var programUsage in msg.data.programUsageCount ) {
             console.log(msg.data.programUsageCount[programUsage]);
