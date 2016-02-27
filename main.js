@@ -118,7 +118,7 @@ var glpFcnBindings = {
             console.log("Function Call: " + name)
         }
         if (this.glpCallstackEnabled) {
-            var callDetails = [name, JSON.stringify(args)];
+            var callDetails = [name, JSON.stringify(args), window.performance.now()];
 
             if (this.glpMostRecentCalls.length > this.glpCallstackMaxSize) {
                 this.glpMostRecentCalls.shift();
@@ -140,7 +140,17 @@ var glpFcnBindings = {
             this.glpFunctionHistogram[name] += 1;
           }
         }
-        return original.apply(this, args);
+        var ret = original.apply(this, args);
+        if (this.glpCallstackEnabled) {
+          var endTime = window.performance.now();
+          if (this.glpCallsSinceDraw.length > 1) {
+            var lastInStack = this.glpCallsSinceDraw[this.glpCallsSinceDraw.length - 1];
+            if(lastInStack[0] == name) {
+              lastInStack[2] = (endTime - lastInStack[2]) * 1000
+            }
+          }
+        }
+        return ret;
     },
     attachShader : function(original, args, name) {
         var program = args[0];
