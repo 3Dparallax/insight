@@ -121,12 +121,14 @@ var glpFcnBindings = {
             var callDetails = [name, JSON.stringify(args)];
 
             if (this.glpMostRecentCalls.length > this.glpCallstackMaxSize) {
-                this.glpMostRecentCalls.shift();
+              this.glpMostRecentCalls.shift();
             }
             this.glpMostRecentCalls.push(callDetails);
 
-            if (name == "drawElements" || name == "drawArrays") {
-                this.glpCallsSinceDraw = [];
+            var lastFunction = this.glpCallsSinceDraw[this.glpCallsSinceDraw.length - 1];
+            if (lastFunction &&
+                (lastFunction[0] == "drawElements" || lastFunction[0] == "drawArrays")) {
+              this.glpCallsSinceDraw = [];
             }
             this.glpCallsSinceDraw.push(callDetails);
         }
