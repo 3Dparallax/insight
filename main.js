@@ -125,13 +125,10 @@ var glpFcnBindings = {
             }
             this.glpMostRecentCalls.push(callDetails);
 
-            if (this.glpLastCallWasDraw) {
+            var lastFunction = this.glpCallsSinceDraw[this.glpCallsSinceDraw.length - 1];
+            if (lastFunction &&
+                (lastFunction[0] == "drawElements" || lastFunction[0] == "drawArrays")) {
               this.glpCallsSinceDraw = [];
-            }
-            if (name == "drawElements" || name == "drawArrays") {
-              this.glpLastCallWasDraw = true;
-            } else {
-              this.glpLastCallWasDraw = false;
             }
             this.glpCallsSinceDraw.push(callDetails);
         }
