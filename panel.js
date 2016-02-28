@@ -10,10 +10,7 @@ backgroundPageConnection.postMessage({
 
 backgroundPageConnection.onMessage.addListener(function(msg) {
     if (msg.type == "CallStack") {
-        console.log(msg.data.functionNames.length);
-        for (var i = 0; i < msg.data.functionNames.length; i++) {
-            console.log(msg.data.functionNames[i]);
-        }
+        displayCallStack(msg.data.functionNames);
     } else if (msg.type == "getProgramUsageCount") {
         for( var programUsage in msg.data.programUsageCount ) {
             console.log(msg.data.programUsageCount[programUsage]);
@@ -72,10 +69,35 @@ function getMostRecentCalls(e) {
     sendMessage("callStackRequest", "mostRecentCalls");
 }
 
-
-// Program Usage Count
-
 document.getElementById("mostRecentCalls").addEventListener("click", getMostRecentCalls);
+
+function displayCallStack(callStack) {
+    var callStackTable = document.getElementById("callStackTable");
+    while (callStackTable.firstChild) {
+        callStackTable.removeChild(callStackTable.firstChild);
+    }
+    var callStackInnerHTML = "<tr><th>Execution Time</th><th>Function</th><th>Duration(&mu;s)</th><th>Arguments</th></tr>";
+    for (var i = 0; i < callStack.length; i++) {
+        console.log(callStack[i]);
+        var functionName = callStack[i][0];
+        var functionArgs = callStack[i][1];
+        var functionDuration = callStack[i][2];
+        var functionTimeOfExecution = callStack[i][3];
+        var rowClass = "callStack";
+        if (i > 0 && i < callStack.length - 1
+            && (callStack[i][0] == callStack[i - 1][0] ||
+                callStack[i][0] == callStack[i + 1][0])) {
+            rowClass = "callStackRepeated";
+        }
+        callStackInnerHTML += "<tr class=\"" + rowClass +"\">";
+        callStackInnerHTML += "<td style=\"border-right:1px solid\">" + functionTimeOfExecution + "</td>";
+        callStackInnerHTML += "<td>" + functionName + "</td>";
+        callStackInnerHTML += "<td>" + functionDuration + "</td>";
+        callStackInnerHTML += "<td>" + functionArgs + "</td>";
+        callStackInnerHTML += "</tr>";
+    }
+    callStackTable.innerHTML = callStackInnerHTML;
+}
 
 function getFunctionHistogram(e) {
     sendMessage("functionHistogramRequest", {threshold: 10});
@@ -101,6 +123,9 @@ function displayHistogram(histogram) {
 }
 
 document.getElementById("functionHistogram").addEventListener("click", getFunctionHistogram);
+
+
+// Program Usage Count
 
 function beginProgramUsageCount(e) {
     sendMessage("beginProgramUsageCount", "beginProgramUsageCount")

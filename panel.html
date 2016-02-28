@@ -1,5 +1,10 @@
 <html>
   <body>
+    <style>
+      tr.callStackRepeated {
+        color: red;
+      }
+    </style>
     <div>
         <input type="checkbox" id="pixelInspector">Enable Pixel Inspector</input>
         <button id="send">Send Test Message</button>
@@ -15,6 +20,10 @@
         <input type="checkbox" id="toggleDuplicateProgramUsage">Toggle Duplicate Program Detection</input>
         <button id="getDuplicateProgramUse">Get Used Duplicate Programs</button>
         <canvas id="myChart" width="600" height="400"></canvas>
+    </div>
+    <div>
+      <table id="callStackTable">
+      </table>
     </div>
     <script src="Chart.min.js"></script>
     <script src="panel.js"></script>
