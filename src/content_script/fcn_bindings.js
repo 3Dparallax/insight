@@ -121,33 +121,7 @@ var glpFcnBindings = {
         var program = args[0];
 
         if (this.glp.duplicateProgramDetection.enabled) {
-          var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
-          if( currentProgram != undefined &&
-              currentProgram.__uuid != undefined &&
-              currentProgram.__uuid == program.__uuid ) {
-            /*
-             * callStack gets the current call stack information up to this point
-             */
-            var callStack = glpGetStack();
-            var userStack = glpGetFirstUserStack(callStack);
-            var lineNumber = ""
-            var functionName = "";
-            if (userStack != null) {
-              lineNumber = userStack.getLineNumber();
-              // Sometimes the function name can be undefined if
-              // it's called from a global scope or from an object
-              if (userStack.getFunctionName() != undefined) {
-                functionName = userStack.getFunctionName()
-              }
-
-              fileName = userStack.getFileName();
-            }
-            this.glp.duplicateProgramDetection.duplicates.push(
-              {"programId" : program.__uuid,
-               "lineNumber" : lineNumber,
-               "functionName" : functionName,
-               "fileName" : fileName})
-          }
+          this.glp.duplicateProgramDetection.useProgramCalled(this, program);
         }
 
         var retVal = original.apply(this, args);
