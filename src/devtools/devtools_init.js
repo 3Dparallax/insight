@@ -1,6 +1,6 @@
 // Create a new panel
 chrome.devtools.panels.create("WebGL Insight",
   null,
-  "panel.html",
+  "src/devtools/panel.html",
   null
 );
