@@ -44,6 +44,8 @@ window.addEventListener('message', function(event) {
     glpToggleDuplicateProgramUsage(message.data.enabled);
   } else if (message.type == "getDuplicateProgramUse") {
     glpGetDuplicateProgramUsage();
+  } else if (message.type == "getContexts") {
+      glpSendMessage("contexts", {"contexts": glpGetWebGLContexts()})
   } else {
     console.log(message.data);
   }
@@ -62,15 +64,24 @@ function glpGetWebGLContexts() {
     var webGLContext = canvas.getContext("webgl");
     if (webGLContext == null) {
       continue;
+    } else if (webGLContext.__uuid == null) {
+      webGLContext.__uuid = guid();
     }
     contexts.push(webGLContext);
   }
   return contexts;
 }
 
-/**
- * TODO (gets different contexts for whatever UI we design it to be)
- */
+function glpGetWebGLContext(uuid) {
+  var contexts = glpGetWebGLContexts();
+  for (var i = 0; i < contexts.length; i++) {
+    if (contexts[i].__uuid == uuid) {
+      return contexts[i];
+    }
+  }
+  return null;
+}
+
 function glpGetWebGLActiveContext() {
   // TODO: Handle multiple contexts
   var contexts = glpGetWebGLContexts();
