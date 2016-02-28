@@ -3,10 +3,10 @@
   "description": "Helpful tools for WebGL development",
   "manifest_version": 2,
   "version": "1.0",
-  "web_accessible_resources": ["switch.js", "main.js"],
-  "devtools_page": "devtools.html",
+  "web_accessible_resources": ["src/content_script/switch.js", "src/content_script/main.js"],
+  "devtools_page": "src/devtools/devtools.html",
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["src/background_page/background_page_init.js"]
   },
   "permissions": [
         "tabs"
@@ -16,7 +16,7 @@
       "run_at": "document_start",
       "matches": ["<all_urls>"],
       "all_frames": true,
-      "js": ["content_script.js"]
+      "js": ["src/content_script/content_script_init.js"]
     }
   ],
   "content_security_policy": "default-src 'self' chrome-extension-resource: ; img-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval'; connect-src *; frame-src *;"
