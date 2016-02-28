@@ -1,10 +1,10 @@
 /**
  * Instantiates messaging with the devtools panel
  */
-function glpInit() {
+function _glpInit() {
     window.postMessage({ type: "init" }, "*");
 }
-glpInit();
+_glpInit();
 
 /**
  * Sends messages to the devtools panel
@@ -88,7 +88,7 @@ function glpBeginProgramUsageCount() {
   if (!context)
     return;
 
-  context.glpBeginProgramUsageCount();
+  context.glp.programUsageCounter.start();
 }
 
 function glpStopProgramUsageCount() {
@@ -97,7 +97,7 @@ function glpStopProgramUsageCount() {
   if (!context)
     return;
 
-  context.glpStopProgramUsageCount();
+  context.glp.programUsageCounter.stop();
 }
 
 function glpResetProgramUsageCount() {
@@ -106,7 +106,7 @@ function glpResetProgramUsageCount() {
   if (!context)
     return;
 
-  context.glpResetProgramUsageCount();
+  context.glp.programUsageCounter.reset();
 }
 
 function glpGetCurrentProgramUsageCount() {
@@ -115,7 +115,7 @@ function glpGetCurrentProgramUsageCount() {
   if (!context)
     return;
 
-  context.glpGetCurrentProgramUsageCount();
+  context.glp.programUsageCounter.sendUsages();
 }
 
 function glpToggleDuplicateProgramUsage(enabled) {
@@ -125,9 +125,9 @@ function glpToggleDuplicateProgramUsage(enabled) {
     return;
 
   if (enabled) {
-    context.glpEnableDuplicateProgramUsage();
+    context.glp.duplicateProgramDetection.enable();
   } else {
-    context.glpDisableDuplicateProgramUsage();
+    context.glp.duplicateProgramDetection.disable();
   }
 }
 
@@ -137,7 +137,7 @@ function glpGetDuplicateProgramUsage() {
   if (!context)
     return;
 
-  context.glpGetDuplicateProgramUsage();
+  context.glp.duplicateProgramDetection.sendDuplicates();
 }
 
 /**
