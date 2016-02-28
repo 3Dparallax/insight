@@ -1,6 +1,14 @@
 // Note: Files are appended in order
 var fileDirectory = "src/content_script/"
-appendFiles(["switch.js", "main.js"])
+appendFiles([
+  "program_usage.js",
+  "pixel_inspector.js",
+  "messaging.js",
+  "helpers.js",
+  "call_stack.js",
+  "fcn_bindings.js",
+  "bind.js",
+])
 
 function appendFiles(files) {
   for (var i=0; i<files.length; i++) {

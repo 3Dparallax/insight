@@ -3,7 +3,15 @@
   "description": "Helpful tools for WebGL development",
   "manifest_version": 2,
   "version": "1.0",
-  "web_accessible_resources": ["src/content_script/switch.js", "src/content_script/main.js"],
+  "web_accessible_resources": [
+    "src/content_script/bind.js",
+    "src/content_script/call_stack.js",
+    "src/content_script/fcn_bindings.js",
+    "src/content_script/helpers.js",
+    "src/content_script/messaging.js",
+    "src/content_script/pixel_inspector.js",
+    "src/content_script/program_usage.js"
+  ],
   "devtools_page": "src/devtools/devtools.html",
   "background": {
     "scripts": ["src/background_page/background_page_init.js"]
