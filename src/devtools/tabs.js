@@ -1,7 +1,8 @@
 var tabMap = {
     "tabBar-pixel-inspector": "pixelInspector",
     "tabBar-program-usage": "programUsage",
-    "tabBar-call-stack": "callStack"
+    "tabBar-call-stack": "callStack",
+    "tabBar-texture-viewer": "textureViewer",
 }
 
 var changeTab = function() {

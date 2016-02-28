@@ -46,6 +46,8 @@ window.addEventListener('message', function(event) {
     glpGetDuplicateProgramUsage();
   } else if (message.type == "getContexts") {
       glpSendMessage("contexts", {"contexts": glpGetWebGLContexts()})
+  } else if (message.type == "getTexture") {
+    glpGetTexture(message.data.index);
   } else {
     console.log(message.data);
   }
@@ -149,6 +151,16 @@ function glpGetDuplicateProgramUsage() {
     return;
 
   context.glp.duplicateProgramDetection.sendDuplicates();
+}
+
+function glpGetTexture(index) {
+  var context = glpGetWebGLActiveContext();
+
+  if (!context)
+    return;
+
+  context.glpUpdateTextureList();
+  context.glpGetTexture(index);
 }
 
 /**
