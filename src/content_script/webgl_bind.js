@@ -11,6 +11,8 @@ function _glpBind(origFunc, newFunc, name) {
     }
 }
 
+WebGLRenderingContext.prototype.glp = glp;
+
 /**
  * Bind WebGLRenderingContext functions to functions found in glpFcnBindings
  * If defined, functions are first bound the function found in glpFcnBindings

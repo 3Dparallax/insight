@@ -4,13 +4,15 @@
   "manifest_version": 2,
   "version": "1.0",
   "web_accessible_resources": [
-    "src/content_script/bind.js",
     "src/content_script/call_stack.js",
+    "src/content_script/duplicate_program_detection.js",
     "src/content_script/fcn_bindings.js",
     "src/content_script/helpers.js",
+    "src/content_script/insight.js",
     "src/content_script/messaging.js",
     "src/content_script/pixel_inspector.js",
-    "src/content_script/program_usage.js"
+    "src/content_script/program_usage_counter.js",
+    "src/content_script/webgl_bind.js"
   ],
   "devtools_page": "src/devtools/devtools.html",
   "background": {

@@ -1,13 +1,15 @@
 // Note: Files are appended in order
 var fileDirectory = "src/content_script/"
 appendFiles([
-  "program_usage.js",
+  "insight.js",
+  "program_usage_counter.js",
+  "duplicate_program_detection.js",
   "pixel_inspector.js",
   "messaging.js",
   "helpers.js",
   "call_stack.js",
   "fcn_bindings.js",
-  "bind.js",
+  "webgl_bind.js",
 ])
 
 function appendFiles(files) {

@@ -120,7 +120,7 @@ var glpFcnBindings = {
         // TODO: verify valid input
         var program = args[0];
 
-        if (this.glpProgramDuplicateDetectionEnabled) {
+        if (this.glp.duplicateProgramDetection.enabled) {
           var currentProgram = this.getParameter(this.CURRENT_PROGRAM);
           if( currentProgram != undefined &&
               currentProgram.__uuid != undefined &&
@@ -142,10 +142,11 @@ var glpFcnBindings = {
 
               fileName = userStack.getFileName();
             }
-            this.glpProgramDuplicatesList.push({"programId" : program.__uuid,
-                                                "lineNumber" : lineNumber,
-                                                "functionName" : functionName,
-                                                "fileName" : fileName})
+            this.glp.duplicateProgramDetection.duplicates.push(
+              {"programId" : program.__uuid,
+               "lineNumber" : lineNumber,
+               "functionName" : functionName,
+               "fileName" : fileName})
           }
         }
 
@@ -155,10 +156,12 @@ var glpFcnBindings = {
           this.glpSwitchToPixelInspectorProgram()
         }
 
-        if (this.glpProgramUsageCounterEnabled) {
-          if (this.glpProgramUsageCountProgramUsages[program.__uuid] != undefined) {
-            this.glpProgramUsageCountProgramUsages[program.__uuid]++;
-          } // else happens when they didn't call create program, which shouldn't happen
+        if (this.glp.programUsageCounter.enabled) {
+          if (this.glp.programUsageCounter.usages[program.__uuid] != undefined) {
+            this.glp.programUsageCounter.usages[program.__uuid] += 1;
+          } else {
+            this.glp.programUsageCounter.usages[program.__uuid] = 1;
+          }
         }
 
         return retVal;
@@ -184,10 +187,6 @@ var glpFcnBindings = {
     createProgram: function(original, args, name) {
       var program = original.apply(this, args);
       program.__uuid = guid();
-
-      // If the user creates the program but never uses it, we want to return a 0
-      this.glpProgramUsageCountProgramUsages[program.__uuid] = 0;
-
       return program;
     },
     getUniformLocation: function(original, args, name) {
