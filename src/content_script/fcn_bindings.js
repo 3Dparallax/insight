@@ -58,21 +58,21 @@ var glpFcnBindings = {
         // TODO: verify valid input
         // glpPixelInspector: store vertex shaders associated with program
         if (shaderType == this.VERTEX_SHADER) {
-          this.glpVertexShaders[program.__uuid] = shader;
+          this.glp.pixelInspector.vertexShaders[program.__uuid] = shader;
         } else {
-          this.glpFragmentShaders[program.__uuid] = shader;
+          this.glp.pixelInspector.fragmentShaders[program.__uuid] = shader;
         }
 
         return original.apply(this, args);
     },
     enable: function(original, args, name) {
         // glpPixelInspector: save BLEND and DEPTH_TEST state
-        if (this.glpPixelInspectorEnabled) {
+        if (this.glp.pixelInspector.enabled) {
           if (args[0] == this.DEPTH_TEST) {
-            this.glpPixelInspectorDepthTest = true;
+            this.glp.pixelInspector.depthTest = true;
             return;
           } else if (args[0] == this.BLEND) {
-            this.glpPixelInspectorBlendProp = true;
+            this.glp.pixelInspector.blendProp = true;
             return;
           }
         }
@@ -81,12 +81,12 @@ var glpFcnBindings = {
     },
     disable: function(original, args, name) {
         // glpPixelInspector: save BLEND and DEPTH_TEST state
-        if (this.glpPixelInspectorEnabled) {
+        if (this.glp.pixelInspector.enabled) {
           if (args[0] == this.DEPTH_TEST) {
-            this.glpPixelInspectorDepthTest = false;
+            this.glp.pixelInspector.depthTest = false;
             return;
           } else if (args[0] == this.BLEND) {
-            this.glpPixelInspectorBlendProp = false;
+            this.glp.pixelInspector.blendProp = false;
             return;
           }
         }
@@ -96,9 +96,9 @@ var glpFcnBindings = {
     blendFunc: function(original, args, name) {
         // glpPixelInspector: save blendFunc state
         // TODO: verify valid input
-        if (this.glpPixelInspectorEnabled) {
-            this.glpPixelInspectorBlendFuncSFactor = args[0];
-            this.glpPixelInspectorBlendFuncDFactor = args[1];
+        if (this.glp.pixelInspector.enabled) {
+            this.glp.pixelInspector.blendFuncSFactor = args[0];
+            this.glp.pixelInspector.blendFuncDFactor = args[1];
             return;
         }
 
@@ -107,8 +107,8 @@ var glpFcnBindings = {
     clearColor: function(original, args, name) {
         // glpPixelInspector: save clear color state
         // TODO: verify valid input
-        if (this.glpPixelInspectorEnabled) {
-          this.glpPixelInspectorClearColor = args;
+        if (this.glp.pixelInspector.enabled) {
+          this.glp.pixelInspector.clearColor = args;
           return;
         }
 
@@ -126,8 +126,8 @@ var glpFcnBindings = {
 
         var retVal = original.apply(this, args);
 
-        if (this.glpPixelInspectorEnabled && this.glpPixelInspectorPrograms.indexOf(program.__uuid) < 0) {
-          this.glpSwitchToPixelInspectorProgram()
+        if (this.glp.pixelInspector.enabled && this.glp.pixelInspector.programs.indexOf(program.__uuid) < 0) {
+          this.glp.pixelInspector.switchToProgram(this);
         }
 
         if (this.glp.programUsageCounter.enabled) {
@@ -141,13 +141,13 @@ var glpFcnBindings = {
         return retVal;
     },
     getUniform: function(original, args, name) {
-      if (this.glpPixelInspectorEnabled) {
+      if (this.glp.pixelInspector.enabled) {
         var program = args[0];
         var location = args[1];
-        if (this.glpPixelInspectorPrograms.indexOf(program.__uuid) >= 0) {
-          if (location in this.glpPixelInspectorLocationMap[program.__uuid]) {
+        if (this.glp.pixelInspector.programs.indexOf(program.__uuid) >= 0) {
+          if (location in this.glp.pixelInspector.locationMap[program.__uuid]) {
             // the program is the pixel inspector version and we're using the original location
-            args[1] = this.glpPixelInspectorLocationMap[program.__uuid][location.__uuid];
+            args[1] = this.glp.pixelInspector.locationMap[program.__uuid][location.__uuid];
           } else {
           }
         } else {
@@ -166,20 +166,20 @@ var glpFcnBindings = {
     getUniformLocation: function(original, args, name) {
       var program = args[0];
       var n = args[1];
-      if (!(program.__uuid in this.glpProgramUniformLocations)) {
-        this.glpProgramUniformLocations[program.__uuid] = {}
+      if (!(program.__uuid in this.glp.pixelInspector.programUniformLocations)) {
+        this.glp.pixelInspector.programUniformLocations[program.__uuid] = {}
       }
-      if (!(n in this.glpProgramUniformLocations[program.__uuid])) {
+      if (!(n in this.glp.pixelInspector.programUniformLocations[program.__uuid])) {
         var location = original.apply(this, args);
         if (!location) {
           return;
         }
         location.__uuid = guid();
-        this.glpProgramUniformLocations[program.__uuid][n] = location;
+        this.glp.pixelInspector.programUniformLocations[program.__uuid][n] = location;
         return location;
       }
 
-      return this.glpProgramUniformLocations[program.__uuid][n];
+      return this.glp.pixelInspector.programUniformLocations[program.__uuid][n];
     },
     createTexture : function(original, args, name) {
         var texture = original.apply(this, args);
@@ -191,9 +191,9 @@ var glpFcnBindings = {
 }
 
 var glpUniformFcn = function(original, args, name) {
-  if (this.glpPixelInspectorEnabled) {
-    if (args[0] && this.glpPixelInspectorPrograms.indexOf(this.getParameter(this.CURRENT_PROGRAM).__uuid) >= 0) {
-      args[0] = this.glpPixelInspectorLocationMap[this.getParameter(this.CURRENT_PROGRAM).__uuid][args[0].__uuid];
+  if (this.glp.pixelInspector.enabled) {
+    if (args[0] && this.glp.pixelInspector.programs.indexOf(this.getParameter(this.CURRENT_PROGRAM).__uuid) >= 0) {
+      args[0] = this.glp.pixelInspector.locationMap[this.getParameter(this.CURRENT_PROGRAM).__uuid][args[0].__uuid];
     }
   }
   return original.apply(this, args);
