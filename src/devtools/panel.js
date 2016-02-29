@@ -123,31 +123,23 @@ function displayHistogram(histogram) {
 function displayTexture(texture) {
     console.log("Displaying texture");
     var ctx = document.getElementById("textureCanvas").getContext("2d");
-    var imageData = ctx.getImageData(0, 0, 512, 512);
+    var imageData = ctx.getImageData(0, 0, 256, 256);
     imageData.data.set(texture.pixels);
     ctx.putImageData(imageData, 0, 0);
 }
 
 function updateTextureList(length) {
-    console.log("Update textures list");
-    var textureTable = document.getElementById("texturesTable");
+    var textureList = document.getElementById("textures-list");
+    textureList.innerHTML = ""
 
-    while (textureTable.firstChild) {
-        textureTable.removeChild(textureTable.firstChild);
-    }
-
-    var textureTableInnerHTML = "";
     for (var i = 0; i < length; i++) {
-        textureTableInnerHTML += "<tr>";
-        textureTableInnerHTML += "<td>" + "Texture" + i + "</td>";
-        textureTableInnerHTML += "</tr>";
-    }
-    textureTable.innerHTML = textureTableInnerHTML;
-
-    for (var i = 0; i < textureTable.rows.length; i++) {
-        textureTable.rows[i].onclick = function() {
-            var index = this.rowIndex + 1;
-            sendMessage(messageType.TEXTURE, { "index" : index } );
+        var textureElement = document.createElement("div");
+        textureElement.classList.add("texture-element");
+        textureElement.innerHTML = "Texture" + i;
+        textureElement.id = i;
+        textureList.appendChild(textureElement);
+        textureElement.onclick = function() {
+            sendMessage(messageType.TEXTURE, { "index" : this.id } );
         }
     }
 }

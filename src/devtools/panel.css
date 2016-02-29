@@ -1,50 +1,90 @@
-      tr.callStackRepeated {
-        color: red;
-      }
-      body {
-        margin: 0px;
-      }
-      .main {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-      .tabBar {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        height: 30px;
-        width: 100%;
-        border-bottom: solid rgb(204, 204, 204) 1px;
-        margin-bottom: 5px;
-        background-color: rgb(238, 238, 238);
-      }
-      .tabBar-element {
-        padding-left: 10px;
-        padding-right: 10px;
-        height: 30px;
-        line-height: 30px;
-      }
-      .tabBar-element:hover {
-        background-color: rgb(225, 225, 225);
-      }
-      .tabBar-element-enabled {
-        border-bottom: solid rgb(45, 134, 247) 1px;
-      }
-      .tab {
-        display: none;
-        visibility: hidden;
-      }
-      .tab-enabled {
-        flex: 1 1 auto;
-        display: block;
-        visibility: visible;
-      }
-      .contextBar {
-        height: 30px;
-        width: 100%;
-        background-color: rgb(238, 238, 238);
-        padding-left: 10px;
-        line-height: 30px;
-      }
+tr.callStackRepeated {
+  color: red;
+}
+body {
+  margin: 0px;
+}
+.no-context-hidden {
+  display: none !important;
+}
+#main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.main-hidden {
+  display: none !important;
+}
+.tabBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  height: 30px;
+  width: 100%;
+  border-bottom: solid rgb(204, 204, 204) 1px;
+  margin-bottom: 5px;
+  background-color: rgb(238, 238, 238);
+}
+.tabBar-element {
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 30px;
+  line-height: 30px;
+}
+.tabBar-element:hover {
+  background-color: rgb(225, 225, 225);
+}
+.tabBar-element-enabled {
+  border-bottom: solid rgb(45, 134, 247) 1px;
+}
+.tab {
+  display: none;
+  visibility: hidden;
+}
+.tab-enabled {
+  flex: 1 1 auto;
+  display: block;
+  visibility: visible;
+  overflow: scroll;
+  width: 100%;
+}
+#textureViewer {
+  align-items: center;
+  display: flex;
+}
+#textures-list {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  height: 50px;
+}
+.texture-element:hover {
+  cursor: pointer;
+}
+.textures-container {
+  flex: 1 1 auto;
+}
+#contextBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  height: 30px;
+  width: 100%;
+  background-color: rgb(238, 238, 238);
+  line-height: 30px;
+}
+.context-element {
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 30px;
+  line-height: 30px;
+}
+.context-element-enabled {
+  color: white !important;
+  background-color: rgb(57, 118, 225) !important;
+}
+.context-element:hover {
+  background-color: rgb(225, 225, 225);
+}
