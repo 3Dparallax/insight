@@ -3,6 +3,17 @@ glp.duplicateProgramDetection.enabled = false;
 glp.duplicateProgramDetection.duplicates = []; // list of { repeatedProgram : lineNumber }
 
 /**
+ * Toggles duplicate program usage detection
+ */
+glp.duplicateProgramDetection.toggle = function(enable) {
+    if (enabled) {
+      this.enable();
+    } else {
+      this.disable();
+    }
+}
+
+/**
  * Enables duplicate program usage detection
  */
 glp.duplicateProgramDetection.enable = function() {
@@ -44,12 +55,4 @@ glp.duplicateProgramDetection.useProgramCalled = function(gl, program) {
                           "functionName" : functionName,
                           "fileName" : fileName})
   }
-}
-
-/**
- * Gets duplicate programs list from the time that enable is called
- * Sends duplicated program list to the front end
- */
-glp.duplicateProgramDetection.sendDuplicates = function() {
-  glpSendMessage("getDuplicateProgramUsage", {"duplicateProgramUses": JSON.stringify(this.duplicates)})
 }
