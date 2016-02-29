@@ -19,6 +19,10 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         for( var duplicatedProgram in msg.data.duplicateProgramUses ) {
             // console.log(duplicatedProgram);
         }
+    } else if (msg.type == "Texture") {
+        displayTexture(msg.data);
+    } else if (msg.type == "Textures") {
+        updateTextureList(msg.data.length);
     }
 
     if (msg.type == "FunctionHistogram") {
@@ -122,6 +126,38 @@ function displayHistogram(histogram) {
     var myBarChart = new Chart(ctx).Bar(data, {});
 }
 
+function displayTexture(texture) {
+    console.log("Displaying texture");
+    var ctx = document.getElementById("textureCanvas").getContext("2d");
+    var imageData = ctx.getImageData(0, 0, 512, 512);
+    imageData.data.set(texture.pixels);
+    ctx.putImageData(imageData, 0, 0);
+}
+
+function updateTextureList(length) {
+    console.log("Update textures list");
+    var textureTable = document.getElementById("texturesTable");
+
+    while (textureTable.firstChild) {
+        textureTable.removeChild(textureTable.firstChild);
+    }
+
+    var textureTableInnerHTML = "";
+    for (var i = 0; i < length; i++) {
+        textureTableInnerHTML += "<tr>";
+        textureTableInnerHTML += "<td>" + "Texture" + i + "</td>";
+        textureTableInnerHTML += "</tr>";
+    }
+    textureTable.innerHTML = textureTableInnerHTML;
+
+    for (var i = 0; i < textureTable.rows.length; i++) {
+        textureTable.rows[i].onclick = function() {
+            var index = this.rowIndex + 1;
+            sendMessage("getTexture", { "index" : index } );
+        }
+    }
+}
+
 document.getElementById("functionHistogram").addEventListener("click", getFunctionHistogram);
 
 
@@ -164,3 +200,9 @@ function getDuplicateProgramUse(e) {
 }
 
 document.getElementById("getDuplicateProgramUse").addEventListener("click", getDuplicateProgramUse);
+
+function getTextures(e) {
+    sendMessage("getTexture", { "index" : "0" } );
+}
+
+document.getElementById("getTextures").addEventListener("click", getTextures);

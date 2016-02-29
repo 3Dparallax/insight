@@ -8,6 +8,7 @@
         <div class="tabBar-element tabBar-element-enabled" id="tabBar-pixel-inspector">Pixel Inspector</div>
         <div class="tabBar-element" id="tabBar-program-usage">Program Usage</div>
         <div class="tabBar-element" id="tabBar-call-stack">Call Stack</div>
+        <div class="tabBar-element" id="tabBar-texture-viewer">Textures</div>
       </div>
       <div class="tab tab-enabled" id="pixelInspector">
           <input type="checkbox" id="pixelInspector">Enable Pixel Inspector</input>
@@ -27,6 +28,20 @@
         <button id="functionHistogram">Get Histogram</button>
         <canvas id="myChart" width="600" height="400"></canvas>
         <table id="callStackTable"></table>
+      </div>
+      <div class="tab" id="textureViewer">
+        <button id="getTextures">Get Textures</button>
+        <table>
+          <tr>
+            <td style="width: 200px;">
+              <table id="texturesTable">
+              </table>
+            </td>
+            <td>
+              <canvas id="textureCanvas" width="512" height="512"></canvas>
+            </td>
+          </tr>
+        </table>
       </div>
       <div class="contextBar">
         Contexts

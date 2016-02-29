@@ -5,6 +5,7 @@ files = [
   "program_usage_counter.js",
   "duplicate_program_detection.js",
   "pixel_inspector.js",
+  "texture_viewer.js",
   "messaging.js",
   "helpers.js",
   "call_stack.js",

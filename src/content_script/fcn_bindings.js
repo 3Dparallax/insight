@@ -181,6 +181,13 @@ var glpFcnBindings = {
 
       return this.glpProgramUniformLocations[program.__uuid][n];
     },
+    createTexture : function(original, args, name) {
+        var texture = original.apply(this, args);
+        this.glpTextures.push(texture);
+        this.glpUpdateTextureList();
+        return texture;
+    },
+
 }
 
 var glpUniformFcn = function(original, args, name) {
