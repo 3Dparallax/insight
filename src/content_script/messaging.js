@@ -50,12 +50,12 @@ window.addEventListener('message', function(event) {
     context.glp.duplicateProgramDetection.toggle(message.data.enabled);
   } else if (message.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
     glp.messages.getDuplicateProgramUsage(context);
-  } else if (message.type == messageType.CONTEXTS) {
-    glpSendMessage(messageType.CONTEXTS, {"contexts": glp.messages.getWebGLContexts()})
+  } else if (message.type == messageType.GET_CONTEXTS) {
+    glpSendMessage(messageType.GET_CONTEXTS, {"contexts": JSON.stringify(glp.messages.getWebGLContexts())})
   } else if (message.type == messageType.TEXTURE) {
     glp.messages.getTexture(context, message.data.index);
   } else {
-    console.log(message.data);
+    console.log(message.type, message.data);
   }
 });
 
@@ -67,16 +67,31 @@ window.addEventListener('message', function(event) {
 glp.messages.getWebGLContexts = function() {
   var canvases = document.getElementsByTagName("canvas");
   var contexts = [];
+  var counter = 0;
   for (var i = 0; i < canvases.length; i++) {
     var canvas = canvases[i];
     var webGLContext = canvas.getContext("webgl");
     if (webGLContext == null) {
       continue;
-    } else if (webGLContext.__uuid == null) {
+    }
+
+    if (webGLContext.__uuid == null) {
       webGLContext.__uuid = guid();
     }
+
+    var name = null;
+    if (canvas.id) {
+      name = canvas.id;
+    } else if (canvas.className) {
+      name = canvas.className;
+    } else {
+      name = "canvas" + counter++;
+    }
+    webGLContext.__name = name;
+
     contexts.push(webGLContext);
   }
+
   return contexts;
 }
 

@@ -3,7 +3,11 @@
     <link rel="stylesheet" type="text/css" href="panel.css">
   </head>
   <body>
-    <div class="main">
+    <div id="no-context" class="no-context-hidden">
+      No Contexts Found
+      <button id="no-context-button">Refresh Contexts</button>
+    </div>
+    <div id="main" class="main-hidden">
       <div class="tabBar">
         <div class="tabBar-element tabBar-element-enabled" id="tabBar-pixel-inspector">Pixel Inspector</div>
         <div class="tabBar-element" id="tabBar-program-usage">Program Usage</div>
@@ -35,13 +39,13 @@
           <canvas id="textureCanvas" width="256" height="256"></canvas>
         </div>
       </div>
-      <div class="contextBar">
-        Contexts
+      <div id="contextBar">
       </div>
     </div>
     <script src="lib/Chart.min.js"></script>
     <script src="../shared/message_types.js"></script>
     <script src="panel.js"></script>
     <script src="tabs.js"></script>
+    <script src="context.js"></script>
   </body>
 </html>
