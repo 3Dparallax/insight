@@ -219,9 +219,9 @@ function glpPixelInspectorToggle(enabled) {
   for (var i = 0; i < contexts.length; i++) {
     var webGLContext = contexts[i];
     if (enabled) {
-      webGLContext.glpEnablePixelInspector();
+      webGLContext.glp.pixelInspector.enable(webGLContext);
     } else {
-      webGLContext.glpDisablePixelInspector();
+      webGLContext.glp.pixelInspector.disable(webGLContext);
     }
   }
 }
