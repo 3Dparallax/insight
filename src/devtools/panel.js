@@ -37,9 +37,9 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         return;
     }
 
-    var newdiv = document.createElement("DIV");
-    newdiv.appendChild(document.createTextNode(JSON.stringify(msg.data)));
-    document.body.appendChild(newdiv);
+    // var newdiv = document.createElement("DIV");
+    // newdiv.appendChild(document.createTextNode(JSON.stringify(msg.data)));
+    // document.body.appendChild(newdiv);
 
     console.log(msg);
 });
