@@ -14,7 +14,3 @@ glp.programUsageCounter.reset = function() {
 glp.programUsageCounter.stop = function() {
   this.enabled = false;
 }
-
-glp.programUsageCounter.sendUsages = function() {
-  glpSendMessage(messageType.GET_PROGRAM_USAGE_COUNT, {"programUsageCount": JSON.stringify(this.usages)})
-}

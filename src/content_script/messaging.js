@@ -15,6 +15,8 @@ function glpSendMessage(type, data) {
     window.postMessage({ source:"content", type: type, data: data}, "*");
 }
 
+glp.messages = {}
+
 /**
  * Receive messages from the devtools panel
  */
@@ -26,28 +28,32 @@ window.addEventListener('message', function(event) {
     return;
   }
 
+  var context = glp.messages.getWebGLActiveContext();
+  if (!context)
+    return;
+
   if (message.type == messageType.PIXEL_INSPECTOR) {
-    glpPixelInspectorToggle(message.data.enabled);
+    glp.messages.pixelInspectorToggle(message.data.enabled);
   } else if (message.type == messageType.CALL_STACK) {
-    glpSendCallStack(message.data);
+    glp.messages.sendCallStack(context, message.data);
   } else if (message.type == messageType.FUNCTION_HISTOGRAM) {
-    glpSendFunctionHistogram(message.data.threshold);
+    glp.messages.sendFunctionHistogram(message.data.threshold);
   } else if (message.type == messageType.BEGIN_PROGRAM_USAGE_COUNT) {
-    glpBeginProgramUsageCount();
+    context.glp.programUsageCounter.start();
   } else if (message.type == messageType.STOP_PROGRAM_USAGE_COUNT) {
-    glpStopProgramUsageCount();
+    context.glp.programUsageCounter.stop();
   } else if (message.type == messageType.RESET_PROGRAM_USAGE_COUNT) {
-    glpResetProgramUsageCount();
+    context.glp.programUsageCounter.reset();
   } else if (message.type == messageType.GET_PROGRAM_USAGE_COUNT) {
-    glpGetCurrentProgramUsageCount();
+    glp.messages.getCurrentProgramUsageCount(context);
   } else if (message.type == messageType.TOGGLE_DUPLICATE_PROGRAM_USAGE) {
-    glpToggleDuplicateProgramUsage(message.data.enabled);
+    context.glp.duplicateProgramDetection.toggle(message.data.enabled);
   } else if (message.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
-    glpGetDuplicateProgramUsage();
+    glp.messages.getDuplicateProgramUsage(context);
   } else if (message.type == messageType.CONTEXTS) {
-    glpSendMessage(messageType.CONTEXTS, {"contexts": glpGetWebGLContexts()})
+    glpSendMessage(messageType.CONTEXTS, {"contexts": glp.messages.getWebGLContexts()})
   } else if (message.type == messageType.TEXTURE) {
-    glpGetTexture(message.data.index);
+    glp.messages.getTexture(context, message.data.index);
   } else {
     console.log(message.data);
   }
@@ -58,7 +64,7 @@ window.addEventListener('message', function(event) {
  * Returns the WebGL contexts available in the dom
  * @param {Array} WebGL Contexts
  */
-function glpGetWebGLContexts() {
+glp.messages.getWebGLContexts = function() {
   var canvases = document.getElementsByTagName("canvas");
   var contexts = [];
   for (var i = 0; i < canvases.length; i++) {
@@ -74,8 +80,8 @@ function glpGetWebGLContexts() {
   return contexts;
 }
 
-function glpGetWebGLContext(uuid) {
-  var contexts = glpGetWebGLContexts();
+glp.messages.getWebGLContext = function(uuid) {
+  var contexts = glp.messages.getWebGLContexts();
   for (var i = 0; i < contexts.length; i++) {
     if (contexts[i].__uuid == uuid) {
       return contexts[i];
@@ -84,9 +90,9 @@ function glpGetWebGLContext(uuid) {
   return null;
 }
 
-function glpGetWebGLActiveContext() {
+glp.messages.getWebGLActiveContext = function() {
   // TODO: Handle multiple contexts
-  var contexts = glpGetWebGLContexts();
+  var contexts = glp.messages.getWebGLContexts();
   if (contexts == null || contexts[0] == null) {
         return;
     }
@@ -94,71 +100,23 @@ function glpGetWebGLActiveContext() {
   return contexts[0];
 }
 
-// TODO (Dian) rename this so it doesn't collide with webglContext.programUsageCount
-function glpBeginProgramUsageCount() {
-  var context = glpGetWebGLActiveContext();
-
-  if (!context)
-    return;
-
-  context.glp.programUsageCounter.start();
+glp.messages.getCurrentProgramUsageCount = function(context) {
+  glpSendMessage(messageType.GET_PROGRAM_USAGE_COUNT,
+      {"programUsageCount": JSON.stringify(
+        context.glp.programUsageCounter.usages)})
 }
 
-function glpStopProgramUsageCount() {
-  var context = glpGetWebGLActiveContext();
-
-  if (!context)
-    return;
-
-  context.glp.programUsageCounter.stop();
+/**
+ * Gets duplicate programs list from the time that enable is called
+ * Sends duplicated program list to the front end
+ */
+glp.messages.getDuplicateProgramUsage = function(context) {
+  glpSendMessage(messageType.GET_DUPLICATE_PROGRAM_USAGE,
+      {"duplicateProgramUses": JSON.stringify(
+        context.glp.duplicateProgramDetection.duplicates)})
 }
 
-function glpResetProgramUsageCount() {
-  var context = glpGetWebGLActiveContext();
-
-  if (!context)
-    return;
-
-  context.glp.programUsageCounter.reset();
-}
-
-function glpGetCurrentProgramUsageCount() {
-  var context = glpGetWebGLActiveContext();
-
-  if (!context)
-    return;
-
-  context.glp.programUsageCounter.sendUsages();
-}
-
-function glpToggleDuplicateProgramUsage(enabled) {
-  var context = glpGetWebGLActiveContext();
-
-  if (!context)
-    return;
-
-  if (enabled) {
-    context.glp.duplicateProgramDetection.enable();
-  } else {
-    context.glp.duplicateProgramDetection.disable();
-  }
-}
-
-function glpGetDuplicateProgramUsage() {
-  var context = glpGetWebGLActiveContext();
-
-  if (!context)
-    return;
-
-  context.glp.duplicateProgramDetection.sendDuplicates();
-}
-
-function glpGetTexture(index) {
-  var context = glpGetWebGLActiveContext();
-
-  if (!context)
-    return;
-
+glp.messages.getTexture = function(context, index) {
   context.glpUpdateTextureList();
   context.glpGetTexture(index);
 }
@@ -167,12 +125,7 @@ function glpGetTexture(index) {
  * Sends call stack information to the panel
  * @param {String} Type of stack requested
  */
-function glpSendCallStack(type) {
-    var context = glpGetWebGLActiveContext();
-
-    if (!context)
-      return;
-
+glp.messages.sendCallStack = function(context, type) {
     var callStack;
     if (type == "mostRecentCalls") {
         callStack = context.glpMostRecentCalls;
@@ -186,9 +139,9 @@ function glpSendCallStack(type) {
 /**
  * Sends histogram of function calls to the panel
  */
-function glpSendFunctionHistogram(threshold) {
+glp.messages.sendFunctionHistogram = function(threshold) {
     // TODO: Handle multiple contexts
-    var contexts = glpGetWebGLContexts();
+    var contexts = glp.messages.getWebGLContexts();
     if (contexts == null || contexts[0] == null) {
         return;
     }
@@ -210,8 +163,8 @@ function glpSendFunctionHistogram(threshold) {
  * Toggles the status of the pixel inspector being enabled/disabled
  * @param {Bool} Enabled
  */
-function glpPixelInspectorToggle(enabled) {
-  var contexts = glpGetWebGLContexts();
+glp.messages.pixelInspectorToggle = function(enabled) {
+  var contexts = glp.messages.getWebGLContexts();
   if (contexts == null) {
     return;
   }
