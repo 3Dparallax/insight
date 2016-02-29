@@ -50,7 +50,7 @@ function sendMessage(type, data) {
 }
 
 function pixelInspectorChanged(e) {
-    var checked = document.getElementById("pixelInspector").checked;
+    var checked = document.getElementById("pixelInspectorEnable").checked;
     var data = {"enabled": checked};
     sendMessage("pixelInspector", data);
 }
