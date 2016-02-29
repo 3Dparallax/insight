@@ -23,3 +23,7 @@ var elements = document.getElementsByClassName("tabBar-element");
 for (var i = 0; i < elements.length; i++) {
     elements[i].addEventListener('click', changeTab, false);
 }
+
+var refreshTab = function() {
+    // TODO: refresh tab data with the current context
+}

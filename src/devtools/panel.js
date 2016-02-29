@@ -9,6 +9,10 @@ backgroundPageConnection.postMessage({
 });
 
 backgroundPageConnection.onMessage.addListener(function(msg) {
+    if (msg.source != "content") {
+        return;
+    }
+
     if (msg.type == messageType.CALL_STACK) {
         displayCallStack(msg.data.functionNames);
     } else if (msg.type == messageType.GET_PROGRAM_USAGE_COUNT) {
@@ -23,23 +27,15 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         displayTexture(msg.data);
     } else if (msg.type == messageType.TEXTURE_LIST) {
         updateTextureList(msg.data.length);
-    }
-
-    if (msg.type == messageType.FUNCTION_HISTOGRAM) {
+    } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
         try {
             displayHistogram(msg.data);
         } catch(e) {
             console.log(e);
         }
+    } else if (msg.type == messageType.GET_CONTEXTS) {
+        updateContexts(JSON.parse(msg.data.contexts));
     }
-
-    if (msg.source != "content") {
-        return;
-    }
-
-    var newdiv = document.createElement("DIV");
-    newdiv.appendChild(document.createTextNode(JSON.stringify(msg.data)));
-    document.body.appendChild(newdiv);
 
     console.log(msg);
 });
