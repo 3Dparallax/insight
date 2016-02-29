@@ -12,9 +12,6 @@
       <div class="tab tab-enabled" id="pixelInspector">
           <input type="checkbox" id="pixelInspector">Enable Pixel Inspector</input>
           <button id="send">Send Test Message</button>
-          <button id="callsSinceDraw">Print Call Stack Since Last Drawn</button>
-          <button id="mostRecentCalls">Print Most Recent Calls</button>
-          <button id="functionHistogram">Get Histogram</button>
       </div>
       <div class="tab" id="programUsage">
           <button id="beginProgramUsageCount">Begin Program Usage Count</button>
@@ -23,11 +20,13 @@
           <button id="getProgramUsageCount">Get Program Usage Count</button>
           <input type="checkbox" id="toggleDuplicateProgramUsage">Toggle Duplicate Program Detection</input>
           <button id="getDuplicateProgramUse">Get Used Duplicate Programs</button>
-          <canvas id="myChart" width="600" height="400"></canvas>
       </div>
       <div class="tab" id="callStack">
-        <table id="callStackTable">
-        </table>
+        <button id="callsSinceDraw">Print Call Stack Since Last Drawn</button>
+        <button id="mostRecentCalls">Print Most Recent Calls</button>
+        <button id="functionHistogram">Get Histogram</button>
+        <canvas id="myChart" width="600" height="400"></canvas>
+        <table id="callStackTable"></table>
       </div>
       <div class="contextBar">
         Contexts
