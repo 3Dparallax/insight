@@ -16,7 +16,7 @@ WebGLRenderingContext.prototype.glpGetTexture = function(index) {
         return;
     }
 
-    var size = { "x" : 512, "y" : 512 };
+    var size = { "x" : 256, "y" : 256 };
     var texture = this.glpTextures[index];
     var frameBuffer = this.createFramebuffer();
     this.bindFramebuffer(this.FRAMEBUFFER, frameBuffer);
