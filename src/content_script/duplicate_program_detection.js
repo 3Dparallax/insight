@@ -51,5 +51,5 @@ glp.duplicateProgramDetection.useProgramCalled = function(gl, program) {
  * Sends duplicated program list to the front end
  */
 glp.duplicateProgramDetection.sendDuplicates = function() {
-  glpSendMessage("getDuplicateProgramUsage", {"duplicateProgramUses": JSON.stringify(this.duplicates)})
+  glpSendMessage(messageType.GET_DUPLICATE_PROGRAM_USAGE, {"duplicateProgramUses": JSON.stringify(this.duplicates)})
 }

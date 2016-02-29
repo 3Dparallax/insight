@@ -13,13 +13,19 @@ files = [
   "webgl_bind.js",
 ];
 
-appendFiles(files)
+var sharedFileDirectory = "src/shared/"
+sharedFiles = [
+  "message_types.js"
+];
 
-function appendFiles(files) {
+appendFiles(sharedFileDirectory, sharedFiles)
+appendFiles(fileDirectory, files)
+
+function appendFiles(directory, files) {
   for (var i=0; i<files.length; i++) {
     // From: http://stackoverflow.com/questions/9515704/building-a-chrome-extension-inject-code-in-a-page-using-a-content-script
     var s = document.createElement('script');
-    s.src = chrome.extension.getURL(fileDirectory + files[i]);
+    s.src = chrome.extension.getURL(directory + files[i]);
     s.onload = function() {
       this.parentNode.removeChild(this);
     };

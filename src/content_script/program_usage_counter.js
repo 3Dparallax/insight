@@ -16,5 +16,5 @@ glp.programUsageCounter.stop = function() {
 }
 
 glp.programUsageCounter.sendUsages = function() {
-  glpSendMessage("getProgramUsageCount", {"programUsageCount": JSON.stringify(this.usages)})
+  glpSendMessage(messageType.GET_PROGRAM_USAGE_COUNT, {"programUsageCount": JSON.stringify(this.usages)})
 }

@@ -26,27 +26,27 @@ window.addEventListener('message', function(event) {
     return;
   }
 
-  if (message.type == "pixelInspector") {
+  if (message.type == messageType.PIXEL_INSPECTOR) {
     glpPixelInspectorToggle(message.data.enabled);
-  } else if (message.type == "callStackRequest") {
+  } else if (message.type == messageType.CALL_STACK) {
     glpSendCallStack(message.data);
-  } else if (message.type == "functionHistogramRequest") {
+  } else if (message.type == messageType.FUNCTION_HISTOGRAM) {
     glpSendFunctionHistogram(message.data.threshold);
-  } else if (message.type == "beginProgramUsageCount") {
+  } else if (message.type == messageType.BEGIN_PROGRAM_USAGE_COUNT) {
     glpBeginProgramUsageCount();
-  } else if (message.type == "stopProgramUsageCount") {
+  } else if (message.type == messageType.STOP_PROGRAM_USAGE_COUNT) {
     glpStopProgramUsageCount();
-  } else if (message.type == "resetProgramUsageCount") {
+  } else if (message.type == messageType.RESET_PROGRAM_USAGE_COUNT) {
     glpResetProgramUsageCount();
-  } else if (message.type == "getProgramUsageCount") {
+  } else if (message.type == messageType.GET_PROGRAM_USAGE_COUNT) {
     glpGetCurrentProgramUsageCount();
-  } else if (message.type == "toggleDuplicateProgramUsage") {
+  } else if (message.type == messageType.TOGGLE_DUPLICATE_PROGRAM_USAGE) {
     glpToggleDuplicateProgramUsage(message.data.enabled);
-  } else if (message.type == "getDuplicateProgramUse") {
+  } else if (message.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
     glpGetDuplicateProgramUsage();
-  } else if (message.type == "getContexts") {
-      glpSendMessage("contexts", {"contexts": glpGetWebGLContexts()})
-  } else if (message.type == "getTexture") {
+  } else if (message.type == messageType.CONTEXTS) {
+    glpSendMessage(messageType.CONTEXTS, {"contexts": glpGetWebGLContexts()})
+  } else if (message.type == messageType.TEXTURE) {
     glpGetTexture(message.data.index);
   } else {
     console.log(message.data);
@@ -180,7 +180,7 @@ function glpSendCallStack(type) {
         callStack = context.glpCallsSinceDraw;
     }
 
-    glpSendMessage("CallStack", {"functionNames": callStack})
+    glpSendMessage(messageType.CALL_STACK, {"functionNames": callStack})
 }
 
 /**
@@ -203,7 +203,7 @@ function glpSendFunctionHistogram(threshold) {
             dataSeries.push(histogram[functionName])
         }
     }
-    glpSendMessage("FunctionHistogram", {"labels": labels, "values": dataSeries})
+    glpSendMessage(messageType.FUNCTION_HISTOGRAM, {"labels": labels, "values": dataSeries})
 }
 
 /**

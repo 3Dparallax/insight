@@ -4,7 +4,7 @@ WebGLRenderingContext.prototype.glpTextures = [];
  * Sends the number of textures created to the front end
  **/
 WebGLRenderingContext.prototype.glpUpdateTextureList = function() {
-    glpSendMessage("Textures", { "length" : this.glpTextures.length });
+    glpSendMessage(messageType.TEXTURE_LIST, { "length" : this.glpTextures.length });
 }
 
 /**
@@ -26,7 +26,7 @@ WebGLRenderingContext.prototype.glpGetTexture = function(index) {
     if (canRead) {
         var pixels = new Uint8Array(size.x * size.y * 4);
         this.readPixels(0, 0, size.x, size.y, this.RGBA, this.UNSIGNED_BYTE, pixels);
-        glpSendMessage("Texture", {
+        glpSendMessage(messageType.TEXTURE, {
             "index" : index,
             "pixels" : Array.prototype.slice.call(pixels)
         });

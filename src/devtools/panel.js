@@ -9,23 +9,23 @@ backgroundPageConnection.postMessage({
 });
 
 backgroundPageConnection.onMessage.addListener(function(msg) {
-    if (msg.type == "CallStack") {
+    if (msg.type == messageType.CALL_STACK) {
         displayCallStack(msg.data.functionNames);
-    } else if (msg.type == "getProgramUsageCount") {
+    } else if (msg.type == messageType.GET_PROGRAM_USAGE_COUNT) {
         for( var programUsage in msg.data.programUsageCount ) {
             console.log(msg.data.programUsageCount[programUsage]);
         }
-    } else if (msg.type == "getDuplicateProgramUsage") {
+    } else if (msg.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
         for( var duplicatedProgram in msg.data.duplicateProgramUses ) {
             // console.log(duplicatedProgram);
         }
-    } else if (msg.type == "Texture") {
+    } else if (msg.type == messageType.TEXTURE) {
         displayTexture(msg.data);
-    } else if (msg.type == "Textures") {
+    } else if (msg.type == messageType.TEXTURE_LIST) {
         updateTextureList(msg.data.length);
     }
 
-    if (msg.type == "FunctionHistogram") {
+    if (msg.type == messageType.FUNCTION_HISTOGRAM) {
         try {
             displayHistogram(msg.data);
         } catch(e) {
@@ -52,25 +52,19 @@ function sendMessage(type, data) {
 function pixelInspectorChanged(e) {
     var checked = document.getElementById("pixelInspectorEnable").checked;
     var data = {"enabled": checked};
-    sendMessage("pixelInspector", data);
+    sendMessage(messageType.PIXEL_INSPECTOR, data);
 }
 
 document.getElementById("pixelInspector").addEventListener("click", pixelInspectorChanged);
 
-function testSend() {
-    sendMessage("test", {"hello": "world"});
-}
-
-document.getElementById("send").addEventListener("click", testSend);
-
 function getCallsSinceDraw(e) {
-    sendMessage("callStackRequest", "callsSinceDraw");
+    sendMessage(messageType.CALL_STACK, "callsSinceDraw");
 }
 
 document.getElementById("callsSinceDraw").addEventListener("click", getCallsSinceDraw);
 
 function getMostRecentCalls(e) {
-    sendMessage("callStackRequest", "mostRecentCalls");
+    sendMessage(messageType.CALL_STACK, "mostRecentCalls");
 }
 
 document.getElementById("mostRecentCalls").addEventListener("click", getMostRecentCalls);
@@ -104,7 +98,7 @@ function displayCallStack(callStack) {
 }
 
 function getFunctionHistogram(e) {
-    sendMessage("functionHistogramRequest", {threshold: 10});
+    sendMessage(messageType.FUNCTION_HISTOGRAM, {threshold: 10});
 }
 
 function displayHistogram(histogram) {
@@ -153,7 +147,7 @@ function updateTextureList(length) {
     for (var i = 0; i < textureTable.rows.length; i++) {
         textureTable.rows[i].onclick = function() {
             var index = this.rowIndex + 1;
-            sendMessage("getTexture", { "index" : index } );
+            sendMessage(messageType.TEXTURE, { "index" : index } );
         }
     }
 }
@@ -164,25 +158,25 @@ document.getElementById("functionHistogram").addEventListener("click", getFuncti
 // Program Usage Count
 
 function beginProgramUsageCount(e) {
-    sendMessage("beginProgramUsageCount", "beginProgramUsageCount")
+    sendMessage(messageType.BEGIN_PROGRAM_USAGE_COUNT, "beginProgramUsageCount")
 }
 
 document.getElementById("beginProgramUsageCount").addEventListener("click", beginProgramUsageCount);
 
 function stopProgramUsageCount(e) {
-    sendMessage("stopProgramUsageCount", "stopProgramUsageCount")
+    sendMessage(messageType.STOP_PROGRAM_USAGE_COUNT, "stopProgramUsageCount")
 }
 
 document.getElementById("stopProgramUsageCount").addEventListener("click", stopProgramUsageCount);
 
 function resetProgramUsageCount(e) {
-    sendMessage("resetProgramUsageCount", "resetProgramUsageCount")
+    sendMessage(messageType.RESET_PROGRAM_USAGE_COUNT, "resetProgramUsageCount")
 }
 
 document.getElementById("resetProgramUsageCount").addEventListener("click", resetProgramUsageCount);
 
 function getProgramUsageCount(e) {
-    sendMessage("getProgramUsageCount", "getProgramUsageCount")
+    sendMessage(messageType.GET_PROGRAM_USAGE_COUNT, "getProgramUsageCount")
 }
 
 document.getElementById("getProgramUsageCount").addEventListener("click", getProgramUsageCount);
@@ -190,19 +184,19 @@ document.getElementById("getProgramUsageCount").addEventListener("click", getPro
 function toggleDuplicateProgramUsage(e) {
     var checked = document.getElementById("toggleDuplicateProgramUsage").checked;
     var data = {"enabled": checked};
-    sendMessage("toggleDuplicateProgramUsage", data)
+    sendMessage(messageType.TOGGLE_DUPLICATE_PROGRAM_USAGE, data)
 }
 
 document.getElementById("toggleDuplicateProgramUsage").addEventListener("click", toggleDuplicateProgramUsage);
 
 function getDuplicateProgramUse(e) {
-    sendMessage("getDuplicateProgramUse", "getDuplicateProgramUse")
+    sendMessage(messageType.GET_DUPLICATE_PROGRAM_USAGE, "getDuplicateProgramUse")
 }
 
 document.getElementById("getDuplicateProgramUse").addEventListener("click", getDuplicateProgramUse);
 
 function getTextures(e) {
-    sendMessage("getTexture", { "index" : "0" } );
+    sendMessage(messageType.TEXTURE, { "index" : "0" } );
 }
 
 document.getElementById("getTextures").addEventListener("click", getTextures);
