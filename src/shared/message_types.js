@@ -10,6 +10,6 @@ var messageType = {
   GET_DUPLICATE_PROGRAM_USAGE : "getDuplicateProgramUse",
   GET_CONTEXTS : "getContexts",
   CONTEXTS : "contexts",
-  TEXTURE : "texture",
-  TEXTURE_LIST : "textures",
+  GET_TEXTURE : "texture",
+  GET_TEXTURES : "textures",
 }

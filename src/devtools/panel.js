@@ -23,9 +23,9 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         for( var duplicatedProgram in msg.data.duplicateProgramUses ) {
             // console.log(duplicatedProgram);
         }
-    } else if (msg.type == messageType.TEXTURE) {
+    } else if (msg.type == messageType.GET_TEXTURE) {
         displayTexture(msg.data);
-    } else if (msg.type == messageType.TEXTURE_LIST) {
+    } else if (msg.type == messageType.GET_TEXTURES) {
         updateTextureList(msg.data.length);
     } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
         try {
@@ -135,8 +135,13 @@ function updateTextureList(length) {
         textureElement.id = i;
         textureList.appendChild(textureElement);
         textureElement.onclick = function() {
-            sendMessage(messageType.TEXTURE, { "index" : this.id } );
-        }
+            sendMessage(messageType.GET_TEXTURE, { "index" : this.id });
+            for (var c = 0; c < textureList.children.length; c++) {
+                var child = textureList.children[c];
+                child.className = "";
+            }
+            this.className += "active";
+        };
     }
 }
 
@@ -184,7 +189,7 @@ function getDuplicateProgramUse(e) {
 document.getElementById("getDuplicateProgramUse").addEventListener("click", getDuplicateProgramUse);
 
 function getTextures(e) {
-    sendMessage(messageType.TEXTURE, { "index" : "0" } );
+    sendMessage(messageType.GET_TEXTURES, "");
 }
 
 document.getElementById("getTextures").addEventListener("click", getTextures);
