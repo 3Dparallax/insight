@@ -14,3 +14,13 @@ glp.programUsageCounter.reset = function() {
 glp.programUsageCounter.stop = function() {
   this.enabled = false;
 }
+
+glp.programUsageCounter.addUsage = function(program) {
+  if (this.enabled) {
+    if (this.usages[program.__uuid] != undefined) {
+      this.usages[program.__uuid] += 1;
+    } else {
+      this.usages[program.__uuid] = 1;
+    }
+  }
+}
