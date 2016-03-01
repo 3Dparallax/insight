@@ -30,18 +30,17 @@ glp.callStack.helper.getStack = function() {
     return stack;
 }
 
+/**
+ * Returns "FileName:LineNumber" of requested call site
+ * @param {CallSite} call site object
+ */
 glp.callStack.helper.getCallSiteDetails = function(stack) {
   return stack.getFileName() + ":" + stack.getLineNumber();
 }
 
-// Uses the stack and gets the first call's line number
-glp.callStack.helper.getLineNumber = function() {
-  var stack = this.getFirstUserStack(this.getStack());
-  return stack.getLineNumber();
-}
-
-// input: given a full stack trace down to glp
-// output: gives the first stack that's not
+/**
+ * Returns the first call stack trace from the user
+ */
 glp.callStack.helper.getFirstUserStack = function() {
   fullStack = this.getStack()
   for(var i = 1; i < fullStack.length; i++) {
@@ -53,6 +52,13 @@ glp.callStack.helper.getFirstUserStack = function() {
   return null;
 }
 
+
+/**
+ * Returns the call stack of the requested type
+ * CallSite details (filename and line number) are processed
+ * only on request because it's too expensive at storage time
+ * @param {String} "mostRecentCalls" or "callsSinceDraw"
+ */
 glp.callStack.getStack = function(type) {
   var formatted = []
   if (type == "mostRecentCalls") {
@@ -67,12 +73,26 @@ glp.callStack.getStack = function(type) {
   return formatted;
 }
 
-glp.callStack.push = function(name, args, stack) {
-  var d = new Date();
-  var timeString = d.getHours() + ":"
+/**
+ * Formats a date object to HH:MM:SS.mmm
+ * @param {Date} d
+ */
+glp.callStack.helper.dateTimeFormat = function(d) {
+  return d.getHours() + ":"
       + ('00'+d.getMinutes()).substring(d.getMinutes().toString().length) + ":"
       + ('00'+d.getSeconds()).substring(d.getSeconds().toString().length) + "."
       + ('000'+d.getMilliseconds()).substring(d.getMilliseconds().toString().length);
+}
+
+/**
+ * Adds a new function to the call stack
+ * @param {String} Name of function
+ * @param {Dictionary} arguments used by the function
+ * @param {CallSite} Obtained from getFirstUserStack
+ */
+glp.callStack.push = function(name, args, stack) {
+  var d = new Date();
+  var timeString = this.helper.dateTimeFormat(d);
     var callDetails = [name, JSON.stringify(args), window.performance.now(), timeString, stack];
     //JSON.stringify(args)
     if (this.mostRecentCalls.length > this.maxSize) {
@@ -88,6 +108,11 @@ glp.callStack.push = function(name, args, stack) {
     this.callsSinceDraw.push(callDetails);
 }
 
+/**
+ * Used post function call to update time elapsed
+ * @param {String} Name of function
+ * @param {CallSite} Obtained from getFirstUserStack
+ */
 glp.callStack.update = function(name) {
   var endTime = window.performance.now();
   if (this.callsSinceDraw.length > 0) {
@@ -102,6 +127,10 @@ glp.callStack.update = function(name) {
   }
 }
 
+/**
+ * Adds a data point to the function histogram
+ * @param {String} Name of function
+ */
 glp.histogram.add = function(name) {
   if (!this.histogram[name]) {
     this.histogram[name] = 1;
