@@ -35,10 +35,9 @@ function addContext(name, uuid) {
     contextBar.appendChild(contextElement);
 }
 
-var activeContext = null;
 function setActiveContext(uuid) {
     var contextElement = document.getElementById(uuid);
     contextElement.classList.add("context-element-enabled");
-    activeContext = uuid;
-    refreshTab();
+    refreshTabs(uuid);
+    states.activeContext = uuid;
 }
