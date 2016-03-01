@@ -39,7 +39,7 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         state.histogram = msg.data;
     }
 
-    if (state.activeContext == msg.uuid) {
+    if (states.activeContext == msg.uuid) {
         updateTabs(state);
     }
 
