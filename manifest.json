@@ -5,6 +5,7 @@
   "version": "1.0",
   "web_accessible_resources": [
     "src/shared/message_types.js",
+    "src/content_script/buffer_viewer.js",
     "src/content_script/call_stack.js",
     "src/content_script/duplicate_program_detection.js",
     "src/content_script/fcn_bindings.js",
