@@ -47,10 +47,8 @@ window.addEventListener('message', function(event) {
     glp.messages.sendCallStack(context, message.data);
   } else if (message.type == messageType.FUNCTION_HISTOGRAM) {
     glp.messages.sendFunctionHistogram(message.data.threshold);
-  } else if (message.type == messageType.BEGIN_PROGRAM_USAGE_COUNT) {
-    context.glp.programUsageCounter.start();
-  } else if (message.type == messageType.STOP_PROGRAM_USAGE_COUNT) {
-    context.glp.programUsageCounter.stop();
+  } else if (message.type == messageType.TOGGLE_PROGRAM_USAGE_COUNT) {
+    context.glp.programUsageCounter.toggle(message.data.enabled);
   } else if (message.type == messageType.RESET_PROGRAM_USAGE_COUNT) {
     context.glp.programUsageCounter.reset();
   } else if (message.type == messageType.GET_PROGRAM_USAGE_COUNT) {

@@ -2,6 +2,7 @@ var initialTab = "tabBar-pixel-inspector";
 var tabMap = {
     "tabBar-pixel-inspector": "pixelInspector",
     "tabBar-program-usage": "programUsage",
+    "tabBar-program-duplicate": "programDuplicate",
     "tabBar-call-stack": "callStack",
     "tabBar-texture-viewer": "textureViewer",
     "tabBar-buffer-viewer": "bufferViewer",
