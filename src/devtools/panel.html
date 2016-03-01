@@ -42,12 +42,20 @@
         <table id="callStackTable"></table>
       </div>
       <div class="tab" id="textureViewer">
-        <div id="textures-list"></div>
-        <div id="textures-content">
-          <div>
-            <button id="getTextures">Get Textures</button>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <button class="btn btn-primary btn-wide" id="getTextures">Get Textures</button>
+            <div class="btn-group">
+              <button class="btn btn-default btn-wide dropdown-toggle" type="button" data-toggle="dropdown">
+                Current Texture <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu scrollable-menu" role="menu" id="textures-list">
+              </ul>
+            </div>
           </div>
-          <canvas id="textureCanvas"></canvas>
+          <div class="row-fluid">
+            <canvas id="textureCanvas"></canvas>
+          </div>
         </div>
       </div>
       <div class="tab" id="bufferViewer">

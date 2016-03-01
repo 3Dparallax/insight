@@ -38,22 +38,6 @@ body {
 .tabBar-element-enabled {
   border-bottom: solid rgb(45, 134, 247) 1px;
 }
-#textureViewer {
-  align-items: center;
-  display: flex;
-}
-#textures-list {
-  display: flex;
-  flex-direction: column;
-  width: 150px;
-  height: 50px;
-}
-.texture-element:hover {
-  cursor: pointer;
-}
-.textures-container {
-  flex: 1 1 auto;
-}
 .tab {
   display: none;
   visibility: hidden;
@@ -87,25 +71,14 @@ body {
 .context-element:hover {
   background-color: rgb(225, 225, 225);
 }
-#textureViewer {
-  overflow-y: auto;
-}
-#textures-list {
-  float: left;
-  overflow-y: auto;
-  height: 81%;
-  width: 200px;
-  background: #eee;
-}
-.active {
-  background: #0a0;
-}
-#textures-content {
-  float: left;
-}
 #textureCanvas {
-  height: 256;
-  width: 256;
-  margin: auto;
+  height: 256px;
+  width: 256px;
+  margin-top: 16px;
   border: 1px solid black;
+}
+.scrollable-menu {
+    height: auto;
+    max-height: 256px;
+    overflow-x: hidden;
 }
