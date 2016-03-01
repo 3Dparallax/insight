@@ -38,17 +38,6 @@ body {
 .tabBar-element-enabled {
   border-bottom: solid rgb(45, 134, 247) 1px;
 }
-.tab {
-  display: none;
-  visibility: hidden;
-}
-.tab-enabled {
-  flex: 1 1 auto;
-  display: block;
-  visibility: visible;
-  overflow: scroll;
-  width: 100%;
-}
 #textureViewer {
   align-items: center;
   display: flex;
@@ -64,6 +53,16 @@ body {
 }
 .textures-container {
   flex: 1 1 auto;
+}
+.tab {
+  display: none;
+  visibility: hidden;
+}
+.tab-enabled {
+  flex: 1 1 auto;
+  display: block;
+  visibility: visible;
+  width: 100%;
 }
 #contextBar {
   display: flex;
