@@ -182,11 +182,25 @@ var glpFcnBindings = {
       return this.glp.pixelInspector.programUniformLocations[program.__uuid][n];
     },
     createTexture : function(original, args, name) {
-        var texture = original.apply(this, args);
-        this.glp.textureViewer.textures.push(texture);
-        return texture;
+      var texture = original.apply(this, args);
+      this.glp.textureViewer.textures.push(texture);
+      return texture;
     },
-
+    createBuffer: function(original, args, name) {
+      var buffer = original.apply(this, args);
+      this.glp.bufferViewer.buffers.push(buffer);
+      return buffer;
+    },
+    createFrameBuffer: function(original, args, name) {
+      var buffer = original.apply(this, args);
+      this.glp.bufferViewer.frameBuffers.push(buffer);
+      return buffer;
+    },
+    createRenderBuffer: function(original, args, name) {
+      var buffer = original.apply(this, args);
+      this.glp.bufferViewer.renderBuffers.push(buffer);
+      return buffer;
+    },
 }
 
 var glpUniformFcn = function(original, args, name) {

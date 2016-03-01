@@ -2,6 +2,7 @@
 var fileDirectory = "src/content_script/"
 files = [
   "insight.js",
+  "buffer_viewer.js",
   "program_usage_counter.js",
   "duplicate_program_detection.js",
   "pixel_inspector.js",

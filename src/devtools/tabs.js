@@ -4,6 +4,7 @@ var tabMap = {
     "tabBar-program-usage": "programUsage",
     "tabBar-call-stack": "callStack",
     "tabBar-texture-viewer": "textureViewer",
+    "tabBar-buffer-viewer": "bufferViewer",
 }
 
 var changeTab = function(tabElementID) {
