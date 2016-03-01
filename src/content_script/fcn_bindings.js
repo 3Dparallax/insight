@@ -88,23 +88,23 @@ var glpFcnBindings = {
         // TODO: verify valid input
         var program = args[0];
 
-        if (this.glp.duplicateProgramDetection.enabled) {
-          this.glp.duplicateProgramDetection.useProgramCalled(this, program);
-        }
+        this.glp.duplicateProgramDetection.useProgramCalled(this, program);
 
         var retVal = original.apply(this, args);
 
-        if (this.glp.pixelInspector.enabled && this.glp.pixelInspector.programs.indexOf(program.__uuid) < 0) {
+        // if (this.glp.pixelInspector.enabled && this.glp.pixelInspector.programs.indexOf(program.__uuid) < 0) {
+        if (!this.glp.pixelInspector.hasProgram(program)) {
           this.glp.pixelInspector.switchToProgram(this);
         }
 
-        if (this.glp.programUsageCounter.enabled) {
-          if (this.glp.programUsageCounter.usages[program.__uuid] != undefined) {
-            this.glp.programUsageCounter.usages[program.__uuid] += 1;
-          } else {
-            this.glp.programUsageCounter.usages[program.__uuid] = 1;
-          }
-        }
+        this.glp.programUsageCounter.addUsage(program);
+        // if (this.glp.programUsageCounter.enabled) {
+        //   if (this.glp.programUsageCounter.usages[program.__uuid] != undefined) {
+        //     this.glp.programUsageCounter.usages[program.__uuid] += 1;
+        //   } else {
+        //     this.glp.programUsageCounter.usages[program.__uuid] = 1;
+        //   }
+        // }
 
         return retVal;
     },
@@ -178,11 +178,7 @@ var glpFcnBindings = {
 }
 
 var glpUniformFcn = function(original, args, name) {
-  if (this.glp.pixelInspector.enabled) {
-    if (args[0] && this.glp.pixelInspector.programs.indexOf(this.getParameter(this.CURRENT_PROGRAM).__uuid) >= 0) {
-      args[0] = this.glp.pixelInspector.locationMap[this.getParameter(this.CURRENT_PROGRAM).__uuid][args[0].__uuid];
-    }
-  }
+  args = this.glp.pixelInspector.remapLocations(this, args);
   return original.apply(this, args);
 }
 var uniformMethods = [

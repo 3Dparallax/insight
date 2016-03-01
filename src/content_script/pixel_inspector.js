@@ -204,10 +204,17 @@ glp.pixelInspector.switchToProgram = function(gl) {
  * Switches the current program and copies over location and attribute data
  */
 glp.pixelInspector.switchProgram = function(gl, oldProgram, program) {
+  if (!this.enabled) {
+    return;
+  }
   gl.useProgram(program);
   this.copyUniforms(gl, oldProgram, program);
   this.copyAttributes(gl, oldProgram, program);
   // TODO: Swap attributes!
+}
+
+glp.pixelInspector.hasProgram = function(program) {
+  return this.programs.indexOf(program.__uuid) >= 0;
 }
 
 /**
@@ -331,4 +338,13 @@ glp.pixelInspector.setUniformLocation = function(program, name, location) {
   }
   this.programUniformLocations[program.__uuid][name] = location;
   return location;
+}
+
+glp.pixelInspector.remapLocations = function(gl, args) {
+  if (this.enabled) {
+    if (args[0] && this.programs.indexOf(gl.getParameter(gl.CURRENT_PROGRAM).__uuid) >= 0) {
+      args[0] = this.locationMap[gl.getParameter(gl.CURRENT_PROGRAM).__uuid][args[0].__uuid];
+    }
+  }
+  return args
 }
