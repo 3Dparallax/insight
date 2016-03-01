@@ -69,6 +69,7 @@ glp.callStack.getStack = function(type) {
   for (var i = 0; i < formatted.length; i++) {
     formatted[i][0] = formatted[i][0] + " (" + this.helper.getCallSiteDetails(formatted[i][4]) + ")";
     formatted[i].pop();
+    formatted[i][1] = JSON.stringify(formatted[i][1]);
   }
   return formatted;
 }
@@ -88,24 +89,27 @@ glp.callStack.helper.dateTimeFormat = function(d) {
  * Adds a new function to the call stack
  * @param {String} Name of function
  * @param {Dictionary} arguments used by the function
- * @param {CallSite} Obtained from getFirstUserStack
  */
-glp.callStack.push = function(name, args, stack) {
+glp.callStack.push = function(name, args) {
+  if (!this.enabled) {
+    return;
+  }
   var d = new Date();
   var timeString = this.helper.dateTimeFormat(d);
-    var callDetails = [name, JSON.stringify(args), window.performance.now(), timeString, stack];
-    //JSON.stringify(args)
-    if (this.mostRecentCalls.length > this.maxSize) {
-      this.mostRecentCalls.shift();
-    }
-    this.mostRecentCalls.push(callDetails);
+  var stack = this.helper.getFirstUserStack();
+  var callDetails = [name, args, window.performance.now(), timeString, stack];
+  //JSON.stringify(args)
+  if (this.mostRecentCalls.length > this.maxSize) {
+    this.mostRecentCalls.shift();
+  }
+  this.mostRecentCalls.push(callDetails);
 
-    var lastFunction = this.callsSinceDraw[this.callsSinceDraw.length - 1];
-    if (lastFunction &&
-        (lastFunction[0] == "drawElements" || lastFunction[0] == "drawArrays")) {
-      this.callsSinceDraw = [];
-    }
-    this.callsSinceDraw.push(callDetails);
+  var lastFunction = this.callsSinceDraw[this.callsSinceDraw.length - 1];
+  if (lastFunction &&
+      (lastFunction[0] == "drawElements" || lastFunction[0] == "drawArrays")) {
+    this.callsSinceDraw = [];
+  }
+  this.callsSinceDraw.push(callDetails);
 }
 
 /**
@@ -114,6 +118,9 @@ glp.callStack.push = function(name, args, stack) {
  * @param {CallSite} Obtained from getFirstUserStack
  */
 glp.callStack.update = function(name) {
+  if (!this.enabled) {
+    return;
+  }
   var endTime = window.performance.now();
   if (this.callsSinceDraw.length > 0) {
     var i = this.callsSinceDraw.length - 1
@@ -132,6 +139,9 @@ glp.callStack.update = function(name) {
  * @param {String} Name of function
  */
 glp.histogram.add = function(name) {
+  if (!this.enabled) {
+    return;
+  }
   if (!this.histogram[name]) {
     this.histogram[name] = 1;
   } else {

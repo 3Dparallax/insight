@@ -24,3 +24,18 @@ glp.bufferViewer.getFrameBuffers = function(gl) {
 glp.bufferViewer.getRenderBuffers = function(gl) {
 
 }
+
+glp.bufferViewer.pushBuffer = function(buffer) {
+  this.buffers.push(buffer);
+  return buffer;
+}
+
+glp.bufferViewer.pushFrameBuffer = function(buffer) {
+  this.frameBuffers.push(buffer);
+  return buffer;
+}
+
+glp.bufferViewer.pushRenderBuffer = function(buffer) {
+  this.renderBuffers.push(buffer);
+  return buffer;
+}

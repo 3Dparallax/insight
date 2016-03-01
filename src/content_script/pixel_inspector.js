@@ -201,10 +201,17 @@ glp.pixelInspector.switchToProgram = function(gl) {
  * Switches the current program and copies over location and attribute data
  */
 glp.pixelInspector.switchProgram = function(gl, oldProgram, program) {
+  if (!this.enabled) {
+    return;
+  }
   gl.useProgram(program);
   this.copyUniforms(gl, oldProgram, program);
   this.copyAttributes(gl, oldProgram, program);
   // TODO: Swap attributes!
+}
+
+glp.pixelInspector.hasProgram = function(program) {
+  return this.programs.indexOf(program.__uuid) >= 0;
 }
 
 /**
@@ -245,4 +252,96 @@ glp.pixelInspector.getProgram = function(gl, originalProgram) {
     this.programsMap[originalProgram.__uuid] = program;
 
     return program;
+}
+
+glp.pixelInspector.storeShaders = function(gl, program, shader) {
+  var shaderType = gl.getShaderParameter(shader, gl.SHADER_TYPE);
+
+  // TODO: verify valid input
+  // store vertex shaders associated with program
+  if (shaderType == gl.VERTEX_SHADER) {
+    this.vertexShaders[program.__uuid] = shader;
+  } else {
+    this.fragmentShaders[program.__uuid] = shader;
+  }
+}
+
+glp.pixelInspector.saveStates = function(gl, arg, truth) {
+  if (this.enabled) {
+    if (arg == gl.DEPTH_TEST) {
+      this.depthTest = truth;
+      return true;
+    } else if (arg == gl.BLEND) {
+      this.blendProp = truth;
+      return true;
+    }
+  }
+  return this.enabled;
+}
+
+glp.pixelInspector.storeBlendStates = function(sFactor, dFactor) {
+  if (this.enabled) {
+    this.blendFuncSFactor = sFactor;
+    this.blendFuncDFactor = dFactor;
+  }
+  return this.enabled;
+}
+
+glp.pixelInspector.storeClearColorStates = function(args) {
+  // TODO: verify valid input
+  if (this.enabled) {
+    this.clearColor = args;
+  }
+  return this.enabled;
+}
+
+glp.pixelInspector.uniforms = function(gl, args) {
+  if (this.enabled) {
+    var program = args[0];
+    var location = args[1];
+    if (this.programs.indexOf(program.__uuid) >= 0) {
+      if (location in this.locationMap[program.__uuid]) {
+        // the program is the pixel inspector version and we're using the original location
+        args[1] = this.locationMap[program.__uuid][location.__uuid];
+      } else {
+      }
+    } else {
+      // the program is not a pixel inspector
+      // if they're using the wrong location, lets just swap programs
+      args[0] = gl.getParameter(gl.CURRENT_PROGRAM);
+    }
+  }
+  return args;
+}
+
+glp.pixelInspector.hasUniformLocation = function(program, name) {
+  if (!(program.__uuid in this.programUniformLocations)) {
+    this.programUniformLocations[program.__uuid] = {}
+  }
+  return (name in this.programUniformLocations[program.__uuid]);
+}
+
+glp.pixelInspector.getUniformLocation = function(program, name) {
+  if (!(program.__uuid in this.programUniformLocations)) {
+    this.programUniformLocations[program.__uuid] = {}
+  }
+  return this.programUniformLocations[program.__uuid][name];
+}
+
+glp.pixelInspector.setUniformLocation = function(program, name, location) {
+  location.__uuid = guid();
+  if (!(program.__uuid in this.programUniformLocations)) {
+    this.programUniformLocations[program.__uuid] = {}
+  }
+  this.programUniformLocations[program.__uuid][name] = location;
+  return location;
+}
+
+glp.pixelInspector.remapLocations = function(gl, args) {
+  if (this.enabled) {
+    if (args[0] && this.programs.indexOf(gl.getParameter(gl.CURRENT_PROGRAM).__uuid) >= 0) {
+      args[0] = this.locationMap[gl.getParameter(gl.CURRENT_PROGRAM).__uuid][args[0].__uuid];
+    }
+  }
+  return args
 }

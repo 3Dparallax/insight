@@ -37,3 +37,8 @@ glp.textureViewer.getTexture = function(gl, index) {
 
     gl.deleteFramebuffer(frameBuffer);
 }
+
+glp.textureViewer.pushTexture = function(texture) {
+    this.textures.push(texture);
+    return texture;
+}

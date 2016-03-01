@@ -29,6 +29,9 @@ glp.duplicateProgramDetection.disable = function() {
 }
 
 glp.duplicateProgramDetection.useProgramCalled = function(gl, program) {
+  if (!this.enabled) {
+    return
+  }
   var currentProgram = gl.getParameter(gl.CURRENT_PROGRAM);
   if( currentProgram != undefined &&
       currentProgram.__uuid != undefined &&
@@ -36,8 +39,8 @@ glp.duplicateProgramDetection.useProgramCalled = function(gl, program) {
     /*
      * callStack gets the current call stack information up to this point
      */
-    var callStack = glpGetStack();
-    var userStack = glpGetFirstUserStack(callStack);
+    var callStack = glp.callStack.helper.getStack();
+    var userStack = glp.callStack.helper.getFirstUserStack(callStack);
     var lineNumber = ""
     var functionName = "";
     if (userStack != null) {
