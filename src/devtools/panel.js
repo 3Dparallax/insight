@@ -18,12 +18,12 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         return;
     }
 
-    if (!msg.uuid) {
-        console.log("All messages must specify context uuid");
+    if (!msg.activeContext) {
+        console.log("All messages must specify an active context uuid");
         return;
     }
 
-    var state = getContextState(msg.uuid);
+    var state = getContextState(msg.activeContext);
 
     if (msg.type == messageType.CALL_STACK) {
         state.callStack = msg.data.functionNames;
@@ -39,7 +39,7 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         state.histogram = msg.data;
     }
 
-    if (states.activeContext == msg.uuid) {
+    if (states.activeContext == msg.activeContext) {
         updateTabs(state);
     }
 
@@ -48,7 +48,7 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
 
 function sendMessage(type, data) {
     console.log("Sending: " + JSON.stringify(data));
-    backgroundPageConnection.postMessage({source: "panel", type: type, data: data});
+    backgroundPageConnection.postMessage({ "source": "panel", "activeContext": states.activeContext,  "type": type, "data": data});
 }
 
 function getCallsSinceDraw(e) {
