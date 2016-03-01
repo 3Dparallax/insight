@@ -159,13 +159,7 @@ glp.messages.getTexture = function(context, index) {
  * @param {String} Type of stack requested
  */
 glp.messages.sendCallStack = function(context, type) {
-    var callStack;
-    if (type == "mostRecentCalls") {
-        callStack = context.glpMostRecentCalls;
-    } else {
-        callStack = context.glpCallsSinceDraw;
-    }
-
+    var callStack = context.glp.callStack.getStack(type);
     glpSendMessage(context, messageType.CALL_STACK, {"functionNames": callStack})
 }
 
@@ -182,7 +176,7 @@ glp.messages.sendFunctionHistogram = function(threshold) {
 
     var dataSeries = []
     var labels = []
-    var histogram = context.glpFunctionHistogram
+    var histogram = context.glp.histogram.histogram
     for (var functionName in histogram) {
         if (histogram[functionName] >= threshold) {
             labels.push(functionName)

@@ -23,6 +23,7 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         return;
     }
 
+
     var state = getContextState(msg.activeContext);
 
     if (msg.type == messageType.CALL_STACK) {
