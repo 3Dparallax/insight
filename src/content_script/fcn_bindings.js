@@ -5,7 +5,7 @@ var glpFcnBindings = {
     // The default function is called first before all other method calls
     default: function(original, args, name) {
         if (this.glp.callStack.enabled) {
-          var stack = this.glp.callStack.helper.getUserStacks(this.glp.callStack.helper.getStack());
+          var stack = this.glp.callStack.helper.getFirstUserStack();
           this.glp.callStack.push(name, args, stack);
         }
         if (this.glp.histogram.enabled) {

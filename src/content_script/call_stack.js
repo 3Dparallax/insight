@@ -30,17 +30,8 @@ glp.callStack.helper.getStack = function() {
     return stack;
 }
 
-glp.callStack.helper.getAllDetailsOfLine = function(stacks) {
-  info = []
-  for (var i = 0; i < stacks.length; i++) {
-    info.push({
-      lineNumber: stacks[i].getLineNumber(),
-      functionName: stacks[i].getFunctionName(),
-      funktion: stacks[i].getFunction(),
-      fileName: stacks[i].getFileName(),
-    })
-  }
-  return info;
+glp.callStack.helper.getCallSiteDetails = function(stack) {
+  return stack.getFileName() + ":" + stack.getLineNumber();
 }
 
 // Uses the stack and gets the first call's line number
@@ -51,7 +42,8 @@ glp.callStack.helper.getLineNumber = function() {
 
 // input: given a full stack trace down to glp
 // output: gives the first stack that's not
-glp.callStack.helper.getFirstUserStack = function(fullStack) {
+glp.callStack.helper.getFirstUserStack = function() {
+  fullStack = this.getStack()
   for(var i = 1; i < fullStack.length; i++) {
     if (!~fullStack[i].getFileName().indexOf("src/content_script")) {
       return fullStack[i];
@@ -61,24 +53,18 @@ glp.callStack.helper.getFirstUserStack = function(fullStack) {
   return null;
 }
 
-glp.callStack.helper.getUserStacks = function(fullStack) {
-  for(var i = 1; i < fullStack.length; i++) {
-    if (!~fullStack[i].getFileName().indexOf("src/content_script")) {
-      break;
-    }
-  }
-
-  return fullStack.slice(i-1, fullStack.length);
-}
-
-
 glp.callStack.getStack = function(type) {
-  console.log(this.helper.getStack());
+  var formatted = []
   if (type == "mostRecentCalls") {
-      return this.mostRecentCalls;
+      formatted = this.mostRecentCalls;
   } else {
-      return this.callsSinceDraw;
+      formatted = this.callsSinceDraw;
   }
+  for (var i = 0; i < formatted.length; i++) {
+    formatted[i][0] = formatted[i][0] + " (" + this.helper.getCallSiteDetails(formatted[i][4]) + ")";
+    formatted[i].pop();
+  }
+  return formatted;
 }
 
 glp.callStack.push = function(name, args, stack) {
@@ -87,7 +73,7 @@ glp.callStack.push = function(name, args, stack) {
       + ('00'+d.getMinutes()).substring(d.getMinutes().toString().length) + ":"
       + ('00'+d.getSeconds()).substring(d.getSeconds().toString().length) + "."
       + ('000'+d.getMilliseconds()).substring(d.getMilliseconds().toString().length);
-    var callDetails = [name, JSON.stringify(this.helper.getAllDetailsOfLine(stack)), window.performance.now(), timeString];
+    var callDetails = [name, JSON.stringify(args), window.performance.now(), timeString, stack];
     //JSON.stringify(args)
     if (this.mostRecentCalls.length > this.maxSize) {
       this.mostRecentCalls.shift();
