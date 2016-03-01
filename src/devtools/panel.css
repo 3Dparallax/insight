@@ -88,3 +88,25 @@ body {
 .context-element:hover {
   background-color: rgb(225, 225, 225);
 }
+#textureViewer {
+  overflow-y: auto;
+}
+#textures-list {
+  float: left;
+  overflow-y: auto;
+  height: 81%;
+  width: 200px;
+  background: #eee;
+}
+.active {
+  background: #0a0;
+}
+#textures-content {
+  float: left;
+}
+#textureCanvas {
+  height: 256;
+  width: 256;
+  margin: auto;
+  border: 1px solid black;
+}

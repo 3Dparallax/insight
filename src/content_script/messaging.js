@@ -52,8 +52,10 @@ window.addEventListener('message', function(event) {
     glp.messages.getDuplicateProgramUsage(context);
   } else if (message.type == messageType.GET_CONTEXTS) {
     glpSendMessage(messageType.GET_CONTEXTS, {"contexts": JSON.stringify(glp.messages.getWebGLContexts())})
-  } else if (message.type == messageType.TEXTURE) {
+  } else if (message.type == messageType.GET_TEXTURE) {
     glp.messages.getTexture(context, message.data.index);
+  } else if (message.type == messageType.GET_TEXTURES) {
+    glp.messages.getTextures(context);
   } else {
     console.log(message.type, message.data);
   }
@@ -131,10 +133,14 @@ glp.messages.getDuplicateProgramUsage = function(context) {
         context.glp.duplicateProgramDetection.duplicates)})
 }
 
-glp.messages.getTexture = function(context, index) {
-  context.glpUpdateTextureList();
-  context.glpGetTexture(index);
+glp.messages.getTextures = function(context) {
+  context.glp.textureViewer.getTextures();
 }
+
+glp.messages.getTexture = function(context, index) {
+  context.glp.textureViewer.getTexture(context, index);
+}
+
 
 /**
  * Sends call stack information to the panel

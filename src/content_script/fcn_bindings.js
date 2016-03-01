@@ -183,8 +183,7 @@ var glpFcnBindings = {
     },
     createTexture : function(original, args, name) {
         var texture = original.apply(this, args);
-        this.glpTextures.push(texture);
-        this.glpUpdateTextureList();
+        this.glp.textureViewer.textures.push(texture);
         return texture;
     },
 
