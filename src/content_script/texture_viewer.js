@@ -1,36 +1,39 @@
-WebGLRenderingContext.prototype.glpTextures = [];
+glp.textureViewer = {};
+
+glp.textureViewer.textures = [];
 
 /**
  * Sends the number of textures created to the front end
  **/
-WebGLRenderingContext.prototype.glpUpdateTextureList = function() {
-    glpSendMessage(messageType.TEXTURE_LIST, { "length" : this.glpTextures.length });
+glp.textureViewer.getTextures = function(gl) {
+    glpSendMessage(gl, messageType.GET_TEXTURES, { "length" : this.textures.length });
 }
 
 /**
  * Get a texture in the textures list by its index.
  * Sends the texture to the front end
  **/
-WebGLRenderingContext.prototype.glpGetTexture = function(index) {
-    if (index < 0 || index >= this.glpTextures.length) {
+glp.textureViewer.getTexture = function(gl, index) {
+    if (index < 0 || index >= this.textures.length) {
         return;
     }
 
-    var size = { "x" : 512, "y" : 512 };
-    var texture = this.glpTextures[index];
-    var frameBuffer = this.createFramebuffer();
-    this.bindFramebuffer(this.FRAMEBUFFER, frameBuffer);
-    this.framebufferTexture2D(this.FRAMEBUFFER, this.COLOR_ATTACHMENT0, this.TEXTURE_2D, texture, 0);
+    var size = { "x" : 256, "y" : 256 };
+    var texture = this.textures[index];
 
-    var canRead = (this.checkFramebufferStatus(this.FRAMEBUFFER) == this.FRAMEBUFFER_COMPLETE);
+    var frameBuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+
+    var canRead = (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE);
     if (canRead) {
         var pixels = new Uint8Array(size.x * size.y * 4);
-        this.readPixels(0, 0, size.x, size.y, this.RGBA, this.UNSIGNED_BYTE, pixels);
-        glpSendMessage(messageType.TEXTURE, {
+        gl.readPixels(0, 0, size.x, size.y, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        glpSendMessage(gl, messageType.GET_TEXTURE, {
             "index" : index,
             "pixels" : Array.prototype.slice.call(pixels)
         });
     }
 
-    this.deleteFramebuffer(frameBuffer);
+    gl.deleteFramebuffer(frameBuffer);
 }

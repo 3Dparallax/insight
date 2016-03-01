@@ -6,7 +6,7 @@ glp.duplicateProgramDetection.duplicates = []; // list of { repeatedProgram : li
  * Toggles duplicate program usage detection
  */
 glp.duplicateProgramDetection.toggle = function(enable) {
-    if (enabled) {
+    if (enable) {
       this.enable();
     } else {
       this.disable();

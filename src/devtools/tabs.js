@@ -1,3 +1,4 @@
+var initialTab = "tabBar-pixel-inspector";
 var tabMap = {
     "tabBar-pixel-inspector": "pixelInspector",
     "tabBar-program-usage": "programUsage",
@@ -5,7 +6,7 @@ var tabMap = {
     "tabBar-texture-viewer": "textureViewer",
 }
 
-var changeTab = function() {
+var changeTab = function(tabElementID) {
     var tabBarElements = document.getElementsByClassName("tabBar-element");
     for (var i = 0; i < tabBarElements.length; i++) {
        tabBarElements[i].classList.remove("tabBar-element-enabled");
@@ -15,11 +16,27 @@ var changeTab = function() {
        tabElements[i].classList.remove("tab-enabled");
     }
 
-    this.classList.add("tabBar-element-enabled");
-    document.getElementById(tabMap[this.id]).classList.add("tab-enabled");
+    document.getElementById(tabElementID).classList.add("tabBar-element-enabled");
+    document.getElementById(tabMap[tabElementID]).classList.add("tab-enabled");
 };
 
 var elements = document.getElementsByClassName("tabBar-element");
 for (var i = 0; i < elements.length; i++) {
-    elements[i].addEventListener('click', changeTab, false);
+    elements[i].addEventListener('click', function() {
+        changeTab(this.id);
+    }, false);
+}
+
+var updateTabs = function(state) {
+    displayCallStack(state.callStack);
+    displayTexture(state.texture);
+    updateTextureList(state.textureList);
+    displayHistogram(state.histogram);
+    updatePixelInspector(state.pixelInspectorEnabled);
+}
+
+var refreshTabs = function(uuid) {
+    var state = getContextState(uuid);
+    updateTabs(state);
+    changeTab(state.activeTab);
 }

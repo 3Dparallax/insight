@@ -9,53 +9,48 @@ backgroundPageConnection.postMessage({
 });
 
 backgroundPageConnection.onMessage.addListener(function(msg) {
-    if (msg.type == messageType.CALL_STACK) {
-        displayCallStack(msg.data.functionNames);
-    } else if (msg.type == messageType.GET_PROGRAM_USAGE_COUNT) {
-        for( var programUsage in msg.data.programUsageCount ) {
-            console.log(msg.data.programUsageCount[programUsage]);
-        }
-    } else if (msg.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
-        for( var duplicatedProgram in msg.data.duplicateProgramUses ) {
-            // console.log(duplicatedProgram);
-        }
-    } else if (msg.type == messageType.TEXTURE) {
-        displayTexture(msg.data);
-    } else if (msg.type == messageType.TEXTURE_LIST) {
-        updateTextureList(msg.data.length);
-    }
-
-    if (msg.type == messageType.FUNCTION_HISTOGRAM) {
-        try {
-            displayHistogram(msg.data);
-        } catch(e) {
-            console.log(e);
-        }
-    }
-
     if (msg.source != "content") {
         return;
     }
 
-    // var newdiv = document.createElement("DIV");
-    // newdiv.appendChild(document.createTextNode(JSON.stringify(msg.data)));
-    // document.body.appendChild(newdiv);
+    if (msg.type == messageType.GET_CONTEXTS) {
+        updateContexts(JSON.parse(msg.data.contexts));
+        return;
+    }
+
+    if (!msg.activeContext) {
+        console.log("All messages must specify an active context uuid");
+        return;
+    }
+
+
+    var state = getContextState(msg.activeContext);
+
+    if (msg.type == messageType.CALL_STACK) {
+        state.callStack = msg.data.functionNames;
+    } else if (msg.type == messageType.GET_PROGRAM_USAGE_COUNT) {
+        state.programUsageCount = msg.data.programUsageCount;
+    } else if (msg.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
+        state.duplicateProgramUses = msg.data.duplicateProgramUses;
+    } else if (msg.type == messageType.GET_TEXTURE) {
+        state.texture = msg.data;
+    } else if (msg.type == messageType.GET_TEXTURES) {
+        state.textureList = msg.data.length;
+    } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
+        state.histogram = msg.data;
+    }
+
+    if (states.activeContext == msg.activeContext) {
+        updateTabs(state);
+    }
 
     console.log(msg);
 });
 
 function sendMessage(type, data) {
     console.log("Sending: " + JSON.stringify(data));
-    backgroundPageConnection.postMessage({source: "panel", type: type, data: data});
+    backgroundPageConnection.postMessage({ "source": "panel", "activeContext": states.activeContext,  "type": type, "data": data});
 }
-
-function pixelInspectorChanged(e) {
-    var checked = document.getElementById("pixelInspectorEnable").checked;
-    var data = {"enabled": checked};
-    sendMessage(messageType.PIXEL_INSPECTOR, data);
-}
-
-document.getElementById("pixelInspector").addEventListener("click", pixelInspectorChanged);
 
 function getCallsSinceDraw(e) {
     sendMessage(messageType.CALL_STACK, "callsSinceDraw");
@@ -102,6 +97,9 @@ function getFunctionHistogram(e) {
 }
 
 function displayHistogram(histogram) {
+    if (histogram == null) {
+        return;
+    }
     var data = {
         labels: histogram.labels,
         datasets: [
@@ -121,34 +119,34 @@ function displayHistogram(histogram) {
 }
 
 function displayTexture(texture) {
+    if (texture == null) {
+        return;
+    }
     console.log("Displaying texture");
     var ctx = document.getElementById("textureCanvas").getContext("2d");
-    var imageData = ctx.getImageData(0, 0, 512, 512);
+    var imageData = ctx.getImageData(0, 0, 256, 256);
     imageData.data.set(texture.pixels);
     ctx.putImageData(imageData, 0, 0);
 }
 
 function updateTextureList(length) {
-    console.log("Update textures list");
-    var textureTable = document.getElementById("texturesTable");
+    var textureList = document.getElementById("textures-list");
+    textureList.innerHTML = ""
 
-    while (textureTable.firstChild) {
-        textureTable.removeChild(textureTable.firstChild);
-    }
-
-    var textureTableInnerHTML = "";
     for (var i = 0; i < length; i++) {
-        textureTableInnerHTML += "<tr>";
-        textureTableInnerHTML += "<td>" + "Texture" + i + "</td>";
-        textureTableInnerHTML += "</tr>";
-    }
-    textureTable.innerHTML = textureTableInnerHTML;
-
-    for (var i = 0; i < textureTable.rows.length; i++) {
-        textureTable.rows[i].onclick = function() {
-            var index = this.rowIndex + 1;
-            sendMessage(messageType.TEXTURE, { "index" : index } );
-        }
+        var textureElement = document.createElement("div");
+        textureElement.classList.add("texture-element");
+        textureElement.innerHTML = "texture" + i;
+        textureElement.id = i;
+        textureList.appendChild(textureElement);
+        textureElement.onclick = function() {
+            sendMessage(messageType.GET_TEXTURE, { "index" : this.id });
+            for (var c = 0; c < textureList.children.length; c++) {
+                var child = textureList.children[c];
+                child.className = "";
+            }
+            this.className += "active";
+        };
     }
 }
 
@@ -196,7 +194,7 @@ function getDuplicateProgramUse(e) {
 document.getElementById("getDuplicateProgramUse").addEventListener("click", getDuplicateProgramUse);
 
 function getTextures(e) {
-    sendMessage(messageType.TEXTURE, { "index" : "0" } );
+    sendMessage(messageType.GET_TEXTURES, "");
 }
 
 document.getElementById("getTextures").addEventListener("click", getTextures);

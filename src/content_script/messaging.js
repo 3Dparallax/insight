@@ -8,11 +8,15 @@ _glpInit();
 
 /**
  * Sends messages to the devtools panel
+ * @param {WebGLContext} The WebGL Context the Message is sent from.
  * @param {String} Message type
  * @param {Dictionary} Message data
  */
-function glpSendMessage(type, data) {
-    window.postMessage({ source:"content", type: type, data: data}, "*");
+function glpSendMessage(context, type, data) {
+    window.postMessage({ "source": "content", "activeContext": context.__uuid, "type": type, "data": data}, "*");
+}
+function __glpSendMessage(type, data) {
+    window.postMessage({ "source": "content", "type": type, "data": data}, "*");
 }
 
 glp.messages = {}
@@ -28,7 +32,12 @@ window.addEventListener('message', function(event) {
     return;
   }
 
-  var context = glp.messages.getWebGLActiveContext();
+  if (message.type == messageType.GET_CONTEXTS) {
+    __glpSendMessage(messageType.GET_CONTEXTS, {"contexts": JSON.stringify(glp.messages.getWebGLContexts())});
+    return;
+  }
+
+  var context = glp.messages.getWebGLContext(message.activeContext);
   if (!context)
     return;
 
@@ -50,12 +59,17 @@ window.addEventListener('message', function(event) {
     context.glp.duplicateProgramDetection.toggle(message.data.enabled);
   } else if (message.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
     glp.messages.getDuplicateProgramUsage(context);
-  } else if (message.type == messageType.CONTEXTS) {
-    glpSendMessage(messageType.CONTEXTS, {"contexts": glp.messages.getWebGLContexts()})
-  } else if (message.type == messageType.TEXTURE) {
+  } else if (message.type == messageType.GET_TEXTURE) {
     glp.messages.getTexture(context, message.data.index);
+  } else if (message.type == messageType.GET_TEXTURES) {
+    glp.messages.getTextures(context);
   } else {
-    console.log(message.data);
+    console.error(message.type, message.data);
+  }
+  if (message.data) {
+    console.log("Received " + message.type + " with " + message.data);
+  } else {
+    console.log("Received " + message.type);
   }
 });
 
@@ -67,16 +81,31 @@ window.addEventListener('message', function(event) {
 glp.messages.getWebGLContexts = function() {
   var canvases = document.getElementsByTagName("canvas");
   var contexts = [];
+  var counter = 0;
   for (var i = 0; i < canvases.length; i++) {
     var canvas = canvases[i];
     var webGLContext = canvas.getContext("webgl");
     if (webGLContext == null) {
       continue;
-    } else if (webGLContext.__uuid == null) {
+    }
+
+    if (webGLContext.__uuid == null) {
       webGLContext.__uuid = guid();
     }
+
+    var name = null;
+    if (canvas.id) {
+      name = canvas.id;
+    } else if (canvas.className) {
+      name = canvas.className;
+    } else {
+      name = "canvas" + counter++;
+    }
+    webGLContext.__name = name;
+
     contexts.push(webGLContext);
   }
+
   return contexts;
 }
 
@@ -101,7 +130,7 @@ glp.messages.getWebGLActiveContext = function() {
 }
 
 glp.messages.getCurrentProgramUsageCount = function(context) {
-  glpSendMessage(messageType.GET_PROGRAM_USAGE_COUNT,
+  glpSendMessage(context, messageType.GET_PROGRAM_USAGE_COUNT,
       {"programUsageCount": JSON.stringify(
         context.glp.programUsageCounter.usages)})
 }
@@ -111,15 +140,19 @@ glp.messages.getCurrentProgramUsageCount = function(context) {
  * Sends duplicated program list to the front end
  */
 glp.messages.getDuplicateProgramUsage = function(context) {
-  glpSendMessage(messageType.GET_DUPLICATE_PROGRAM_USAGE,
+  glpSendMessage(context, messageType.GET_DUPLICATE_PROGRAM_USAGE,
       {"duplicateProgramUses": JSON.stringify(
         context.glp.duplicateProgramDetection.duplicates)})
 }
 
-glp.messages.getTexture = function(context, index) {
-  context.glpUpdateTextureList();
-  context.glpGetTexture(index);
+glp.messages.getTextures = function(context) {
+  context.glp.textureViewer.getTextures(context);
 }
+
+glp.messages.getTexture = function(context, index) {
+  context.glp.textureViewer.getTexture(context, index);
+}
+
 
 /**
  * Sends call stack information to the panel
@@ -127,7 +160,7 @@ glp.messages.getTexture = function(context, index) {
  */
 glp.messages.sendCallStack = function(context, type) {
     var callStack = context.glp.callStack.getStack(type);
-    glpSendMessage(messageType.CALL_STACK, {"functionNames": callStack})
+    glpSendMessage(context, messageType.CALL_STACK, {"functionNames": callStack})
 }
 
 /**
@@ -150,7 +183,7 @@ glp.messages.sendFunctionHistogram = function(threshold) {
             dataSeries.push(histogram[functionName])
         }
     }
-    glpSendMessage(messageType.FUNCTION_HISTOGRAM, {"labels": labels, "values": dataSeries})
+    glpSendMessage(context, messageType.FUNCTION_HISTOGRAM, {"labels": labels, "values": dataSeries})
 }
 
 /**

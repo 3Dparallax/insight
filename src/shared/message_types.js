@@ -8,7 +8,8 @@ var messageType = {
   GET_PROGRAM_USAGE_COUNT : "getProgramUsageCount",
   TOGGLE_DUPLICATE_PROGRAM_USAGE : "toggleDuplicateProgramUsage",
   GET_DUPLICATE_PROGRAM_USAGE : "getDuplicateProgramUse",
+  GET_CONTEXTS : "getContexts",
   CONTEXTS : "contexts",
-  TEXTURE : "texture",
-  TEXTURE_LIST : "textures",
+  GET_TEXTURE : "texture",
+  GET_TEXTURES : "textures",
 }
