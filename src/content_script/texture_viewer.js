@@ -5,8 +5,8 @@ glp.textureViewer.textures = [];
 /**
  * Sends the number of textures created to the front end
  **/
-glp.textureViewer.getTextures = function() {
-    glpSendMessage(messageType.GET_TEXTURES, { "length" : this.textures.length });
+glp.textureViewer.getTextures = function(gl) {
+    glpSendMessage(gl, messageType.GET_TEXTURES, { "length" : this.textures.length });
 }
 
 /**
@@ -29,7 +29,7 @@ glp.textureViewer.getTexture = function(gl, index) {
     if (canRead) {
         var pixels = new Uint8Array(size.x * size.y * 4);
         gl.readPixels(0, 0, size.x, size.y, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-        glpSendMessage(messageType.GET_TEXTURE, {
+        glpSendMessage(gl, messageType.GET_TEXTURE, {
             "index" : index,
             "pixels" : Array.prototype.slice.call(pixels)
         });
