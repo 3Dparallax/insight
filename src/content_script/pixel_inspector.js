@@ -191,9 +191,6 @@ glp.pixelInspector.copyAttributes = function(gl, oldProgram, program) {
  * Switches the current program to the pixel inspector program
  */
 glp.pixelInspector.switchToProgram = function(gl) {
-  // if (!this.enabled || this.programs.indexOf(originalProgram.__uuid) >= 0) {
-  //   return
-  // }
   var oldProgram = gl.getParameter(gl.CURRENT_PROGRAM);
   var program = this.getProgram(gl, oldProgram);
   this.originalPrograms[program.__uuid] = oldProgram;
