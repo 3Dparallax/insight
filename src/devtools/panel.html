@@ -1,7 +1,4 @@
 <html>
-  <head>
-    <link rel="stylesheet" type="text/css" href="panel.css">
-  </head>
   <body>
     <div id="no-context" class="no-context-hidden">
       No Contexts Found
@@ -15,7 +12,18 @@
         <div class="tabBar-element" id="tabBar-texture-viewer">Textures</div>
       </div>
       <div class="tab tab-enabled" id="pixelInspector">
-          <input type="checkbox" id="pixelInspectorEnable">Enable Pixel Inspector</input>
+        <div class="container-fluid">
+          <div class="row-fluid show-grid">
+            <div class="pull-left">
+              <div class="bootstrap-switch-square">
+                <input type="checkbox" data-toggle="switch" id="pixelInspectorEnable"/>
+              </div>
+            </div>
+            <div class="pull-right">
+              <button title="Pixel overwrite inspector detects how how many times a pixel has been drawn. The color ranges from green to red, red being drawn multiple times while green been drawn only on clear." data-placement="left" data-toggle="tooltip" class="btn btn-default mrs" type="button">?</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="tab" id="programUsage">
           <button id="beginProgramUsageCount">Begin Program Usage Count</button>
@@ -51,5 +59,12 @@
     <script src="panel.js"></script>
     <script src="context.js"></script>
     <script src="pixel_inspector.js"></script>
+    <link rel="stylesheet" type="text/css" href="panel.css">
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="lib/flat-ui.css">
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/bootstrap.js"></script>
+    <script src="lib/flat-ui.js"></script>
+    <script src="lib/application.js"></script>
   </body>
 </html>
