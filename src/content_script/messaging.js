@@ -13,7 +13,10 @@ _glpInit();
  * @param {Dictionary} Message data
  */
 function glpSendMessage(context, type, data) {
-    window.postMessage({ "source": "content", "uuid": context.__uuid, "type": type, "data": data}, "*");
+    window.postMessage({ "source": "content", "activeContext": context.__uuid, "type": type, "data": data}, "*");
+}
+function __glpSendMessage(type, data) {
+    window.postMessage({ "source": "content", "type": type, "data": data}, "*");
 }
 
 glp.messages = {}
@@ -29,7 +32,12 @@ window.addEventListener('message', function(event) {
     return;
   }
 
-  var context = glp.messages.getWebGLActiveContext();
+  if (message.type == messageType.GET_CONTEXTS) {
+    __glpSendMessage(messageType.GET_CONTEXTS, {"contexts": JSON.stringify(glp.messages.getWebGLContexts())});
+    return;
+  }
+
+  var context = glp.messages.getWebGLContext(message.activeContext);
   if (!context)
     return;
 
@@ -51,8 +59,6 @@ window.addEventListener('message', function(event) {
     context.glp.duplicateProgramDetection.toggle(message.data.enabled);
   } else if (message.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
     glp.messages.getDuplicateProgramUsage(context);
-  } else if (message.type == messageType.GET_CONTEXTS) {
-    glpSendMessage(context, messageType.GET_CONTEXTS, {"contexts": JSON.stringify(glp.messages.getWebGLContexts())})
   } else if (message.type == messageType.GET_TEXTURE) {
     glp.messages.getTexture(context, message.data.index);
   } else if (message.type == messageType.GET_TEXTURES) {
