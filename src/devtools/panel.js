@@ -13,28 +13,34 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         return;
     }
 
-    if (msg.type == messageType.CALL_STACK) {
-        displayCallStack(msg.data.functionNames);
-    } else if (msg.type == messageType.GET_PROGRAM_USAGE_COUNT) {
-        for( var programUsage in msg.data.programUsageCount ) {
-            console.log(msg.data.programUsageCount[programUsage]);
-        }
-    } else if (msg.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
-        for( var duplicatedProgram in msg.data.duplicateProgramUses ) {
-            // console.log(duplicatedProgram);
-        }
-    } else if (msg.type == messageType.GET_TEXTURE) {
-        displayTexture(msg.data);
-    } else if (msg.type == messageType.GET_TEXTURES) {
-        updateTextureList(msg.data.length);
-    } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
-        try {
-            displayHistogram(msg.data);
-        } catch(e) {
-            console.log(e);
-        }
-    } else if (msg.type == messageType.GET_CONTEXTS) {
+    if (msg.type == messageType.GET_CONTEXTS) {
         updateContexts(JSON.parse(msg.data.contexts));
+        return;
+    }
+
+    if (!msg.uuid) {
+        console.log("All messages must specify context uuid");
+        return;
+    }
+
+    var state = getContextState(msg.uuid);
+
+    if (msg.type == messageType.CALL_STACK) {
+        state.callStack = msg.data.functionNames;
+    } else if (msg.type == messageType.GET_PROGRAM_USAGE_COUNT) {
+        state.programUsageCount = msg.data.programUsageCount;
+    } else if (msg.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
+        state.duplicateProgramUses = msg.data.duplicateProgramUses;
+    } else if (msg.type == messageType.GET_TEXTURE) {
+        state.texture = msg.data;
+    } else if (msg.type == messageType.GET_TEXTURES) {
+        state.textureList = msg.data.length;
+    } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
+        state.histogram = msg.data;
+    }
+
+    if (state.activeContext == msg.uuid) {
+        updateTabs(state);
     }
 
     console.log(msg);
@@ -44,14 +50,6 @@ function sendMessage(type, data) {
     console.log("Sending: " + JSON.stringify(data));
     backgroundPageConnection.postMessage({source: "panel", type: type, data: data});
 }
-
-function pixelInspectorChanged(e) {
-    var checked = document.getElementById("pixelInspectorEnable").checked;
-    var data = {"enabled": checked};
-    sendMessage(messageType.PIXEL_INSPECTOR, data);
-}
-
-document.getElementById("pixelInspector").addEventListener("click", pixelInspectorChanged);
 
 function getCallsSinceDraw(e) {
     sendMessage(messageType.CALL_STACK, "callsSinceDraw");
@@ -98,6 +96,9 @@ function getFunctionHistogram(e) {
 }
 
 function displayHistogram(histogram) {
+    if (histogram == null) {
+        return;
+    }
     var data = {
         labels: histogram.labels,
         datasets: [
@@ -117,6 +118,9 @@ function displayHistogram(histogram) {
 }
 
 function displayTexture(texture) {
+    if (texture == null) {
+        return;
+    }
     console.log("Displaying texture");
     var ctx = document.getElementById("textureCanvas").getContext("2d");
     var imageData = ctx.getImageData(0, 0, 256, 256);
@@ -131,7 +135,7 @@ function updateTextureList(length) {
     for (var i = 0; i < length; i++) {
         var textureElement = document.createElement("div");
         textureElement.classList.add("texture-element");
-        textureElement.innerHTML = "Texture" + i;
+        textureElement.innerHTML = "texture" + i;
         textureElement.id = i;
         textureList.appendChild(textureElement);
         textureElement.onclick = function() {
