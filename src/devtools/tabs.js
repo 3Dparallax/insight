@@ -33,6 +33,9 @@ var updateTabs = function(state) {
     displayCallStack(state.callStack);
     displayTexture(state.texture);
     updateTextureList(state.textureList);
+    updateBufferList(state.buffer.bufferSize);
+    updateFrameBufferList(state.buffer.frameBufferSize);
+    updateRenderBufferList(state.buffer.renderBufferSize);
     displayHistogram(state.histogram);
     updatePixelInspector(state.pixelInspectorEnabled);
 }

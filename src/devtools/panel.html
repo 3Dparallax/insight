@@ -129,10 +129,44 @@
         </div>
       </div>
       <div class="tab" id="bufferViewer">
-        <div id="buffer-list"></div>
-        <div id="buffer-content">
-          <div>
-            <button id="getBuffers">Get Buffers</button>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="col-sm-4">
+              <button class="btn btn-primary btn-wide" id="getBuffers">
+                Get Buffers
+              </button>
+              <div class="btn-group">
+                <button class="btn btn-default btn-wide dropdown-toggle" type="button" data-toggle="dropdown">
+                  Buffer <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu scrollable-menu" role="menu" id="buffers-list">
+                </ul>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <button class="btn btn-primary btn-wide" id="getFrameBuffers">
+                Get Frame Buffers
+              </button>
+              <div class="btn-group">
+                <button class="btn btn-default btn-wide dropdown-toggle" type="button" data-toggle="dropdown">
+                  Buffer <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu scrollable-menu" role="menu" id="frame-buffers-list">
+                </ul>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <button class="btn btn-primary btn-wide" id="getRenderBuffers">
+                Get Render Buffers
+              </button>
+              <div class="btn-group">
+                <button class="btn btn-default btn-wide dropdown-toggle" type="button" data-toggle="dropdown">
+                  Buffer <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu scrollable-menu" role="menu" id="render-buffers-list">
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -143,6 +177,7 @@
     <script src="../shared/message_types.js"></script>
     <script src="tabs.js"></script>
     <script src="state.js"></script>
+    <script src="buffers.js"></script>
     <script src="program_usage.js"></script>
     <script src="duplicate_program.js"></script>
     <script src="call_stack.js"></script>

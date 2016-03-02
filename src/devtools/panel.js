@@ -41,6 +41,12 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         state.textureList = msg.data.length;
     } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
         state.histogram = msg.data;
+    } else if (msg.type == messageType.GET_BUFFERS) {
+        state.buffer.bufferSize = msg.data.length;
+    } else if (msg.type == messageType.GET_FRAME_BUFFERS) {
+        state.buffer.frameBufferSize = msg.data.length;
+    } else if (msg.type == messageType.GET_RENDER_BUFFERS) {
+        state.buffer.renderBufferSize = msg.data.length;
     }
 
     if (states.activeContext == msg.activeContext) {
@@ -51,6 +57,6 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
 });
 
 function sendMessage(type, data) {
-    console.log("Sending: " + JSON.stringify(data));
+    console.log("Sending " + type + " with " + JSON.stringify(data));
     backgroundPageConnection.postMessage({ "source": "panel", "activeContext": states.activeContext,  "type": type, "data": data});
 }

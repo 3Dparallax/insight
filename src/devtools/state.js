@@ -3,6 +3,10 @@ states.activeContext = null;
 
 function setInitialState(uuid) {
     initialState = {};
+    initialState.buffer = {};
+    initialState.buffer.bufferSize = 0;
+    initialState.buffer.frameBufferSize = 0;
+    initialState.buffer.renderBufferSize = 0;
     initialState.callStack = [];
     initialState.programUsageCount = [];
     initialState.duplicateProgramUses = [];

@@ -38,8 +38,9 @@ window.addEventListener('message', function(event) {
   }
 
   var context = glp.messages.getWebGLContext(message.activeContext);
-  if (!context)
+  if (!context) {
     return;
+  }
 
   if (message.type == messageType.PIXEL_INSPECTOR) {
     glp.messages.pixelInspectorToggle(message.data.enabled);
@@ -63,6 +64,12 @@ window.addEventListener('message', function(event) {
     glp.messages.getTexture(context, message.data.index);
   } else if (message.type == messageType.GET_TEXTURES) {
     glp.messages.getTextures(context);
+  } else if (message.type == messageType.GET_BUFFERS) {
+    context.glp.bufferViewer.getBuffers(context);
+  } else if (message.type == messageType.GET_FRAME_BUFFERS) {
+    context.glp.bufferViewer.getFrameBuffers(context);
+  } else if (message.type == messageType.GET_RENDER_BUFFERS) {
+    context.glp.bufferViewer.getRenderBuffers(context);
   } else {
     console.error(message.type, message.data);
   }
