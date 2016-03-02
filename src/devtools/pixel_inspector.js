@@ -7,7 +7,7 @@ function pixelInspectorChanged(e) {
     state.pixelInspectorEnabled = checked;
 }
 
-document.getElementById("pixelInspector").addEventListener("click", pixelInspectorChanged);
+document.getElementById("togglePixelInspector").addEventListener("click", pixelInspectorChanged);
 
 function updatePixelInspector(checked) {
     document.getElementById("pixelInspectorEnable").checked = checked;
