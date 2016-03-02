@@ -36,13 +36,13 @@ function updateProgramUsageTable(newProgramData) {
         glpFrontEnd.programUsageTableInitialized = true;
         glpFrontEnd.programUsageData = newProgramData;
     } else {
-        var tableElement = $("#programUsageTableCollected")
         var idx = 0;
         for(var programIdKey in newProgramData) {
             var action = '';
             if (glpFrontEnd.programUsageData[programIdKey] != undefined) {
                 // Update the row
                 action = 'updateRow';
+                glpFrontEnd.programUsageData[programIdKey] = newProgramData[programIdKey];
             } else {
                 // Otherwise, add a row for it right in the same index
                 action = 'insertRow';
@@ -75,7 +75,8 @@ document.getElementById("toggleProgramUsageCount").addEventListener("click", tog
 
 
 function resetProgramUsageCount(e) {
-    alert("resetting program usage count")
+    var checked = document.getElementById("programUsageEnabled").checked;
+    if (!checked) return;
     sendMessage(messageType.RESET_PROGRAM_USAGE_COUNT, "resetProgramUsageCount")
 }
 

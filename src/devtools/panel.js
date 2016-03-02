@@ -34,6 +34,7 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         updateProgramUsageTable(JSON.parse(msg.data.programUsageCount));
     } else if (msg.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
         state.duplicateProgramUses = msg.data.duplicateProgramUses;
+        updateProgramDuplicateTable(JSON.parse(msg.data.duplicateProgramUses));
     } else if (msg.type == messageType.GET_TEXTURE) {
         state.texture = msg.data;
     } else if (msg.type == messageType.GET_TEXTURES) {

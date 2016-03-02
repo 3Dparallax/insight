@@ -65,12 +65,44 @@
             </div>
           </div>
         </div>
-          <!-- <button id="resetProgramUsageCount">Reset Program Usage Count</button> -->
-          <!-- <button id="getProgramUsageCount">Get Program Usage Count</button> -->
       </div>
       <div class="tab" id="programDuplicate">
-        <input type="checkbox" id="toggleDuplicateProgramUsage">Toggle Duplicate Program Detection</input>
-        <button id="getDuplicateProgramUse">Get Used Duplicate Programs</button>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="pull-left">
+              <div class="bootstrap-switch-square" id="toggleProgramDuplicates" >
+                <input type="checkbox" data-toggle="switch" id="programDuplicatesEnabled"/>
+              </div>
+            </div>
+            <div class="pull-right">
+              <button type="button" id="getProgramDuplicates" class="btn btn-primary">Get Duplicate Program Usages</button>
+              <button type="button" id="resetProgramDuplicates" class="btn btn-primary">Clear Duplicate Program Usages</button>
+              <button title="Rewrite this to be usage count: Pixel overwrite inspector detects how how many times a pixel has been drawn. The color ranges from green to red, red being drawn multiple times while green been drawn only on clear." data-placement="left" data-toggle="tooltip" class="btn btn-default mrs" type="button">?</button>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div id="programDuplicateTableContainer">
+              <div id="programDuplicateTableNotEnabled">
+                <label>Enable the feature to collect program duplicates. Disable it to stop collecting program duplicates.</label>
+              </div>
+              <div id="programDuplicateTableCollecting">
+                <label>Collecting information for program duplicates</label>
+              </div>
+              <div id="programDuplicateTableCollected">
+                <div class="table-responsive">
+                  <table class = "table table-striped" id="programDuplicateTable">
+                    <thead>
+                        <tr>
+                           <th>Program</th>
+                           <th>Usage Count</th>
+                        </tr>
+                     </thead>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="tab" id="callStack">
         <button id="callsSinceDraw">Print Call Stack Since Last Drawn</button>
@@ -108,7 +140,6 @@
       </div>
     </div>
     <script src="lib/chart.js"></script>
-    <script src="lib/chart.horizontalBar.js"></script>
     <script src="../shared/message_types.js"></script>
     <script src="tabs.js"></script>
     <script src="state.js"></script>
