@@ -1,40 +1,52 @@
+glpFrontEnd.callStackTableInitialized = false;
+
 function getCallsSinceDraw(e) {
-    sendMessage(messageType.CALL_STACK, "callsSinceDraw");
+    sendMessage(messageType.GET_CALL_STACK, "bothCallStacks");
 }
 
-document.getElementById("callsSinceDraw").addEventListener("click", getCallsSinceDraw);
+document.getElementById("getCallStack").addEventListener("click", getCallsSinceDraw);
 
-function getMostRecentCalls(e) {
-    sendMessage(messageType.CALL_STACK, "mostRecentCalls");
-}
-
-document.getElementById("mostRecentCalls").addEventListener("click", getMostRecentCalls);
-
-function displayCallStack(callStack) {
-    var callStackTable = document.getElementById("callStackTable");
-    while (callStackTable.firstChild) {
-        callStackTable.removeChild(callStackTable.firstChild);
+function toggleCallStack(e) {
+    var checked = document.getElementById("callStackEnabled").checked;
+    var firstTimeEnabling = (document.getElementById("callStackNotEnabled").style.display != "none");
+    if (checked && firstTimeEnabling) {
+        document.getElementById("callStackNotEnabled").style.display = "none";
+        document.getElementById("callStackCollecting").style.display = "block";
     }
-    var callStackInnerHTML = "<tr><th>Execution Time</th><th>Function</th><th>Duration(&mu;s)</th><th>Arguments</th></tr>";
+    var data = {"enabled": checked};
+    sendMessage(messageType.TOGGLE_CALL_STACK, data)
+}
+
+document.getElementById("toggleCallStack").addEventListener("click", toggleCallStack);
+
+function convertCallStackDataIntoTableData(callStack) {
+    var retData = [];
     for (var i = 0; i < callStack.length; i++) {
-        console.log(callStack[i]);
-        var functionName = callStack[i].name;
-        var functionArgs = callStack[i].args;
-        var functionDuration = callStack[i].time;
-        var functionTimeOfExecution = callStack[i].executionTime;
-        var rowClass = "callStack";
-        if (i > 0 && i < callStack.length - 1
-            && (callStack[i].name == callStack[i - 1].name ||
-                callStack[i].name == callStack[i + 1].name)) {
-
-            rowClass = "callStackRepeated";
-        }
-        callStackInnerHTML += "<tr class=\"" + rowClass +"\">";
-        callStackInnerHTML += "<td style=\"border-right:1px solid\">" + functionTimeOfExecution + "</td>";
-        callStackInnerHTML += "<td>" + functionName + "</td>";
-        callStackInnerHTML += "<td>" + functionDuration + "</td>";
-        callStackInnerHTML += "<td>" + functionArgs + "</td>";
-        callStackInnerHTML += "</tr>";
+        var obj = callStack[i];
+        var objElement = {};
+        objElement.execTime = obj.executionTime;
+        objElement.fcn = obj.name;
+        objElement.duration = obj.time;
+        objElement.args = obj.args;
+        retData.push(objElement);
     }
-    callStackTable.innerHTML = callStackInnerHTML;
+    return retData;
 }
+
+function updateCallStackTables(initialCallStack) {
+    document.getElementById("callStackNotEnabled").style.display = "none";
+    document.getElementById("callStackCollecting").style.display = "none";
+    document.getElementById("callStackCollected").style.display = "block";
+    var mostRecentData = convertCallStackDataIntoTableData(initialCallStack.mostRecentCalls);
+    var lastDrawnTable = convertCallStackDataIntoTableData(initialCallStack.callsSinceDraw);
+
+    if (!glpFrontEnd.callStackTableInitialized) {
+        $('#mostRecentCallTable').bootstrapTable({});
+        $('#lastDrawnCallTable').bootstrapTable({});
+        glpFrontEnd.callStackTableInitialized = true;
+    }
+
+    $('#lastDrawnCallTable').bootstrapTable("load", lastDrawnTable);
+    $('#mostRecentCallTable').bootstrapTable("load", mostRecentData);
+}
+

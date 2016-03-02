@@ -29,6 +29,7 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
 
     if (msg.type == messageType.CALL_STACK) {
         state.callStack = msg.data.functionNames;
+        updateCallStackTables(msg.data.functionNames);
     } else if (msg.type == messageType.GET_PROGRAM_USAGE_COUNT) {
         state.programUsageCount = msg.data.programUsageCount;
         updateProgramUsageTable(JSON.parse(msg.data.programUsageCount));
