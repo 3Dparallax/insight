@@ -12,7 +12,10 @@ var messageType = {
   CONTEXTS : "contexts",
   GET_TEXTURE : "texture",
   GET_TEXTURES : "textures",
+  GET_BUFFER : "buffer",
   GET_BUFFERS : "buffers",
+  GET_FRAME_BUFFER : "frameBuffer",
   GET_FRAME_BUFFERS : "frameBuffers",
+  GET_RENDER_BUFFER : "renderBuffer",
   GET_RENDER_BUFFERS : "renderBuffers",
 }
