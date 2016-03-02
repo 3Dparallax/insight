@@ -36,7 +36,7 @@ glp.callStack.helper.getStack = function() {
  */
 glp.callStack.helper.getCallSiteDetails = function(stack) {
   if (!stack) {
-    return ""
+    return "";
   }
   return stack.getFileName() + ":" + stack.getLineNumber();
 }
