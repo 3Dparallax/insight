@@ -35,6 +35,9 @@ glp.callStack.helper.getStack = function() {
  * @param {CallSite} call site object
  */
 glp.callStack.helper.getCallSiteDetails = function(stack) {
+  if (!stack) {
+    return "";
+  }
   return stack.getFileName() + ":" + stack.getLineNumber();
 }
 
@@ -67,9 +70,11 @@ glp.callStack.getStack = function(type) {
       formatted = this.callsSinceDraw;
   }
   for (var i = 0; i < formatted.length; i++) {
-    formatted[i][0] = formatted[i][0] + " (" + this.helper.getCallSiteDetails(formatted[i][4]) + ")";
-    formatted[i].pop();
-    formatted[i][1] = JSON.stringify(formatted[i][1]);
+    if (!formatted[i].formatted) {
+      formatted[i].name = formatted[i].name + " (" + this.helper.getCallSiteDetails(formatted[i].callSite) + ")";
+      formatted[i].args = JSON.stringify(formatted[i].args);
+      formatted[i].formatted = true;
+    }
   }
   return formatted;
 }
@@ -97,7 +102,14 @@ glp.callStack.push = function(name, args) {
   var d = new Date();
   var timeString = this.helper.dateTimeFormat(d);
   var stack = this.helper.getFirstUserStack();
-  var callDetails = [name, args, window.performance.now(), timeString, stack];
+  var callDetails = {
+    name: name,
+    args: args,
+    time: window.performance.now(),
+    executionTime: timeString,
+    callSite: stack,
+    formatted: false,
+  };
   //JSON.stringify(args)
   if (this.mostRecentCalls.length > this.maxSize) {
     this.mostRecentCalls.shift();
@@ -126,11 +138,11 @@ glp.callStack.update = function(name) {
     var i = this.callsSinceDraw.length - 1
     // Most of the time we just need to update the last element on the stack,
     // but there are rare cases of nesting where we have to trace backwards
-    while (i > 0 && this.callsSinceDraw[i][0] != name) {
+    while (i > 0 && this.callsSinceDraw[i].name != name) {
       i--;
     }
     // "| 0" truncates to an int.  "+ 0.5" is for rounding
-    this.callsSinceDraw[i][2] = (((endTime - this.callsSinceDraw[i][2]) * 1000) + 0.5) | 0
+    this.callsSinceDraw[i].time = (((endTime - this.callsSinceDraw[i].time) * 1000) + 0.5) | 0
   }
 }
 

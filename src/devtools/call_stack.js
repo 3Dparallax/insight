@@ -18,14 +18,15 @@ function displayCallStack(callStack) {
     var callStackInnerHTML = "<tr><th>Execution Time</th><th>Function</th><th>Duration(&mu;s)</th><th>Arguments</th></tr>";
     for (var i = 0; i < callStack.length; i++) {
         console.log(callStack[i]);
-        var functionName = callStack[i][0];
-        var functionArgs = callStack[i][1];
-        var functionDuration = callStack[i][2];
-        var functionTimeOfExecution = callStack[i][3];
+        var functionName = callStack[i].name;
+        var functionArgs = callStack[i].args;
+        var functionDuration = callStack[i].time;
+        var functionTimeOfExecution = callStack[i].executionTime;
         var rowClass = "callStack";
         if (i > 0 && i < callStack.length - 1
-            && (callStack[i][0] == callStack[i - 1][0] ||
-                callStack[i][0] == callStack[i + 1][0])) {
+            && (callStack[i].name == callStack[i - 1].name ||
+                callStack[i].name == callStack[i + 1].name)) {
+
             rowClass = "callStackRepeated";
         }
         callStackInnerHTML += "<tr class=\"" + rowClass +"\">";
