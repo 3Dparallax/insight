@@ -47,6 +47,9 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         state.buffer.frameBufferSize = msg.data.length;
     } else if (msg.type == messageType.GET_RENDER_BUFFERS) {
         state.buffer.renderBufferSize = msg.data.length;
+    } else if (msg.type == messageType.STATE_VARS) {
+        state.stateVars = msg.data;
+        updateStateVariableTable(JSON.parse(msg.data.stateVars));
     }
 
     if (states.activeContext == msg.activeContext) {

@@ -12,6 +12,7 @@
         <div class="tabBar-element" id="tabBar-call-stack">Call Stack</div>
         <div class="tabBar-element" id="tabBar-texture-viewer">Textures</div>
         <div class="tabBar-element" id="tabBar-buffer-viewer">Buffers</div>
+        <div class="tabBar-element" id="tabBar-state-viewer">States</div>
       </div>
       <div class="tab tab-enabled" id="pixelInspector">
         <div class="container-fluid">
@@ -170,6 +171,21 @@
           </div>
         </div>
       </div>
+      <div class="tab" id="stateViewer">
+        <button class="btn btn-primary btn-wide" id="getStates">Get States</button>
+        <div id="stateVarTableCollected">
+          <div class="table-responsive">
+            <table class = "table table-striped" id="stateVarTable">
+              <thead>
+                  <tr>
+                     <th>Variable</th>
+                     <th>State</th>
+                  </tr>
+               </thead>
+            </table>
+          </div>
+        </div>
+      </div>
       <div id="contextBar">
       </div>
     </div>
@@ -184,6 +200,7 @@
     <script src="histogram.js"></script>
     <script src="textures.js"></script>
     <script src="panel.js"></script>
+    <script src="state_variables.js"></script>
     <script src="context.js"></script>
     <script src="pixel_inspector.js"></script>
     <link rel="stylesheet" type="text/css" href="panel.css">

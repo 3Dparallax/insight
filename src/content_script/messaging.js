@@ -70,6 +70,8 @@ window.addEventListener('message', function(event) {
     context.glp.bufferViewer.getFrameBuffers(context);
   } else if (message.type == messageType.GET_RENDER_BUFFERS) {
     context.glp.bufferViewer.getRenderBuffers(context);
+  } else if (message.type == messageType.STATE_VARS) {
+    glp.messages.sendStateVars(context);
   } else {
     console.error(message.type, message.data);
   }
@@ -211,4 +213,12 @@ glp.messages.pixelInspectorToggle = function(enabled) {
       webGLContext.glp.pixelInspector.disable(webGLContext);
     }
   }
+}
+
+/**
+ * Sends call state variable information to the panel
+ */
+glp.messages.sendStateVars = function(context) {
+    var stateVars = JSON.stringify(context.glp.stateTracker.getStates(context));
+    glpSendMessage(context, messageType.STATE_VARS, {"stateVars": stateVars})
 }
