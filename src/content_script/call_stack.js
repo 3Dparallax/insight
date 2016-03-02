@@ -1,13 +1,13 @@
 glp.callStack = {}
 glp.callStack.helper = {}
 
-glp.callStack.enabled = true;
+glp.callStack.enabled = false;
 glp.callStack.maxSize = 100;
 glp.callStack.mostRecentCalls = [];
 glp.callStack.callsSinceDraw = [];
 
 glp.histogram = {};
-glp.histogram.enabled = true;
+glp.histogram.enabled = false;
 glp.histogram.histogram = {};
 /*
  * Determines which file and line number called a certain function
