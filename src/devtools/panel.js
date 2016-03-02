@@ -1,3 +1,5 @@
+var glpFrontEnd = {};
+
 // Create a connection to the background page
 var backgroundPageConnection = chrome.runtime.connect({
     name: "panel"
@@ -29,6 +31,7 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         state.callStack = msg.data.functionNames;
     } else if (msg.type == messageType.GET_PROGRAM_USAGE_COUNT) {
         state.programUsageCount = msg.data.programUsageCount;
+        updateProgramUsageTable(JSON.parse(msg.data.programUsageCount));
     } else if (msg.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
         state.duplicateProgramUses = msg.data.duplicateProgramUses;
     } else if (msg.type == messageType.GET_TEXTURE) {

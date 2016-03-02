@@ -82,3 +82,16 @@ body {
     max-height: 256px;
     overflow-x: hidden;
 }
+canvas {
+  margin-top: 25px;
+}
+#programUsageTableContainer {
+  width: 50%;
+}
+#programUsageTableCollecting {
+  display: none;
+}
+#programUsageTableCollected {
+  display: none;
+}
+>>>>>>> adding in ui for program usage count, updates table too. Needs to do timer and small ui polish
