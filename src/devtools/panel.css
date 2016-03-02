@@ -94,4 +94,12 @@ canvas {
 #programUsageTableCollected {
   display: none;
 }
->>>>>>> adding in ui for program usage count, updates table too. Needs to do timer and small ui polish
+#programDuplicateTableContainer {
+  width: 50%;
+}
+#programDuplicateTableCollecting {
+  display: none;
+}
+#programDuplicateTableCollected {
+  display: none;
+}

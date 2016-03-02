@@ -55,6 +55,8 @@ window.addEventListener('message', function(event) {
     glp.messages.getCurrentProgramUsageCount(context);
   } else if (message.type == messageType.TOGGLE_DUPLICATE_PROGRAM_USAGE) {
     context.glp.duplicateProgramDetection.toggle(message.data.enabled);
+  } else if (message.type == messageType.RESET_DUPLICATE_PROGRAM_USAGE) {
+    context.glp.duplicateProgramDetection.reset();
   } else if (message.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
     glp.messages.getDuplicateProgramUsage(context);
   } else if (message.type == messageType.GET_TEXTURE) {

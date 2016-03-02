@@ -1,6 +1,7 @@
 glp.duplicateProgramDetection = {};
 glp.duplicateProgramDetection.enabled = false;
 glp.duplicateProgramDetection.duplicates = []; // list of { repeatedProgram : lineNumber }
+glp.duplicateProgramDetection.duplicatePrograms = {};
 
 /**
  * Toggles duplicate program usage detection
@@ -13,6 +14,10 @@ glp.duplicateProgramDetection.toggle = function(enable) {
     }
 }
 
+glp.duplicateProgramDetection.reset = function() {
+  glp.duplicateProgramDetection.duplicates = []
+  glp.duplicateProgramDetection.duplicatePrograms = {};
+}
 /**
  * Enables duplicate program usage detection
  */
@@ -33,6 +38,7 @@ glp.duplicateProgramDetection.useProgramCalled = function(gl, program) {
     return
   }
   var currentProgram = gl.getParameter(gl.CURRENT_PROGRAM);
+
   if( currentProgram != undefined &&
       currentProgram.__uuid != undefined &&
       currentProgram.__uuid == program.__uuid ) {
@@ -53,9 +59,15 @@ glp.duplicateProgramDetection.useProgramCalled = function(gl, program) {
 
       fileName = userStack.getFileName();
     }
-    this.duplicates.push({"programId" : program.__uuid,
-                          "lineNumber" : lineNumber,
-                          "functionName" : functionName,
-                          "fileName" : fileName})
+
+    var programObj = {"programId" : program.__uuid,
+                      "lineNumber" : lineNumber,
+                      "functionName" : functionName,
+                      "fileName" : fileName};
+
+    if(this.duplicatePrograms[programObj] == undefined) {
+      this.duplicates.push(programObj);
+      this.duplicatePrograms[programObj] = true;
+    }
   }
 }
