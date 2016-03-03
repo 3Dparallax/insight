@@ -102,7 +102,7 @@ function updateRenderBufferList(length) {
 }
 
 function getBuffers(e) {
-    sendMessage(messageType.GET_FRAME_BUFFERS, "");
+    sendMessage(messageType.GET_BUFFERS, "");
 }
 
 document.getElementById("getBuffers").addEventListener("click", getBuffers);
