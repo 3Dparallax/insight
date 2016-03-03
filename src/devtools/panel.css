@@ -96,7 +96,7 @@ body {
   height: 256px;
   width: 256px;
   margin-top: 16px;
-  border: 1px solid black;
+  background: url("../../static/checkerboard-512x512.png");
 }
 .scrollable-menu {
     height: auto;
