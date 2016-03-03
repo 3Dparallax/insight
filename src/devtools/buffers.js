@@ -1,5 +1,4 @@
 function updateBufferList(length) {
-    console.log("update buffer list");
     var bufferList = document.getElementById("buffers-list");
 
     var elementsToAdd = length - bufferList.children.length;
