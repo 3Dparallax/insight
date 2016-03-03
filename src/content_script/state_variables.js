@@ -12,6 +12,7 @@ glp.stateTracker = {}
  * SCISSOR_TEST
  * STENCIL_TEST
  */
+
 glp.stateTracker.getStates = function(gl) {
   if (!gl) {
     return {};

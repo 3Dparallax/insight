@@ -1,6 +1,8 @@
 glpFrontEnd.callStackTableInitialized = false;
 
 function getCallsSinceDraw(e) {
+    var checked = document.getElementById("callStackEnabled").checked;
+    if (!checked) return;
     sendMessage(messageType.GET_CALL_STACK, "bothCallStacks");
 }
 

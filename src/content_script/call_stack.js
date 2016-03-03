@@ -57,11 +57,11 @@ glp.callStack.helper.getFirstUserStack = function() {
 
 
 glp.callStack.toggle = function(enabled) {
-  if (enabled) {
-    this.enabled = true;
-  } else {
-    this.enabled = false;
-  }
+  this.enabled = enabled;
+}
+
+glp.callStack.toggleHistogram = function(enabled) {
+  this.enabledHistogram = enabled;
 }
 
 /**
@@ -173,4 +173,8 @@ glp.histogram.add = function(name) {
   } else {
     this.histogram[name] += 1;
   }
+}
+
+glp.histogram.toggle = function(enabled) {
+  this.enabled = enabled;
 }
