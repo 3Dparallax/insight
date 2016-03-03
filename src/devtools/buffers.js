@@ -1,6 +1,4 @@
-
 function updateBufferList(length) {
-    console.log("update buffer list");
     var bufferList = document.getElementById("buffers-list");
 
     var elementsToAdd = length - bufferList.children.length;
@@ -27,8 +25,6 @@ function updateBufferList(length) {
         bufferElementLi.appendChild(bufferElementA);
 
         bufferElementLi.onclick = function() {
-            console.log("texture");
-            console.log(states.activeContext);
             sendMessage(messageType.GET_BUFFER, { "index": this.id });
         };
 
@@ -63,7 +59,7 @@ function updateFrameBufferList(length) {
         bufferElementLi.appendChild(bufferElementA);
 
         bufferElementLi.onclick = function() {
-            sendMessage(messageType.GET_BUFFER, { "index": this.id });
+            sendMessage(messageType.GET_FRAME_BUFFER, { "index": this.id });
         };
 
         bufferList.appendChild(bufferElementLi);
@@ -97,7 +93,7 @@ function updateRenderBufferList(length) {
         bufferElementLi.appendChild(bufferElementA);
 
         bufferElementLi.onclick = function() {
-            sendMessage(messageType.GET_BUFFER, { "index": this.id });
+            sendMessage(messageType.GET_RENDER_BUFFER, { "index": this.id });
         };
 
         bufferList.appendChild(bufferElementLi);
@@ -105,10 +101,11 @@ function updateRenderBufferList(length) {
 }
 
 function getBuffers(e) {
-    sendMessage(messageType.GET_FRAME_BUFFERS, "");
+    sendMessage(messageType.GET_BUFFERS, "");
 }
 
 document.getElementById("getBuffers").addEventListener("click", getBuffers);
+
 function getFrameBuffers(e) {
     sendMessage(messageType.GET_FRAME_BUFFERS, "");
 }
