@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url("lib/fonts/opensans.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
 tr.callStackRepeated {
   color: red;
 }
@@ -27,6 +35,9 @@ body {
   background-color: rgb(238, 238, 238);
 }
 .tabBar-element {
+  font-family: "Open Sans", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-size : 12px;
+  color: #484848;
   padding-left: 10px;
   padding-right: 10px;
   height: 30px;
@@ -34,9 +45,11 @@ body {
 }
 .tabBar-element:hover {
   background-color: rgb(225, 225, 225);
+  color: #222222;
 }
 .tabBar-element-enabled {
   border-bottom: solid rgb(45, 134, 247) 1px;
+  color: #000000;
 }
 .tab {
   display: none;
@@ -59,6 +72,9 @@ body {
   line-height: 30px;
 }
 .context-element {
+  font-family: "Open Sans", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-size : 12px;
+  color: #484848;
   padding-left: 10px;
   padding-right: 10px;
   height: 30px;
@@ -67,8 +83,10 @@ body {
 .context-element-enabled {
   color: white !important;
   background-color: rgb(57, 118, 225) !important;
+  color: #000000;
 }
 .context-element:hover {
+  color: #222222;
   background-color: rgb(225, 225, 225);
 }
 #textureCanvas {
