@@ -7,3 +7,12 @@ function guid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
     s4() + '-' + s4() + s4() + s4();
 }
+
+function getGLEnumName(gl, glEnum) {
+    for (var name in gl) {
+        if (gl[name] == glEnum) {
+            return name;
+        }
+    }
+    return glEnum;
+}

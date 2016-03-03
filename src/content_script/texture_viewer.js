@@ -1,12 +1,62 @@
 glp.textureViewer = {};
 
 glp.textureViewer.textures = [];
+glp.textureViewer.boundTexture = null;
 
 /**
  * Sends the number of textures created to the front end
  **/
 glp.textureViewer.getTextures = function(gl) {
     glpSendMessage(gl, messageType.GET_TEXTURES, { "length" : this.textures.length });
+}
+
+glp.textureViewer.bindTexture = function(texture) {
+    this.boundTexture = texture;
+}
+
+glp.textureViewer.unbindTexture = function() {
+    this.boundTexture = null;
+}
+
+glp.textureViewer.texImage2D = function(gl, args) {
+    if (this.boundTexture != null && args != null) {
+        if (!this.boundTexture.texImage2DCalls) {
+            this.boundTexture.texImage2DCalls = [];
+        }
+
+        var argsList = Array.prototype.slice.call(args);
+        var argsString = "";
+        for (var i = 0; i < argsList.length; i++) {
+            if (i != 0) {
+                argsString += ", ";
+            }
+            var glEnumName = getGLEnumName(gl, argsList[i]);
+            if (typeof glEnumName == "string") {
+                argsString += glEnumName;
+            } else {
+                argsString += argsList[i];
+            }
+        }
+        this.boundTexture.texImage2DCalls.push(argsString);
+    }
+}
+
+glp.textureViewer.texParameteri = function(gl, args) {
+    if (this.boundTexture != null && args != null) {
+        if (!this.boundTexture.texParameteriCalls) {
+            this.boundTexture.texParameteriCalls = [];
+        }
+
+        var argsList = Array.prototype.slice.call(args);
+        var argsString = "";
+        for (var i = 0; i < argsList.length; i++) {
+            if (i != 0) {
+                argsString += ", ";
+            }
+            argsString += getGLEnumName(gl, argsList[i]);
+        }
+        this.boundTexture.texParameteriCalls.push(argsString);
+    }
 }
 
 /**
@@ -29,10 +79,12 @@ glp.textureViewer.getTexture = function(gl, index) {
     if (canRead) {
         var pixels = new Uint8Array(size.x * size.y * 4);
         gl.readPixels(0, 0, size.x, size.y, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-        glpSendMessage(gl, messageType.GET_TEXTURE, {
+        glpSendMessage(gl, messageType.GET_TEXTURE, JSON.stringify({
             "index" : index,
-            "pixels" : Array.prototype.slice.call(pixels)
-        });
+            "pixels" : Array.prototype.slice.call(pixels),
+            "texImage2DCalls" : Array.prototype.slice.call(texture.texImage2DCalls),
+            "texParameteriCalls" : Array.prototype.slice.call(texture.texParameteriCalls),
+        }));
     }
 
     gl.deleteFramebuffer(frameBuffer);
