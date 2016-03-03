@@ -33,7 +33,7 @@ window.addEventListener('message', function(event) {
   }
 
   if (message.type == messageType.GET_CONTEXTS) {
-    __glpSendMessage(messageType.GET_CONTEXTS, {"contexts": JSON.stringify(glp.messages.getWebGLContexts())});
+    glp.messages.sendContexts();
     return;
   }
 
@@ -71,6 +71,12 @@ window.addEventListener('message', function(event) {
   }
 });
 
+glp.messages.sendContexts = function() {
+  __glpSendMessage(messageType.GET_CONTEXTS, {"contexts": JSON.stringify(glp.messages.getWebGLContexts())});
+}
+
+// Send contexts whenever page is loaded
+document.addEventListener("DOMContentLoaded", glp.messages.sendContexts);
 
 /**
  * Returns the WebGL contexts available in the dom
