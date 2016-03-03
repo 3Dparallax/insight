@@ -56,24 +56,38 @@ glp.callStack.helper.getFirstUserStack = function() {
 }
 
 
+glp.callStack.toggle = function(enabled) {
+  if (enabled) {
+    this.enabled = true;
+  } else {
+    this.enabled = false;
+  }
+}
+
 /**
  * Returns the call stack of the requested type
  * CallSite details (filename and line number) are processed
  * only on request because it's too expensive at storage time
  * @param {String} "mostRecentCalls" or "callsSinceDraw"
  */
-glp.callStack.getStack = function(type) {
-  var formatted = []
-  if (type == "mostRecentCalls") {
-      formatted = this.mostRecentCalls;
-  } else {
-      formatted = this.callsSinceDraw;
+glp.callStack.getStack = function() {
+  var formatted = {};
+  formatted.mostRecentCalls = this.mostRecentCalls;
+  formatted.callsSinceDraw = this.callsSinceDraw;
+
+  for (var i = 0; i < formatted.mostRecentCalls.length; i++) {
+    if (!formatted.mostRecentCalls[i].formatted) {
+      formatted.mostRecentCalls[i].name = formatted.mostRecentCalls[i].name + " (" + this.helper.getCallSiteDetails(formatted.mostRecentCalls[i].callSite) + ")";
+      formatted.mostRecentCalls[i].args = JSON.stringify(formatted.mostRecentCalls[i].args);
+      formatted.mostRecentCalls[i].formatted = true;
+    }
   }
-  for (var i = 0; i < formatted.length; i++) {
-    if (!formatted[i].formatted) {
-      formatted[i].name = formatted[i].name + " (" + this.helper.getCallSiteDetails(formatted[i].callSite) + ")";
-      formatted[i].args = JSON.stringify(formatted[i].args);
-      formatted[i].formatted = true;
+
+  for (var i = 0; i < formatted.callsSinceDraw.length; i++) {
+    if (!formatted.callsSinceDraw[i].formatted) {
+      formatted.callsSinceDraw[i].name = formatted.callsSinceDraw[i].name + " (" + this.helper.getCallSiteDetails(formatted.callsSinceDraw[i].callSite) + ")";
+      formatted.callsSinceDraw[i].args = JSON.stringify(formatted.callsSinceDraw[i].args);
+      formatted.callsSinceDraw[i].formatted = true;
     }
   }
   return formatted;
@@ -118,7 +132,7 @@ glp.callStack.push = function(name, args) {
 
   var lastFunction = this.callsSinceDraw[this.callsSinceDraw.length - 1];
   if (lastFunction &&
-      (lastFunction[0] == "drawElements" || lastFunction[0] == "drawArrays")) {
+      (lastFunction.name == "drawElements" || lastFunction.name == "drawArrays")) {
     this.callsSinceDraw = [];
   }
   this.callsSinceDraw.push(callDetails);

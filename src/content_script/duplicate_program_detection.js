@@ -30,7 +30,6 @@ glp.duplicateProgramDetection.enable = function() {
  */
 glp.duplicateProgramDetection.disable = function() {
   this.enabled = false;
-  this.duplicates.length = 0;
 }
 
 glp.duplicateProgramDetection.useProgramCalled = function(gl, program) {

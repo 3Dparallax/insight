@@ -85,6 +85,7 @@ body {
 canvas {
   margin-top: 25px;
 }
+/* Program usage */
 #programUsageTableContainer {
   width: 50%;
 }
@@ -94,6 +95,7 @@ canvas {
 #programUsageTableCollected {
   display: none;
 }
+/* Program duplicate */
 #programDuplicateTableContainer {
   width: 50%;
 }
@@ -103,3 +105,19 @@ canvas {
 #programDuplicateTableCollected {
   display: none;
 }
+/* Call Stack */
+#mostRecentCallTable {
+  width: 100%;
+  max-width: 500px;
+}
+#lastDrawnCallTable {
+  width: 100%;
+  max-width: 500px;
+}
+#callStackCollecting {
+  display: none;
+}
+#callStackCollected {
+  display: none;
+}
+
