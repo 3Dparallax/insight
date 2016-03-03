@@ -37,7 +37,7 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         state.duplicateProgramUses = msg.data.duplicateProgramUses;
         updateProgramDuplicateTable(JSON.parse(msg.data.duplicateProgramUses));
     } else if (msg.type == messageType.GET_TEXTURE) {
-        state.texture = msg.data;
+        state.texture = JSON.parse(msg.data);
     } else if (msg.type == messageType.GET_TEXTURES) {
         state.textureList = msg.data.length;
     } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {

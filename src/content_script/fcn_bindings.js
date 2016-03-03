@@ -85,6 +85,22 @@ var glpFcnBindings = {
       var texture = original.apply(this, args);
       return this.glp.textureViewer.pushTexture(texture);
     },
+    bindTexture : function(original, args, name) {
+      this.glp.textureViewer.bindTexture(args[1]);
+      return original.apply(this, args);
+    },
+    unbindTexture : function(original, args, name) {
+      this.glp.textureViewer.unbindTexture();
+      return original.apply(this, args);
+    },
+    texImage2D : function(original, args, name) {
+      this.glp.textureViewer.texImage2D(this, args);
+      return original.apply(this, args);
+    },
+    texParameteri : function(original, args, name) {
+      this.glp.textureViewer.texParameteri(this, args);
+      return original.apply(this, args);
+    },
     createBuffer: function(original, args, name) {
       var buffer = original.apply(this, args);
       return this.glp.bufferViewer.pushBuffer(buffer);
