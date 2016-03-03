@@ -1,8 +1,18 @@
 function getFunctionHistogram(e) {
+    var checked = document.getElementById("functionHistogramEnabled").checked;
+    if (!checked) return;
     sendMessage(messageType.FUNCTION_HISTOGRAM, {threshold: 10});
 }
 
 document.getElementById("functionHistogram").addEventListener("click", getFunctionHistogram);
+
+function toggleFunctionHistogram(e) {
+    var checked = document.getElementById("functionHistogramEnabled").checked;
+    var data = {"enabled": checked};
+    sendMessage(messageType.TOGGLE_FUNCTION_HISTOGRAM, data)
+}
+
+document.getElementById("toggleFunctionHistogram").addEventListener("click", toggleFunctionHistogram);
 
 function displayHistogram(histogram) {
     if (histogram == null) {
@@ -22,6 +32,10 @@ function displayHistogram(histogram) {
         ]
     };
     console.log("Displaying histogram");
+    console.log(histogram);
     var ctx = document.getElementById("myChart").getContext("2d");
-    var myBarChart = new Chart(ctx).Bar(data, {});
+    if (glpFrontEnd.myBarChart != undefined) {
+        glpFrontEnd.myBarChart.destroy();
+    }
+    glpFrontEnd.myBarChart = new Chart(ctx).HorizontalBar(data, {});
 }

@@ -159,8 +159,22 @@
         </div>
       </div>
       <div class="tab" id="callHistogram">
-        <button id="functionHistogram">Get Histogram</button>
-        <canvas id="myChart" width="600" height="400"></canvas>
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="pull-left">
+              <div class="bootstrap-switch-square" id="toggleFunctionHistogram" >
+                <input type="checkbox" data-toggle="switch" id="functionHistogramEnabled"/>
+              </div>
+            </div>
+            <div class="pull-right">
+              <button type="button" id="functionHistogram" class="btn btn-primary">Get Histogram</button>
+              <button title="Rewrite this to be usage count: Pixel overwrite inspector detects how how many times a pixel has been drawn. The color ranges from green to red, red being drawn multiple times while green been drawn only on clear." data-placement="left" data-toggle="tooltip" class="btn btn-default mrs" type="button">?</button>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <canvas id="myChart" width="600" height="400"></canvas>
+          </div>
+        </div>
       </div>
       <div class="tab" id="textureViewer">
         <div class="container-fluid">
@@ -240,6 +254,7 @@
       </div>
     </div>
     <script src="lib/chart.js"></script>
+    <script src="lib/chart.horizontal.js"></script>
     <script src="../shared/message_types.js"></script>
     <script src="tabs.js"></script>
     <script src="panel.js"></script>

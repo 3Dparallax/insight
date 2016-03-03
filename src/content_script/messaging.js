@@ -48,6 +48,8 @@ window.addEventListener('message', function(event) {
     glp.messages.sendCallStack(context, message.data);
   } else if (message.type == messageType.TOGGLE_CALL_STACK) {
     context.glp.callStack.toggle(message.data.enabled);
+  } else if (message.type == messageType.TOGGLE_FUNCTION_HISTOGRAM) {
+    context.glp.histogram.toggle(message.data.enabled);
   } else if (message.type == messageType.FUNCTION_HISTOGRAM) {
     glp.messages.sendFunctionHistogram(message.data.threshold);
   } else if (message.type == messageType.TOGGLE_PROGRAM_USAGE_COUNT) {

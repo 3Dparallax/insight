@@ -2,6 +2,7 @@ var messageType = {
   PIXEL_INSPECTOR : "pixelInspector",
   GET_CALL_STACK : "getCallStack",
   TOGGLE_CALL_STACK : "toggleCallStack",
+  TOGGLE_FUNCTION_HISTOGRAM : "toggleFunctionHistogram",
   FUNCTION_HISTOGRAM : "functionHistogram",
   TOGGLE_PROGRAM_USAGE_COUNT : "toggleProgramUsageCount",
   RESET_PROGRAM_USAGE_COUNT : "resetProgramUsageCount",
