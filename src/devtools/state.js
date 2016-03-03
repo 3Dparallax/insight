@@ -14,6 +14,7 @@ function setInitialState(uuid) {
     initialState.textureList = 0;
     initialState.histogram = null;
     initialState.contexts = [];
+    initialState.stateVars = {};
     initialState.activeTab = initialTab;
     states[uuid] = initialState;
 }

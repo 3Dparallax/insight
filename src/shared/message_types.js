@@ -18,4 +18,5 @@ var messageType = {
   GET_FRAME_BUFFERS : "frameBuffers",
   GET_RENDER_BUFFER : "renderBuffer",
   GET_RENDER_BUFFERS : "renderBuffers",
+  STATE_VARS : "stateVariables",
 }

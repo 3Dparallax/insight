@@ -10,6 +10,7 @@ files = [
   "messaging.js",
   "helpers.js",
   "call_stack.js",
+  "state_variables.js",
   "fcn_bindings.js",
   "webgl_bind.js",
 ];

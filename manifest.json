@@ -14,6 +14,7 @@
     "src/content_script/messaging.js",
     "src/content_script/pixel_inspector.js",
     "src/content_script/program_usage_counter.js",
+    "src/content_script/state_variables.js",
     "src/content_script/texture_viewer.js",
     "src/content_script/webgl_bind.js"
   ],

@@ -6,6 +6,7 @@ var tabMap = {
     "tabBar-call-stack": "callStack",
     "tabBar-texture-viewer": "textureViewer",
     "tabBar-buffer-viewer": "bufferViewer",
+    "tabBar-state-viewer": "stateViewer",
 }
 
 var changeTab = function(tabElementID) {
