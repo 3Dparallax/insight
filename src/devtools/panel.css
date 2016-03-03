@@ -24,6 +24,7 @@ body {
   display: none !important;
 }
 .tabBar {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -31,7 +32,7 @@ body {
   height: 30px;
   width: 100%;
   border-bottom: solid rgb(204, 204, 204) 1px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   background-color: rgb(238, 238, 238);
 }
 .tabBar-element {
@@ -60,8 +61,10 @@ body {
   display: block;
   visibility: visible;
   width: 100%;
+  overflow: scroll;
 }
 #contextBar {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
