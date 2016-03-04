@@ -113,6 +113,26 @@ var glpFcnBindings = {
       var buffer = original.apply(this, args);
       return this.glp.bufferViewer.pushRenderBuffer(buffer);
     },
+    bindBuffer: function(original, args, name) {
+      this.glp.bufferViewer.bindBuffer(args[1]);
+      return original.apply(this, args);
+    },
+    unbindBuffer: function(original, args, name) {
+      this.glp.bufferViewer.unbindBuffer();
+      return original.apply(this, args);
+    },
+    bufferData: function(original, args, name) {
+      this.glp.bufferViewer.bufferData(this, args);
+      return original.apply(this, args);
+    },
+    bufferSubData: function(original, args, name) {
+      this.glp.bufferViewer.bufferSubData(this, args);
+      return original.apply(this, args);
+    },
+    deleteBuffer: function(original, args, name) {
+      this.glp.bufferViewer.deleteBuffer(args[0]);
+      return original.apply(this, args);
+    },
 }
 
 var glpUniformFcn = function(original, args, name) {

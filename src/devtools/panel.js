@@ -42,6 +42,8 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         state.textureList = msg.data.length;
     } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
         state.histogram = msg.data;
+    } else if (msg.type == messageType.GET_BUFFER) {
+        state.buffer.buffer = JSON.parse(msg.data);
     } else if (msg.type == messageType.GET_BUFFERS) {
         state.buffer.bufferSize = msg.data.length;
     } else if (msg.type == messageType.GET_FRAME_BUFFERS) {

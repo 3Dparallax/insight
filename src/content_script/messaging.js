@@ -68,6 +68,8 @@ window.addEventListener('message', function(event) {
     glp.messages.getTexture(context, message.data.index);
   } else if (message.type == messageType.GET_TEXTURES) {
     glp.messages.getTextures(context);
+  } else if (message.type == messageType.GET_BUFFER) {
+    context.glp.bufferViewer.getBuffer(context, message.data.index);
   } else if (message.type == messageType.GET_BUFFERS) {
     context.glp.bufferViewer.getBuffers(context);
   } else if (message.type == messageType.GET_FRAME_BUFFERS) {

@@ -9,10 +9,27 @@ function guid() {
 }
 
 function getGLEnumName(gl, glEnum) {
-    for (var name in gl) {
-        if (gl[name] == glEnum) {
-            return name;
-        }
+  for (var name in gl) {
+    if (gl[name] == glEnum) {
+      return name;
     }
-    return glEnum;
+  }
+  return glEnum;
+}
+
+function getGLArgsString(gl, args) {
+  var argsList = Array.prototype.slice.call(args);
+  var argsString = "";
+  for (var i = 0; i < argsList.length; i++) {
+    if (i != 0) {
+      argsString += ", ";
+    }
+    var glEnumName = getGLEnumName(gl, argsList[i]);
+    if (typeof glEnumName == "string") {
+      argsString += glEnumName;
+    } else {
+      argsString += argsList[i];
+    }
+  }
+  return argsString;
 }
