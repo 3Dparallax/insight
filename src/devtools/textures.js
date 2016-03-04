@@ -3,10 +3,21 @@ function displayTexture(texture) {
         return;
     }
 
-    var ctx = document.getElementById("textureCanvas").getContext("2d");
-    var imageData = ctx.getImageData(0, 0, 256, 256);
+    var textureCanvas = document.getElementById("textureCanvas");
+    textureCanvas.width = texture.width;
+    textureCanvas.height = texture.height;
+    var ctx = textureCanvas.getContext("2d");
+    var imageData = ctx.getImageData(0, 0, texture.width, texture.height);
     imageData.data.set(texture.pixels);
     ctx.putImageData(imageData, 0, 0);
+
+    if (texture.texImage2DCalls) {
+        for (var i = 0; i < texture.texImage2DCalls.length; i++) {
+            var texImage2DDescription = document.createElement("dd");
+            texImage2DDescription.innerHTML = texture.texImage2DCalls[i];
+            texParams.appendChild(texImage2DDescription);
+        }
+    }
 
     var texParams = document.getElementById("textureParameters");
     texParams.innerHTML = "";

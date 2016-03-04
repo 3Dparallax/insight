@@ -93,9 +93,6 @@ body {
   background-color: rgb(225, 225, 225);
 }
 #textureCanvas {
-  height: 256px;
-  width: 256px;
-  margin-top: 16px;
   background: url("../../static/checkerboard-512x512.png");
 }
 .scrollable-menu {

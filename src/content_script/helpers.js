@@ -18,6 +18,10 @@ function getGLEnumName(gl, glEnum) {
 }
 
 function getGLArgsString(gl, args) {
+  if (!args) {
+    return "";
+  }
+
   var argsList = Array.prototype.slice.call(args);
   var argsString = "";
   for (var i = 0; i < argsList.length; i++) {
@@ -32,4 +36,12 @@ function getGLArgsString(gl, args) {
     }
   }
   return argsString;
+}
+
+function getGLArgsList(gl, calls) {
+  var argsList = [];
+  for (var i = 0; i < calls.length; i++) {
+    argsList.push(getGLArgsString(gl, calls[i]));
+  }
+  return argsList;
 }
