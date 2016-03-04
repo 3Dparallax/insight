@@ -24,20 +24,7 @@ glp.textureViewer.texImage2D = function(gl, args) {
             this.boundTexture.texImage2DCalls = [];
         }
 
-        var argsList = Array.prototype.slice.call(args);
-        var argsString = "";
-        for (var i = 0; i < argsList.length; i++) {
-            if (i != 0) {
-                argsString += ", ";
-            }
-            var glEnumName = getGLEnumName(gl, argsList[i]);
-            if (typeof glEnumName == "string") {
-                argsString += glEnumName;
-            } else {
-                argsString += argsList[i];
-            }
-        }
-        this.boundTexture.texImage2DCalls.push(argsString);
+        this.boundTexture.texImage2DCalls.push(Array.prototype.slice.call(args));
     }
 }
 
@@ -47,16 +34,29 @@ glp.textureViewer.texParameteri = function(gl, args) {
             this.boundTexture.texParameteriCalls = [];
         }
 
-        var argsList = Array.prototype.slice.call(args);
-        var argsString = "";
-        for (var i = 0; i < argsList.length; i++) {
-            if (i != 0) {
-                argsString += ", ";
-            }
-            argsString += getGLEnumName(gl, argsList[i]);
-        }
-        this.boundTexture.texParameteriCalls.push(argsString);
+        this.boundTexture.texParameteriCalls.push(Array.prototype.slice.call(args));
     }
+}
+
+glp.textureViewer.getTextureSize = function(texture) {
+    var size = { "x" : 128, "y" : 128 };
+
+    if (texture.texImage2DCalls) {
+        for (var i = 0; i < texture.texImage2DCalls.length; i++) {
+            var args = texture.texImage2DCalls[i];
+            if (args[1] == 0) {
+                if (args.length == 9) {
+                    size.x = Math.max(args[3], size.x);
+                    size.y = Math.max(args[4], size.y);
+                } else if (args[5]) {
+                    size.x = Math.max(args[5].width, size.x);
+                    size.y = Math.max(args[5].height, size.y);
+                }
+            }
+        }
+    }
+
+    return size;
 }
 
 /**
@@ -68,8 +68,8 @@ glp.textureViewer.getTexture = function(gl, index) {
         return;
     }
 
-    var size = { "x" : 256, "y" : 256 };
     var texture = this.textures[index];
+    var size = this.getTextureSize(texture);
 
     var frameBuffer = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
@@ -82,8 +82,10 @@ glp.textureViewer.getTexture = function(gl, index) {
         glpSendMessage(gl, messageType.GET_TEXTURE, JSON.stringify({
             "index" : index,
             "pixels" : Array.prototype.slice.call(pixels),
-            "texImage2DCalls" : Array.prototype.slice.call(texture.texImage2DCalls),
-            "texParameteriCalls" : Array.prototype.slice.call(texture.texParameteriCalls),
+            "texImage2DCalls" : getGLArgsList(gl, texture.texImage2DCalls),
+            "texParameteriCalls" : getGLArgsList(gl, texture.texParameteriCalls),
+            "width" : size.x,
+            "height" : size.y,
         }));
     }
 
