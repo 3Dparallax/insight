@@ -40,6 +40,7 @@ var updateTabs = function(state) {
     updateRenderBufferList(state.buffer.renderBufferSize);
     displayHistogram(state.histogram);
     updatePixelInspector(state.pixelInspectorEnabled);
+    updateStateVariableTables(state.stateVars);
 }
 
 var refreshTabs = function(uuid) {
