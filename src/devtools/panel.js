@@ -39,7 +39,7 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
     } else if (msg.type == messageType.GET_TEXTURE) {
         state.texture = JSON.parse(msg.data);
     } else if (msg.type == messageType.GET_TEXTURES) {
-        state.textureList = msg.data.length;
+        state.textures.length = msg.data.length;
     } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
         state.histogram = msg.data;
     } else if (msg.type == messageType.GET_BUFFER) {

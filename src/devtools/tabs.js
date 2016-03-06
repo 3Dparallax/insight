@@ -5,22 +5,16 @@ var tabMap = {
     "tabBar-program-duplicate": "programDuplicate",
     "tabBar-call-stack": "callStack",
     "tabBar-call-histogram": "callHistogram",
-    "tabBar-texture-viewer": "textureViewer",
-    "tabBar-buffer-viewer": "bufferViewer",
+    "tabBar-resource-viewer": "resourceViewer",
     "tabBar-state-viewer": "stateViewer",
 }
 
 var changeTab = function(tabElementID) {
-    var tabBarElements = document.getElementsByClassName("tabBar-element");
-    for (var i = 0; i < tabBarElements.length; i++) {
-       tabBarElements[i].classList.remove("tabBar-element-enabled");
-    }
     var tabElements = document.getElementsByClassName("tab");
     for (var i = 0; i < tabElements.length; i++) {
        tabElements[i].classList.remove("tab-enabled");
     }
 
-    document.getElementById(tabElementID).classList.add("tabBar-element-enabled");
     document.getElementById(tabMap[tabElementID]).classList.add("tab-enabled");
 };
 
@@ -33,7 +27,7 @@ for (var i = 0; i < elements.length; i++) {
 
 var updateTabs = function(state) {
     displayTexture(state.texture);
-    updateTextureList(state.textureList);
+    updateTextureList(state.textures.length);
     displayBuffer(state.buffer.buffer);
     updateBufferList(state.buffer.bufferSize);
     updateFrameBufferList(state.buffer.frameBufferSize);

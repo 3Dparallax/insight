@@ -26,10 +26,11 @@ function updateContexts(contexts) {
 }
 
 function addContext(name, uuid) {
-    var contextElement = document.createElement("div");
+    var contextElement = document.createElement("button");
     var contextBar = document.getElementById("contextBar");
 
     contextElement.classList.add("context-element");
+    contextElement.classList.add("btn");
     contextElement.id = uuid;
     contextElement.innerHTML = name;
     contextBar.appendChild(contextElement);

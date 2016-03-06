@@ -19,6 +19,13 @@
       $(".dropdown-toggle:first-child").text($(this).text());
     });
 
+    // Navbar active state
+    $("#main-navbar a").on("click", function(){
+      $("#main-navbar").find(".active").removeClass("active");
+      $(this).parent().addClass("active");
+    });
+
   });
 
 })(jQuery);
+
