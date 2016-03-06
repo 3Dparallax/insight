@@ -62,8 +62,13 @@ body {
   background-color: rgb(57, 118, 225) !important;
   color: #FFF;
 }
-.tab-pane {
-  margin-top: 24px;
+.nav-pills {
+  padding-bottom: 24px;
+}
+.nav-pills li.active button {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
 }
 /* Program usage */
 #programUsageTableContainer {

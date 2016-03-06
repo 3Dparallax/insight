@@ -207,14 +207,17 @@
       <div class="tab" id="resourceViewer">
         <div class="container-fluid">
           <div class="row-fluid">
+            <div class="col-md-12">
+              <ul class="nav nav-pills" data-tabs="pill">
+                <li class="active"><button class="btn" data-toggle="pill" href="#resource-texture">Textures</button></li>
+                <li><button class="btn" data-toggle="pill" href="#resource-buffer">Buffers</button></li>
+                <li><button class="btn" data-toggle="pill" href="#resource-frame-buffer">Frame Buffers</button></li>
+                <li><button class="btn" data-toggle="pill" href="#resource-render-buffer">Render Buffers</button></li>
+              </ul>
+            </div>
+          </div>
 
-            <ul class="nav nav-pills" data-tabs="pill">
-              <li class="active"><a data-toggle="pill" href="#resource-texture">Textures</a></li>
-              <li><a data-toggle="pill" href="#resource-buffer">Buffers</a></li>
-              <li><a data-toggle="pill" href="#resource-frame-buffer">Frame Buffers</a></li>
-              <li><a data-toggle="pill" href="#resource-render-buffer">Render Buffers</a></li>
-            </ul>
-
+          <div class="row-fluid">
             <div class="tab-content">
               <div id="resource-texture" class="tab-pane fade in active">
                 <div class="col-md-3 table-responsive">
