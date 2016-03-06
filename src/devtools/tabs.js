@@ -33,7 +33,7 @@ for (var i = 0; i < elements.length; i++) {
 
 var updateTabs = function(state) {
     displayTexture(state.texture);
-    updateTextureList(state.textureList);
+    updateTextureList(state.textures.length);
     displayBuffer(state.buffer.buffer);
     updateBufferList(state.buffer.bufferSize);
     updateFrameBufferList(state.buffer.frameBufferSize);
