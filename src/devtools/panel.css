@@ -16,72 +16,35 @@ body {
   display: none !important;
 }
 #main {
-  display: flex;
-  flex-direction: column;
   height: 100%;
 }
 .main-hidden {
   display: none !important;
 }
-.tabBar {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  height: 30px;
-  width: 100%;
-  border-bottom: solid rgb(204, 204, 204) 1px;
-  margin-bottom: 15px;
-  background-color: rgb(238, 238, 238);
-}
 .tabBar-element {
   font-family: "Open Sans", "Helvetica Neue", "Lucida Grande", sans-serif;
   font-size : 12px;
-  color: #484848;
-  padding-left: 10px;
-  padding-right: 10px;
-  height: 30px;
-  line-height: 30px;
-}
-.tabBar-element:hover {
-  background-color: rgb(225, 225, 225);
-  color: #222222;
-}
-.tabBar-element-enabled {
-  border-bottom: solid rgb(45, 134, 247) 1px;
-  color: #000000;
 }
 .tab {
   display: none;
   visibility: hidden;
+  padding-bottom: 24px;
 }
 .tab-enabled {
-  flex: 1 1 auto;
   display: block;
   visibility: visible;
-  width: 100%;
-  overflow: scroll;
+}
+#contextBarContainer {
+  margin-bottom: 24px;
 }
 #contextBar {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  height: 30px;
   width: 100%;
   background-color: rgb(238, 238, 238);
-  line-height: 30px;
 }
 .context-element {
   font-family: "Open Sans", "Helvetica Neue", "Lucida Grande", sans-serif;
   font-size : 12px;
   color: #484848;
-  padding-left: 10px;
-  padding-right: 10px;
-  height: 30px;
-  line-height: 30px;
 }
 .context-element-enabled {
   color: white !important;

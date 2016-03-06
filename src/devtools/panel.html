@@ -1,20 +1,48 @@
 <html>
   <body>
+
     <div id="no-context" class="no-context-hidden">
-      No Contexts Found
-      <button id="no-context-button">Refresh Contexts</button>
-    </div>
-    <div id="main" class="main-hidden">
-      <div class="tabBar">
-        <div class="tabBar-element tabBar-element-enabled" id="tabBar-pixel-inspector">Pixel Inspector</div>
-        <div class="tabBar-element" id="tabBar-program-usage">Program Usage</div>
-        <div class="tabBar-element" id="tabBar-program-duplicate">Program Duplicates</div>
-        <div class="tabBar-element" id="tabBar-call-stack">Call Stack</div>
-        <div class="tabBar-element" id="tabBar-call-histogram">Call Histogram</div>
-        <div class="tabBar-element" id="tabBar-texture-viewer">Textures</div>
-        <div class="tabBar-element" id="tabBar-buffer-viewer">Buffers</div>
-        <div class="tabBar-element" id="tabBar-state-viewer">States</div>
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="col-sm-12">
+            <h1>No Contexts Found</h1>
+            <button id="no-context-button" class="btn btn-default">Refresh Contexts</button>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <div id="main" class="main-hidden">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <a class="navbar-brand" href="#">Insight</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse-01">
+          <ul class="nav navbar-nav">
+            <li class="tabBar-element active" id="tabBar-pixel-inspector"><a href="#">Pixel Inspector</a></li>
+            <li class="tabBar-element" id="tabBar-program-usage"><a href="#">Program Usage</a></li>
+            <li class="tabBar-element" id="tabBar-program-duplicate"><a href="#">Program Duplicates</a></li>
+            <li class="tabBar-element" id="tabBar-call-stack"><a href="#">Call Stack</a></li>
+            <li class="tabBar-element" id="tabBar-call-histogram"><a href="#">Call Histogram</a></li>
+            <li class="tabBar-element" id="tabBar-texture-viewer"><a href="#">Textures</a></li>
+            <li class="tabBar-element" id="tabBar-buffer-viewer"><a href="#">Buffers</a></li>
+            <li class="tabBar-element" id="tabBar-state-viewer"><a href="#">State Viewer</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid" id="contextBarContainer">
+        <div class="row-fluid">
+          <div class="col-sm-12">
+            <div id="contextBar">
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="tab tab-enabled" id="pixelInspector">
         <div class="container-fluid">
           <div class="row-fluid">
@@ -255,8 +283,6 @@
             </table>
           </div>
         </div>
-      </div>
-      <div id="contextBar">
       </div>
     </div>
     <script src="lib/chart.js"></script>
