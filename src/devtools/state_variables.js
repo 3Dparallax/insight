@@ -6,19 +6,18 @@ document.getElementById("getStates").addEventListener("click", getStateVariables
 
 function convertStateVarDataIntoTableData(initialStateVarData) {
     var retData = [];
-    for(var key in initialStateVarData) {
-        var dataElement = {};
-        dataElement.name = key;
-        dataElement.value = initialStateVarData[key];
-        retData.push(dataElement);
+    for (var type in initialStateVarData) {
+        for (var key in initialStateVarData[type]) {
+            var dataElement = {};
+            dataElement.name = key;
+            dataElement.value = initialStateVarData[type][key];
+            retData.push(dataElement);
+        }
     }
     return retData;
 }
 
-function initializeStateVariableTable(initialStateVarData) {
-    var tableData = convertStateVarDataIntoTableData(initialStateVarData);
-
-    // Creating the table with initial values
+function initializeStateVariableTables(initialStateVarData) {
     $('#stateVarTable').bootstrapTable({
         columns: [{
             field: 'name',
@@ -28,27 +27,26 @@ function initializeStateVariableTable(initialStateVarData) {
             field: 'value',
             title: 'State'
         }],
-        data: tableData
+        data: convertStateVarDataIntoTableData(initialStateVarData)
     });
 }
 
-function updateStateVariableTable(newStateVarData) {
-    if (!glpFrontEnd.stateVariableTableInitialized) {
-        initializeStateVariableTable(newStateVarData);
-        glpFrontEnd.stateVariableTableInitialized = true;
-    } else {
-        var tableElement = $("#stateVarTableCollected")
-        var idx = 0;
-        for (var key in newStateVarData) {
-            var action = 'updateRow';
-            $('#stateVarTable').bootstrapTable(action, {
-                index: idx,
-                row: {
-                    name: key,
-                    value: newStateVarData[key]
-                }
-            });
-            idx++;
-        }
+function updateStateVariableTables(newStateVarData) {
+    if (Object.keys(newStateVarData).length === 0) {
+        return;
+    }
+    if (!newStateVarData.initialized) {
+        initializeStateVariableTables(newStateVarData.data);
+        newStateVarData.initialized = true;
+        return;
+    }
+    tableData = convertStateVarDataIntoTableData(newStateVarData.data);
+    for (var i = 0; i < tableData.length; i++) {
+        dataPair = tableData[i]
+        var action = 'updateRow';
+        $('#stateVarTable').bootstrapTable(action, {
+            index: i,
+            row: dataPair
+        });
     }
 }
