@@ -62,13 +62,8 @@ body {
   background-color: rgb(57, 118, 225) !important;
   color: #FFF;
 }
-.scrollable-menu {
-    height: auto;
-    max-height: 256px;
-    overflow-x: hidden;
-}
-canvas {
-  margin-top: 25px;
+.tab-pane {
+  margin-top: 24px;
 }
 /* Program usage */
 #programUsageTableContainer {

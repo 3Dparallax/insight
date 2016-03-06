@@ -5,7 +5,6 @@ var tabMap = {
     "tabBar-program-duplicate": "programDuplicate",
     "tabBar-call-stack": "callStack",
     "tabBar-call-histogram": "callHistogram",
-    "tabBar-buffer-viewer": "bufferViewer",
     "tabBar-resource-viewer": "resourceViewer",
     "tabBar-state-viewer": "stateViewer",
 }

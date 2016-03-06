@@ -20,11 +20,12 @@
     });
 
     // Navbar active state
-    $(".nav a").on("click", function(){
-      $(".nav").find(".active").removeClass("active");
+    $("#main-navbar a").on("click", function(){
+      $("#main-navbar").find(".active").removeClass("active");
       $(this).parent().addClass("active");
     });
 
   });
 
 })(jQuery);
+

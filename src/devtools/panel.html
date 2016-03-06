@@ -13,7 +13,7 @@
     </div>
 
     <div id="main" class="main-hidden">
-      <nav class="navbar navbar-default" role="navigation">
+      <nav id="main-navbar" class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
             <span class="sr-only">Toggle navigation</span>
@@ -27,7 +27,6 @@
             <li class="tabBar-element" id="tabBar-program-duplicate"><a href="#">Program Duplicates</a></li>
             <li class="tabBar-element" id="tabBar-call-stack"><a href="#">Call Stack</a></li>
             <li class="tabBar-element" id="tabBar-call-histogram"><a href="#">Call Histogram</a></li>
-            <li class="tabBar-element" id="tabBar-buffer-viewer"><a href="#">Buffers</a></li>
             <li class="tabBar-element" id="tabBar-resource-viewer"><a href="#">Resources</a></li>
             <li class="tabBar-element" id="tabBar-state-viewer"><a href="#">State Viewer</a></li>
           </ul>
@@ -204,79 +203,84 @@
           </div>
         </div>
       </div>
-      <div class="tab" id="bufferViewer">
-        <div class="container-fluid">
-          <div class="row-fluid">
-            <div class="col-sm-4">
-              <div class="row-fluid">
-                <button class="btn btn-primary btn-sm" id="getBuffers">
-                  Get Buffers
-                </button>
-                <div class="btn-group">
-                  <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    Buffer <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu scrollable-menu" role="menu" id="buffers-list">
-                  </ul>
-                </div>
-              </div>
-              <div class="row-fluid">
-                <button class="btn btn-primary btn-sm" id="getFrameBuffers">
-                  Get Frame Buffers
-                </button>
-                <div class="btn-group">
-                  <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    Buffer <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu scrollable-menu" role="menu" id="frame-buffers-list">
-                  </ul>
-                </div>
-              </div>
-              <div class="row-fluid">
-                <button class="btn btn-primary btn-sm" id="getRenderBuffers">
-                  Get Render Buffers
-                </button>
-                <div class="btn-group">
-                  <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                    Buffer <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu scrollable-menu" role="menu" id="render-buffers-list">
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-8">
-              <dl id="bufferParameters"></dl>
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div class="tab" id="resourceViewer">
-
         <div class="container-fluid">
           <div class="row-fluid">
-            <div class="col-md-3 table-responsive">
 
-              <button class="btn btn-primary btn-wide" id="getTextures">Get Textures</button>
+            <ul class="nav nav-pills" data-tabs="pill">
+              <li class="active"><a data-toggle="pill" href="#resource-texture">Textures</a></li>
+              <li><a data-toggle="pill" href="#resource-buffer">Buffers</a></li>
+              <li><a data-toggle="pill" href="#resource-frame-buffer">Frame Buffers</a></li>
+              <li><a data-toggle="pill" href="#resource-render-buffer">Render Buffers</a></li>
+            </ul>
 
-              <table class="table table-striped" id="texture-list">
-                <thead>
-                    <tr>
-                       <th data-field="textureId">Texture</th>
-                    </tr>
-                 </thead>
-              </table>
-
+            <div class="tab-content">
+              <div id="resource-texture" class="tab-pane fade in active">
+                <div class="col-md-3 table-responsive">
+                  <button class="btn btn-primary btn-wide" id="getTextures">Get Textures</button>
+                  <table class="table table-striped" id="texture-list">
+                    <thead>
+                        <tr>
+                           <th data-field="textureId">Texture</th>
+                        </tr>
+                     </thead>
+                  </table>
+                </div>
+                <div class="col-md-9">
+                  <dl id="textureParameters"></dl>
+                  <canvas id="textureCanvas"></canvas>
+                </div>
+              </div>
+              <div id="resource-buffer" class="tab-pane fade">
+                <div class="col-md-3 table-responsive">
+                  <button class="btn btn-primary btn-wide" id="getBuffers">Get Buffers</button>
+                  <table class="table table-striped" id="buffers-list">
+                    <thead>
+                        <tr>
+                           <th data-field="bufferId">Buffer</th>
+                        </tr>
+                     </thead>
+                  </table>
+                </div>
+                <div class="col-md-9">
+                  <dl id="bufferParameters"></dl>
+                </div>
+              </div>
+              <div id="resource-frame-buffer" class="tab-pane fade">
+                <div class="col-md-3 table-responsive">
+                  <button class="btn btn-primary btn-wide" id="getFrameBuffers">Get Frame Buffers</button>
+                  <table class="table table-striped" id="frame-buffers-list">
+                    <thead>
+                        <tr>
+                           <th data-field="bufferId">Buffer</th>
+                        </tr>
+                     </thead>
+                  </table>
+                </div>
+                <div class="col-md-9">
+                  <dl id="bufferParameters"></dl>
+                </div>
+              </div>
+              <div id="resource-render-buffer" class="tab-pane fade">
+                <div class="col-md-3 table-responsive">
+                  <button class="btn btn-primary btn-wide" id="getRenderBuffers">Get Render Buffers</button>
+                  <table class="table table-striped" id="render-buffers-list">
+                    <thead>
+                        <tr>
+                           <th data-field="bufferId">Buffer</th>
+                        </tr>
+                     </thead>
+                  </table>
+                </div>
+                <div class="col-md-9">
+                  <dl id="bufferParameters"></dl>
+                </div>
+              </div>
             </div>
-            <div class="col-md-9">
 
-              <dl id="textureParameters"></dl>
-              <canvas id="textureCanvas"></canvas>
-
-            </div>
           </div>
         </div>
-
       </div>
       <div class="tab" id="stateViewer">
         <button class="btn btn-primary btn-wide" id="getStates">Get States</button>
