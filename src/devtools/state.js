@@ -11,7 +11,8 @@ function setInitialState(uuid) {
     initialState.programUsageCount = [];
     initialState.duplicateProgramUses = [];
     initialState.texture = null;
-    initialState.textureList = 0;
+    initialState.textures = {};
+    initialState.textures.length = 0;
     initialState.histogram = null;
     initialState.contexts = [];
     initialState.stateVars = {};

@@ -48,37 +48,26 @@ function displayTexture(texture) {
 }
 
 function updateTextureList(length) {
-    var textureList = document.getElementById("textures-list");
 
-    var elementsToAdd = length - textureList.children.length;
-    if (elementsToAdd == 0) {
-        return;
+    var textureData = [];
+    for (var i = 0; i < length; i++) {
+        var value = "texture" + i;
+        var element = { "textureId" : value };
+        textureData.push(element);
     }
 
-    var baseIndex = textureList.children.length;
-    if (elementsToAdd < 0) {
-        textureList.innerHTML = "";
-        elementsToAdd = length;
-        baseIndex = 0;
+    if (length == 0) {
+        $('#texture-list').bootstrapTable({});
+    } else {
+        $('#texture-list').bootstrapTable("load", textureData);
     }
 
-    for (var i = 0; i < elementsToAdd; i++) {
-        var elementIndex = i + baseIndex;
+    $('#texture-list > tbody > tr').on('click', function(event) {
+        $(this).addClass('active').siblings().removeClass('active');
 
-        var textureElementA = document.createElement("a");
-        textureElementA.href = "#";
-        textureElementA.innerHTML = "texture" + elementIndex;
-
-        var textureElementLi = document.createElement("li");
-        textureElementLi.id = elementIndex;
-        textureElementLi.appendChild(textureElementA);
-
-        textureElementLi.onclick = function() {
-            sendMessage(messageType.GET_TEXTURE, { "index": this.id });
-        };
-
-        textureList.appendChild(textureElementLi);
-    }
+        var rowIndex = $(this).index();
+        sendMessage(messageType.GET_TEXTURE, { "index": rowIndex });
+    });
 }
 
 function getTextures(e) {

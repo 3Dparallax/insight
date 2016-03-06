@@ -27,8 +27,8 @@
             <li class="tabBar-element" id="tabBar-program-duplicate"><a href="#">Program Duplicates</a></li>
             <li class="tabBar-element" id="tabBar-call-stack"><a href="#">Call Stack</a></li>
             <li class="tabBar-element" id="tabBar-call-histogram"><a href="#">Call Histogram</a></li>
-            <li class="tabBar-element" id="tabBar-texture-viewer"><a href="#">Textures</a></li>
             <li class="tabBar-element" id="tabBar-buffer-viewer"><a href="#">Buffers</a></li>
+            <li class="tabBar-element" id="tabBar-resource-viewer"><a href="#">Resources</a></li>
             <li class="tabBar-element" id="tabBar-state-viewer"><a href="#">State Viewer</a></li>
           </ul>
         </div>
@@ -204,24 +204,6 @@
           </div>
         </div>
       </div>
-      <div class="tab" id="textureViewer">
-        <div class="container-fluid">
-          <div class="row-fluid">
-            <button class="btn btn-primary btn-wide" id="getTextures">Get Textures</button>
-            <div class="btn-group">
-              <button class="btn btn-default btn-wide dropdown-toggle" type="button" data-toggle="dropdown">
-                Current Texture <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu scrollable-menu" role="menu" id="textures-list">
-              </ul>
-            </div>
-          </div>
-          <div class="row-fluid">
-            <dl id="textureParameters"></dl>
-            <canvas id="textureCanvas"></canvas>
-          </div>
-        </div>
-      </div>
       <div class="tab" id="bufferViewer">
         <div class="container-fluid">
           <div class="row-fluid">
@@ -268,6 +250,33 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="tab" id="resourceViewer">
+
+        <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="col-md-3 table-responsive">
+
+              <button class="btn btn-primary btn-wide" id="getTextures">Get Textures</button>
+
+              <table class="table table-striped" id="texture-list">
+                <thead>
+                    <tr>
+                       <th data-field="textureId">Texture</th>
+                    </tr>
+                 </thead>
+              </table>
+
+            </div>
+            <div class="col-md-9">
+
+              <dl id="textureParameters"></dl>
+              <canvas id="textureCanvas"></canvas>
+
+            </div>
+          </div>
+        </div>
+
       </div>
       <div class="tab" id="stateViewer">
         <button class="btn btn-primary btn-wide" id="getStates">Get States</button>
