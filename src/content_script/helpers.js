@@ -8,13 +8,16 @@ function guid() {
     s4() + '-' + s4() + s4() + s4();
 }
 
-function getGLEnumName(gl, glEnum) {
-  for (var name in gl) {
-    if (gl[name] == glEnum) {
-      return name;
-    }
+_glEnums = {}
+function getGLEnumName(gl, e) {
+  if (Object.keys(_glEnums).length != 0) {
+    return _glEnums[e];
   }
-  return glEnum;
+
+  for (var name in gl) {
+    _glEnums[name] = gl[name];
+  }
+  return _glEnums[e];
 }
 
 function getGLArgsString(gl, args) {
@@ -22,17 +25,16 @@ function getGLArgsString(gl, args) {
     return "";
   }
 
-  var argsList = Array.prototype.slice.call(args);
   var argsString = "";
-  for (var i = 0; i < argsList.length; i++) {
+  for (var i = 0; i < args.length; i++) {
     if (i != 0) {
       argsString += ", ";
     }
-    var glEnumName = getGLEnumName(gl, argsList[i]);
+    var glEnumName = getGLEnumName(gl, args[i]);
     if (typeof glEnumName == "string") {
       argsString += glEnumName;
     } else {
-      argsString += argsList[i];
+      argsString += args[i];
     }
   }
   return argsString;
