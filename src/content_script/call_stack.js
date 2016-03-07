@@ -1,14 +1,13 @@
-glp.callStack = {}
-glp.callStack.helper = {}
+var glpCallStack = (function () {
 
-glp.callStack.enabled = false;
-glp.callStack.maxSize = 100;
-glp.callStack.mostRecentCalls = [];
-glp.callStack.callsSinceDraw = [];
+callStack = {}
+callStack.helper = {}
 
-glp.histogram = {};
-glp.histogram.enabled = false;
-glp.histogram.histogram = {};
+callStack.enabled = false;
+callStack.maxSize = 100;
+callStack.mostRecentCalls = [];
+callStack.callsSinceDraw = [];
+
 /*
  * Determines which file and line number called a certain function
  * Other things we can see other than line number include but are not limited to:
@@ -19,7 +18,7 @@ glp.histogram.histogram = {};
  * http://stackoverflow.com/questions/11386492/accessing-line-number-in-v8-javascript-chrome-node-js
  * https://github.com/v8/v8/wiki/Stack%20Trace%20API
 */
-glp.callStack.helper.getStack = function() {
+callStack.helper.getStack = function() {
     var orig = Error.prepareStackTrace;
     Error.prepareStackTrace = function(_, stack){ return stack; };
     var err = new Error;
@@ -34,7 +33,7 @@ glp.callStack.helper.getStack = function() {
  * Returns "FileName:LineNumber" of requested call site
  * @param {CallSite} call site object
  */
-glp.callStack.helper.getCallSiteDetails = function(stack) {
+callStack.helper.getCallSiteDetails = function(stack) {
   if (!stack) {
     return "";
   }
@@ -44,7 +43,7 @@ glp.callStack.helper.getCallSiteDetails = function(stack) {
 /**
  * Returns the first call stack trace from the user
  */
-glp.callStack.helper.getFirstUserStack = function() {
+callStack.helper.getFirstUserStack = function() {
   fullStack = this.getStack()
   for(var i = 1; i < fullStack.length; i++) {
     if (!~fullStack[i].getFileName().indexOf("src/content_script")) {
@@ -55,13 +54,8 @@ glp.callStack.helper.getFirstUserStack = function() {
   return null;
 }
 
-
-glp.callStack.toggle = function(enabled) {
+callStack.toggle = function(enabled) {
   this.enabled = enabled;
-}
-
-glp.callStack.toggleHistogram = function(enabled) {
-  this.enabledHistogram = enabled;
 }
 
 /**
@@ -70,7 +64,7 @@ glp.callStack.toggleHistogram = function(enabled) {
  * only on request because it's too expensive at storage time
  * @param {String} "mostRecentCalls" or "callsSinceDraw"
  */
-glp.callStack.getStack = function() {
+callStack.getStack = function() {
   var formatted = {};
   formatted.mostRecentCalls = this.mostRecentCalls;
   formatted.callsSinceDraw = this.callsSinceDraw;
@@ -97,7 +91,7 @@ glp.callStack.getStack = function() {
  * Formats a date object to HH:MM:SS.mmm
  * @param {Date} d
  */
-glp.callStack.helper.dateTimeFormat = function(d) {
+callStack.helper.dateTimeFormat = function(d) {
   return d.getHours() + ":"
       + ('00'+d.getMinutes()).substring(d.getMinutes().toString().length) + ":"
       + ('00'+d.getSeconds()).substring(d.getSeconds().toString().length) + "."
@@ -109,7 +103,7 @@ glp.callStack.helper.dateTimeFormat = function(d) {
  * @param {String} Name of function
  * @param {Dictionary} arguments used by the function
  */
-glp.callStack.push = function(name, args) {
+callStack.push = function(name, args) {
   if (!this.enabled) {
     return;
   }
@@ -143,7 +137,7 @@ glp.callStack.push = function(name, args) {
  * @param {String} Name of function
  * @param {CallSite} Obtained from getFirstUserStack
  */
-glp.callStack.update = function(name) {
+callStack.update = function(name) {
   if (!this.enabled) {
     return;
   }
@@ -160,21 +154,5 @@ glp.callStack.update = function(name) {
   }
 }
 
-/**
- * Adds a data point to the function histogram
- * @param {String} Name of function
- */
-glp.histogram.add = function(name) {
-  if (!this.enabled) {
-    return;
-  }
-  if (!this.histogram[name]) {
-    this.histogram[name] = 1;
-  } else {
-    this.histogram[name] += 1;
-  }
-}
-
-glp.histogram.toggle = function(enabled) {
-  this.enabled = enabled;
-}
+return callStack;
+}());

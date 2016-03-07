@@ -12,7 +12,16 @@ function _glpBind(origFunc, newFunc, name) {
 }
 
 function bindWebGL() {
-    WebGLRenderingContext.prototype.glp = glp;
+    WebGLRenderingContext.prototype.glp = {};
+    WebGLRenderingContext.prototype.glp.bufferViewer = glpBufferViewer;
+    WebGLRenderingContext.prototype.glp.callStack = glpCallStack;
+    WebGLRenderingContext.prototype.glp.duplicateProgramDetection = glpDuplicateProgramDetection;
+    WebGLRenderingContext.prototype.glp.histogram = glpHistogram;
+    WebGLRenderingContext.prototype.glp.messages = glpMessages;
+    WebGLRenderingContext.prototype.glp.pixelInspector = glpPixelInspector;
+    WebGLRenderingContext.prototype.glp.programUsageCounter = glpProgramUsageCounter;
+    WebGLRenderingContext.prototype.glp.stateTracker = glpStateTracker;
+    WebGLRenderingContext.prototype.glp.textureViewer = glpTextureViewer;
 
     /**
      * Bind WebGLRenderingContext functions to functions found in glpFcnBindings

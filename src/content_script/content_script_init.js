@@ -1,15 +1,17 @@
 // Note: Files are appended in order
 var fileDirectory = "src/content_script/"
 files = [
-  "insight.js",
+  "helpers.js",
   "buffer_viewer.js",
   "program_usage_counter.js",
   "duplicate_program_detection.js",
   "pixel_inspector.js",
   "texture_viewer.js",
-  "messaging.js",
-  "helpers.js",
+  "contexts.js",
+  "messages.js",
+  "message_handling.js",
   "call_stack.js",
+  "histogram.js",
   "state_variables.js",
   "fcn_bindings.js",
   "webgl_bind.js",

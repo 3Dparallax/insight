@@ -1,24 +1,26 @@
-glp.textureViewer = {};
+var glpTextureViewer = (function () {
 
-glp.textureViewer.textures = [];
-glp.textureViewer.boundTexture = null;
+textureViewer = {};
+
+textureViewer.textures = [];
+textureViewer.boundTexture = null;
 
 /**
  * Sends the number of textures created to the front end
  **/
-glp.textureViewer.getTextures = function(gl) {
-    glpSendMessage(gl, messageType.GET_TEXTURES, { "length" : this.textures.length });
+textureViewer.getTextures = function(gl) {
+    gl.glp.messages(gl, messageType.GET_TEXTURES, { "length" : this.textures.length });
 }
 
-glp.textureViewer.bindTexture = function(texture) {
+textureViewer.bindTexture = function(texture) {
     this.boundTexture = texture;
 }
 
-glp.textureViewer.unbindTexture = function() {
+textureViewer.unbindTexture = function() {
     this.boundTexture = null;
 }
 
-glp.textureViewer.texImage2D = function(gl, args) {
+textureViewer.texImage2D = function(gl, args) {
     if (this.boundTexture != null && args != null) {
         if (!this.boundTexture.texImage2DCalls) {
             this.boundTexture.texImage2DCalls = [];
@@ -28,7 +30,7 @@ glp.textureViewer.texImage2D = function(gl, args) {
     }
 }
 
-glp.textureViewer.texParameteri = function(gl, args) {
+textureViewer.texParameteri = function(gl, args) {
     if (this.boundTexture != null && args != null) {
         if (!this.boundTexture.texParameteriCalls) {
             this.boundTexture.texParameteriCalls = [];
@@ -38,7 +40,7 @@ glp.textureViewer.texParameteri = function(gl, args) {
     }
 }
 
-glp.textureViewer.getTextureSize = function(texture) {
+textureViewer.getTextureSize = function(texture) {
     var size = { "x" : 128, "y" : 128 };
 
     if (texture.texImage2DCalls) {
@@ -63,7 +65,7 @@ glp.textureViewer.getTextureSize = function(texture) {
  * Get a texture in the textures list by its index.
  * Sends the texture to the front end
  **/
-glp.textureViewer.getTexture = function(gl, index) {
+textureViewer.getTexture = function(gl, index) {
     if (index < 0 || index >= this.textures.length) {
         return;
     }
@@ -79,20 +81,24 @@ glp.textureViewer.getTexture = function(gl, index) {
     if (canRead) {
         var pixels = new Uint8Array(size.x * size.y * 4);
         gl.readPixels(0, 0, size.x, size.y, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-        glpSendMessage(gl, messageType.GET_TEXTURE, JSON.stringify({
-            "index" : index,
-            "pixels" : Array.prototype.slice.call(pixels),
-            "texImage2DCalls" : getGLArgsList(gl, texture.texImage2DCalls),
-            "texParameteriCalls" : getGLArgsList(gl, texture.texParameteriCalls),
-            "width" : size.x,
-            "height" : size.y,
+        gl.glp.messages(gl, messageType.GET_TEXTURE, JSON.stringify({
+            "index": index,
+            "pixels": Array.prototype.slice.call(pixels),
+            "texImage2DCalls": glpHelpers.getGLArgsList(gl, texture.texImage2DCalls),
+            "texParameteriCalls": glpHelpers.getGLArgsList(gl, texture.texParameteriCalls),
+            "width": size.x,
+            "height": size.y,
         }));
     }
 
     gl.deleteFramebuffer(frameBuffer);
 }
 
-glp.textureViewer.pushTexture = function(texture) {
+textureViewer.pushTexture = function(texture) {
     this.textures.push(texture);
     return texture;
 }
+
+return textureViewer;
+}());
+
