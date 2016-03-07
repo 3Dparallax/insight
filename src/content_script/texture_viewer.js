@@ -1,4 +1,4 @@
-var glpTextureViewer = (function () {
+var glpTextureViewer = (function (gl) {
 
 textureViewer = {};
 
@@ -8,8 +8,8 @@ textureViewer.boundTexture = null;
 /**
  * Sends the number of textures created to the front end
  **/
-textureViewer.getTextures = function(gl) {
-    gl.glp.messages(gl, messageType.GET_TEXTURES, { "length" : this.textures.length });
+textureViewer.getTextures = function() {
+    gl.glp().messages.sendMessage(messageType.GET_TEXTURES, { "length" : this.textures.length });
 }
 
 textureViewer.bindTexture = function(texture) {
@@ -20,7 +20,7 @@ textureViewer.unbindTexture = function() {
     this.boundTexture = null;
 }
 
-textureViewer.texImage2D = function(gl, args) {
+textureViewer.texImage2D = function(args) {
     if (this.boundTexture != null && args != null) {
         if (!this.boundTexture.texImage2DCalls) {
             this.boundTexture.texImage2DCalls = [];
@@ -30,7 +30,7 @@ textureViewer.texImage2D = function(gl, args) {
     }
 }
 
-textureViewer.texParameteri = function(gl, args) {
+textureViewer.texParameteri = function(args) {
     if (this.boundTexture != null && args != null) {
         if (!this.boundTexture.texParameteriCalls) {
             this.boundTexture.texParameteriCalls = [];
@@ -65,7 +65,7 @@ textureViewer.getTextureSize = function(texture) {
  * Get a texture in the textures list by its index.
  * Sends the texture to the front end
  **/
-textureViewer.getTexture = function(gl, index) {
+textureViewer.getTexture = function(index) {
     if (index < 0 || index >= this.textures.length) {
         return;
     }
@@ -81,7 +81,7 @@ textureViewer.getTexture = function(gl, index) {
     if (canRead) {
         var pixels = new Uint8Array(size.x * size.y * 4);
         gl.readPixels(0, 0, size.x, size.y, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-        gl.glp.messages(gl, messageType.GET_TEXTURE, JSON.stringify({
+        gl.glp().messages.sendMessage(messageType.GET_TEXTURE, JSON.stringify({
             "index": index,
             "pixels": Array.prototype.slice.call(pixels),
             "texImage2DCalls": glpHelpers.getGLArgsList(gl, texture.texImage2DCalls),
@@ -100,5 +100,5 @@ textureViewer.pushTexture = function(texture) {
 }
 
 return textureViewer;
-}());
+});
 

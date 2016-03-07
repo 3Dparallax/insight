@@ -1,11 +1,8 @@
-var glpStateTracker = (function () {
+var glpStateTracker = (function (gl) {
 
 stateTracker = {}
 
-stateTracker.getStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+stateTracker.getStates = function() {
   return {
     boolStates: this.getBooleanStates(gl),
     numericalStates: this.getNumericalStates(gl),
@@ -24,10 +21,7 @@ stateTracker.getStates = function(gl) {
 // STENCIL_TEST                        GLboolean
 // UNPACK_FLIP_Y_WEBGL                 GLboolean
 // UNPACK_PREMULTIPLY_ALPHA_WEBGL      GLboolean
-stateTracker.getBooleanStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+stateTracker.getBooleanStates = function() {
   return {
     BLEND: gl.getParameter(gl.BLEND),
     CULL_FACE: gl.getParameter(gl.CULL_FACE),
@@ -74,10 +68,7 @@ stateTracker.getBooleanStates = function(gl) {
 // STENCIL_REF                         GLint
 // SUBPIXEL_BITS                       GLint
 // UNPACK_ALIGNMENT                    GLint
-stateTracker.getNumericalStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+stateTracker.getNumericalStates = function() {
   return {
     ALPHA_BITS: gl.getParameter(gl.ALPHA_BITS),
     BLUE_BITS: gl.getParameter(gl.BLUE_BITS),
@@ -133,10 +124,7 @@ stateTracker.getNumericalStates = function(gl) {
 // STENCIL_PASS_DEPTH_FAIL             GLenum
 // STENCIL_PASS_DEPTH_PASS             GLenum
 // UNPACK_COLORSPACE_CONVERSION_WEBGL  GLenum
-stateTracker.getEnumStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+stateTracker.getEnumStates = function() {
   return {
     ACTIVE_TEXTURE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.ACTIVE_TEXTURE)),
     BLEND_DST_ALPHA: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_ALPHA)),
@@ -194,4 +182,4 @@ TEXTURE_BINDING_CUBE_MAP            WebGLTexture
 */
 
 return stateTracker;
-}());
+});

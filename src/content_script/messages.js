@@ -1,4 +1,4 @@
-var glpMessages = (function () {
+var glpMessages = (function (gl) {
 
 messages = {}
 
@@ -8,20 +8,19 @@ messages = {}
  * @param {String} Message type
  * @param {Dictionary} Message data
  */
-messages.sendMessage = function(context, type, data) {
+messages.sendMessage = function(type, data) {
   window.postMessage({
     "source": "content",
-    "activeContext": context.__uuid,
+    "activeContext": gl.__uuid,
     "type": type,
     "data": data
   }, "*");
 }
 
-messages.getCurrentProgramUsageCount = function(context) {
+messages.getCurrentProgramUsageCount = function() {
   this.sendMessage(
-    context,
     messageType.GET_PROGRAM_USAGE_COUNT,
-    {"programUsageCount": JSON.stringify(context.glp.programUsageCounter.usages)}
+    {"programUsageCount": JSON.stringify(gl.glp().programUsageCounter.usages)}
   );
 }
 
@@ -29,30 +28,28 @@ messages.getCurrentProgramUsageCount = function(context) {
  * Gets duplicate programs list from the time that enable is called
  * Sends duplicated program list to the front end
  */
-messages.getDuplicateProgramUsage = function(context) {
+messages.getDuplicateProgramUsage = function() {
   this.sendMessage(
-    context,
     messageType.GET_DUPLICATE_PROGRAM_USAGE,
-    {"duplicateProgramUses": JSON.stringify(context.glp.duplicateProgramDetection.duplicates)}
+    {"duplicateProgramUses": JSON.stringify(gl.glp().duplicateProgramDetection.duplicates)}
   );
 }
 
-messages.getTextures = function(context) {
-  context.glp.textureViewer.getTextures(context);
+messages.getTextures = function() {
+  gl.glp().textureViewer.getTextures();
 }
 
-messages.getTexture = function(context, index) {
-  context.glp.textureViewer.getTexture(context, index);
+messages.getTexture = function(index) {
+  gl.glp().textureViewer.getTexture(index);
 }
 
 /**
  * Sends call stack information to the panel
  * @param {String} Type of stack requested
  */
-messages.sendCallStack = function(context, type) {
-  var callStack = context.glp.callStack.getStack();
+messages.sendCallStack = function(type) {
+  var callStack = gl.glp().callStack.getStack();
   this.sendMessage(
-    context,
     messageType.CALL_STACK,
     {"functionNames": callStack}
   );
@@ -61,10 +58,10 @@ messages.sendCallStack = function(context, type) {
 /**
  * Sends histogram of function calls to the panel
  */
-messages.sendFunctionHistogram = function(context, threshold) {
+messages.sendFunctionHistogram = function(threshold) {
   var dataSeries = []
   var labels = []
-  var histogram = context.glp.histogram.histogram
+  var histogram = gl.glp().histogram.histogram
   for (var functionName in histogram) {
       if (histogram[functionName] >= threshold) {
           labels.push(functionName)
@@ -73,7 +70,6 @@ messages.sendFunctionHistogram = function(context, threshold) {
   }
 
   this.sendMessage(
-    context,
     messageType.FUNCTION_HISTOGRAM,
     {"labels": labels, "values": dataSeries}
   );
@@ -83,24 +79,23 @@ messages.sendFunctionHistogram = function(context, threshold) {
  * Toggles the status of the pixel inspector being enabled/disabled
  * @param {Bool} Enabled
  */
-messages.pixelInspectorToggle = function(context, enabled) {
+messages.pixelInspectorToggle = function(enabled) {
   if (enabled) {
-    context.glp.pixelInspector.enable(context);
+    gl.glp().pixelInspector.enable();
   } else {
-    context.glp.pixelInspector.disable(context);
+    gl.glp().pixelInspector.disable();
   }
 }
 
 /**
  * Sends call state variable information to the panel
  */
-messages.sendStateVars = function(context) {
-  var stateVars = JSON.stringify(context.glp.stateTracker.getStates(context));
+messages.sendStateVars = function() {
+  var stateVars = JSON.stringify(gl.glp().stateTracker.getStates());
   this.sendMessage(
-    context,
     messageType.STATE_VARS,
     {"stateVars": stateVars})
 }
 
 return messages;
-}());
+});

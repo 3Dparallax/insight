@@ -1,4 +1,4 @@
-var glpProgramUsageCounter = (function () {
+var glpProgramUsageCounter = (function (gl) {
 
 programUsageCounter = {};
 
@@ -28,4 +28,4 @@ programUsageCounter.addUsage = function(program) {
 }
 
 return programUsageCounter;
-}());
+});

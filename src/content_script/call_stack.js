@@ -1,4 +1,4 @@
-var glpCallStack = (function () {
+var glpCallStack = (function (gl) {
 
 callStack = {}
 callStack.helper = {}
@@ -22,7 +22,6 @@ callStack.helper.getStack = function() {
     var orig = Error.prepareStackTrace;
     Error.prepareStackTrace = function(_, stack){ return stack; };
     var err = new Error;
-    // console.log(arguments.callee.caller);
     Error.captureStackTrace(err, arguments.callee);
     var stack = err.stack;
     Error.prepareStackTrace = orig;
@@ -155,4 +154,4 @@ callStack.update = function(name) {
 }
 
 return callStack;
-}());
+});

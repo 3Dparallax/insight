@@ -1,4 +1,4 @@
-var glpHistogram = (function () {
+var glpHistogram = (function (gl) {
 
 histogram = {};
 histogram.enabled = false;
@@ -24,4 +24,4 @@ histogram.toggle = function(enabled) {
 }
 
 return histogram;
-}());
+});
