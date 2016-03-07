@@ -1,72 +1,71 @@
-var glpBufferViewer = (function () {
-
-bufferViewer = {};
-
-bufferViewer.buffers = [];
-bufferViewer.frameBuffers = [];
-bufferViewer.renderBuffers = [];
-bufferViewer.boundBuffer = null;
+var glpBufferViewer = function (gl) {
+  this.gl = gl;
+  this.buffers = [];
+  this.frameBuffers = [];
+  this.renderBuffers = [];
+  this.boundBuffer = null;
+}
 
 /**
  * Sends the number of buffers created to the front end
  **/
-bufferViewer.getBuffers = function(gl) {
-  gl.glp.messages(gl, messageType.GET_BUFFERS, { "length" : this.buffers.length });
+glpBufferViewer.prototype.getBuffers = function() {
+  this.gl.glp().messages.sendMessage(messageType.GET_BUFFERS, { "length" : this.buffers.length });
 }
 
 /**
  * Sends the number of frame buffers created to the front end
  **/
-bufferViewer.getFrameBuffers = function(gl) {
-  gl.glp.messages(gl, messageType.GET_FRAME_BUFFERS, { "length" : this.frameBuffers.length });
+glpBufferViewer.prototype.getFrameBuffers = function() {
+  this.gl.glp().messages.sendMessage(messageType.GET_FRAME_BUFFERS, { "length" : this.frameBuffers.length });
 }
 
 /**
  * Sends the number of render buffers created to the front end
  **/
-bufferViewer.getRenderBuffers = function(gl) {
-  gl.glp.messages(gl, messageType.GET_RENDER_BUFFERS, { "length" : this.renderBuffers.length });
+glpBufferViewer.prototype.getRenderBuffers = function() {
+  this.gl.glp().messages.sendMessage(messageType.GET_RENDER_BUFFERS, { "length" : this.renderBuffers.length });
 }
 
-bufferViewer.bindBuffer = function(buffer) {
+glpBufferViewer.prototype.bindBuffer = function(buffer) {
   this.boundBuffer = buffer;
 }
 
-bufferViewer.unbindBuffer = function() {
+glpBufferViewer.prototype.unbindBuffer = function() {
   this.boundBuffer = null;
 }
 
-bufferViewer.bufferData = function(gl, args) {
+glpBufferViewer.prototype.bufferData = function(args) {
   if (this.boundBuffer != null && args != null) {
     if (!this.boundBuffer.bufferDataCalls) {
       this.boundBuffer.bufferDataCalls = [];
     }
 
-    this.boundBuffer.bufferDataCalls.push(glpHelpers.getGLArgsString(gl, args));
+    this.boundBuffer.bufferDataCalls.push(glpHelpers.getGLArgsString(this.gl, args));
   }
 }
 
-bufferViewer.bufferSubData = function(gl, args) {
+glpBufferViewer.prototype.bufferSubData = function(args) {
   if (this.boundBuffer != null && args != null) {
     if (!this.boundBuffer.bufferSubDataCalls) {
       this.boundBuffer.bufferSubDataCalls = [];
     }
 
-    this.boundBuffer.bufferSubDataCalls.push(glpHelpers.getGLArgsString(gl, args));
+    this.boundBuffer.bufferSubDataCalls.push(glpHelpers.getGLArgsString(this.gl, args));
   }
 }
 
-bufferViewer.deleteBuffer = function(buffer) {
+glpBufferViewer.prototype.deleteBuffer = function(buffer) {
   buffer.deleted = true;
 }
 
-bufferViewer.getBuffer = function(gl, index) {
+glpBufferViewer.prototype.getBuffer = function(index) {
   if (index < 0 || index >= this.buffers.length) {
     return;
   }
 
   var buffer = this.buffers[index];
-  gl.glp.messages.sendMessage(gl, messageType.GET_BUFFER, JSON.stringify({
+  this.gl.glp().messages.sendMessage(messageType.GET_BUFFER, JSON.stringify({
     "index" : index,
     "bufferDataCalls" : buffer.bufferDataCalls ? Array.prototype.slice.call(buffer.bufferDataCalls) : [],
     "bufferSubDataCalls" : buffer.bufferSubDataCalls ? Array.prototype.slice.call(buffer.bufferSubDataCalls) : [],
@@ -74,20 +73,17 @@ bufferViewer.getBuffer = function(gl, index) {
   }));
 }
 
-bufferViewer.pushBuffer = function(buffer) {
+glpBufferViewer.prototype.pushBuffer = function(buffer) {
   this.buffers.push(buffer);
   return buffer;
 }
 
-bufferViewer.pushFrameBuffer = function(buffer) {
+glpBufferViewer.prototype.pushFrameBuffer = function(buffer) {
   this.frameBuffers.push(buffer);
   return buffer;
 }
 
-bufferViewer.pushRenderBuffer = function(buffer) {
+glpBufferViewer.prototype.pushRenderBuffer = function(buffer) {
   this.renderBuffers.push(buffer);
   return buffer;
 }
-
-return bufferViewer;
-}());

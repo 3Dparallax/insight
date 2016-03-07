@@ -1,53 +1,37 @@
-var glpDuplicateProgramDetection = (function () {
+var glpDuplicateProgramDetection = function (gl) {
+  this.gl = gl;
 
-duplicateProgramDetection = {};
-duplicateProgramDetection.enabled = false;
-duplicateProgramDetection.duplicates = []; // list of { repeatedProgram : lineNumber }
-duplicateProgramDetection.duplicatePrograms = {};
+  this.enabled = false;
+  this.duplicates = []; // list of { repeatedProgram : lineNumber }
+  this.duplicatePrograms = {};
+}
 
 /**
  * Toggles duplicate program usage detection
  */
-duplicateProgramDetection.toggle = function(enable) {
-    if (enable) {
-      this.enable();
-    } else {
-      this.disable();
-    }
+glpDuplicateProgramDetection.prototype.toggle = function(enable) {
+  this.enabled = enable;
 }
 
-duplicateProgramDetection.reset = function() {
+glpDuplicateProgramDetection.prototype.reset = function() {
   this.duplicates = []
   this.duplicatePrograms = {};
 }
-/**
- * Enables duplicate program usage detection
- */
-duplicateProgramDetection.enable = function() {
-  this.enabled = true;
-}
 
-/**
- * Disables duplicate program usage detection
- */
-duplicateProgramDetection.disable = function() {
-  this.enabled = false;
-}
-
-duplicateProgramDetection.useProgramCalled = function(gl, program) {
+glpDuplicateProgramDetection.prototype.useProgramCalled = function(program) {
   if (!this.enabled) {
     return
   }
-  var currentProgram = gl.getParameter(gl.CURRENT_PROGRAM);
+  var currentProgram = this.gl.getParameter(this.gl.CURRENT_PROGRAM);
 
-  if( currentProgram != undefined &&
-      currentProgram.__uuid != undefined &&
-      currentProgram.__uuid == program.__uuid ) {
+  if(currentProgram != undefined &&
+     currentProgram.__uuid != undefined &&
+     currentProgram.__uuid == program.__uuid) {
     /*
      * callStack gets the current call stack information up to this point
      */
-    var callStack = gl.glp.callStack.helper.getStack();
-    var userStack = gl.glp.callStack.helper.getFirstUserStack(callStack);
+    var callStack = this.gl.glp().callStack.helper.getStack();
+    var userStack = this.gl.glp().callStack.helper.getFirstUserStack(callStack);
     var lineNumber = ""
     var functionName = "";
     if (userStack != null) {
@@ -66,12 +50,9 @@ duplicateProgramDetection.useProgramCalled = function(gl, program) {
                       "functionName" : functionName,
                       "fileName" : fileName};
 
-    if(this.duplicatePrograms[programObj] == undefined) {
+    if (this.duplicatePrograms[programObj] == undefined) {
       this.duplicates.push(programObj);
       this.duplicatePrograms[programObj] = true;
     }
   }
 }
-
-return duplicateProgramDetection;
-}());

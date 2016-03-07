@@ -11,18 +11,9 @@ function _glpBind(origFunc, newFunc, name) {
     }
 }
 
-function bindWebGL() {
-    WebGLRenderingContext.prototype.glp = {};
-    WebGLRenderingContext.prototype.glp.bufferViewer = glpBufferViewer;
-    WebGLRenderingContext.prototype.glp.callStack = glpCallStack;
-    WebGLRenderingContext.prototype.glp.duplicateProgramDetection = glpDuplicateProgramDetection;
-    WebGLRenderingContext.prototype.glp.histogram = glpHistogram;
-    WebGLRenderingContext.prototype.glp.messages = glpMessages;
-    WebGLRenderingContext.prototype.glp.pixelInspector = glpPixelInspector;
-    WebGLRenderingContext.prototype.glp.programUsageCounter = glpProgramUsageCounter;
-    WebGLRenderingContext.prototype.glp.stateTracker = glpStateTracker;
-    WebGLRenderingContext.prototype.glp.textureViewer = glpTextureViewer;
+_glpModuleInstances = {};
 
+function bindWebGL() {
     /**
      * Bind WebGLRenderingContext functions to functions found in glpFcnBindings
      * If defined, functions are first bound the function found in glpFcnBindings
@@ -46,6 +37,28 @@ function bindWebGL() {
         } catch(err) {
             // TODO: Handle binding errors
         }
+    }
+
+    WebGLRenderingContext.prototype.glp = function() {
+        if (this.__uuid == null) {
+            this.__uuid = glpHelpers.guid();
+        }
+        if (this.__uuid in _glpModuleInstances) {
+            return _glpModuleInstances[this.__uuid];
+        }
+
+        var modules = {}
+        modules.bufferViewer = new glpBufferViewer(this);
+        modules.callStack = new glpCallStack(this);
+        modules.duplicateProgramDetection = new glpDuplicateProgramDetection(this);
+        modules.histogram = new glpHistogram(this);
+        modules.messages = new glpMessages(this);
+        modules.pixelInspector = new glpPixelInspector(this);
+        modules.programUsageCounter = new glpProgramUsageCounter(this);
+        modules.stateTracker = new glpStateTracker(this);
+        modules.textureViewer = new glpTextureViewer(this);
+        _glpModuleInstances[this.__uuid] = modules;
+        return modules;
     }
 }
 

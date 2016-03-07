@@ -1,29 +1,31 @@
-var glpStateTracker = (function () {
+var glpStateTracker = function (gl) {
+  this.gl = gl;
+  this.enabled = false;
 
-stateTracker = {};
-stateTracker.enabled = false;
+  this.BLEND = null;
+  this.CULL_FACE = null;
+  this.DEPTH_TEST = null;
+  this.DITHER = null;
+  this.POLYGON_OFFSET_FILL = null;
+  this.SAMPLE_COVERAGE_INVERT = null;
+  this.SCISSOR_TEST = null;
+  this.STENCIL_TEST = null;
 
-stateTracker.BLEND = null;
-stateTracker.CULL_FACE = null;
-stateTracker.DEPTH_TEST = null;
-stateTracker.DITHER = null;
-stateTracker.POLYGON_OFFSET_FILL = null;
-stateTracker.SAMPLE_COVERAGE_INVERT = null;
-stateTracker.SCISSOR_TEST = null;
-stateTracker.STENCIL_TEST = null;
+  this.programRequestedStates = {
+    BLEND: null,
+    CULL_FACE: null,
+    DEPTH_TEST: null,
+    DITHER: null,
+    POLYGON_OFFSET_FILL: null,
+    SAMPLE_COVERAGE_INVERT: null,
+    SCISSOR_TEST: null,
+    STENCIL_TEST: null,
+  };
+}
 
-stateTracker.programRequestedStates = {
-  BLEND: null,
-  CULL_FACE: null,
-  DEPTH_TEST: null,
-  DITHER: null,
-  POLYGON_OFFSET_FILL: null,
-  SAMPLE_COVERAGE_INVERT: null,
-  SCISSOR_TEST: null,
-  STENCIL_TEST: null,
-};
 
-stateTracker.toggle = function(gl, enabled) {
+glpStateTracker.prototype.toggle = function(enabled) {
+  var gl = this.gl
   if (enabled) {
     this.enabled = true;
     for (var key in this.programRequestedStates) {
@@ -43,11 +45,11 @@ stateTracker.toggle = function(gl, enabled) {
   }
 }
 
-stateTracker.freezeStates = function(gl, stateEnum, enable) {
+glpStateTracker.prototype.freezeStates = function(stateEnum, enable) {
   if (!this.enabled) {
     return false;
   }
-  stateName = glpHelpers.getGLEnumName(gl, stateEnum)
+  stateName = glpHelpers.getGLEnumName(this.gl, stateEnum)
   if (this[stateName] != enable) {
     this.programRequestedStates[stateName] = enable;
     return true;
@@ -55,10 +57,11 @@ stateTracker.freezeStates = function(gl, stateEnum, enable) {
   return false;
 }
 
-stateTracker.toggleBoolState = function(gl, request) {
+glpStateTracker.prototype.toggleBoolState = function(request) {
   if (!this.enabled) {
     return false;
   }
+  var gl = this.gl;
   stateName = request.variable
   if (request.enable) {
     this[stateName] = true;
@@ -67,16 +70,15 @@ stateTracker.toggleBoolState = function(gl, request) {
     this[stateName] = false;
     gl.disable(gl[stateName]);
   }
+  console.log(request)
+  console.log(this)
 }
 
-stateTracker.getStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+glpStateTracker.prototype.getStates = function() {
   return {
-    boolStates: this.getBooleanStates(gl),
-    // numericalStates: this.getNumericalStates(gl),
-    // enumStates: this.getEnumStates(gl),
+    boolStates: this.getBooleanStates(),
+    // numericalStates: this.getNumericalStates(),
+    // enumStates: this.getEnumStates(),
   }
 }
 
@@ -91,10 +93,9 @@ stateTracker.getStates = function(gl) {
 // STENCIL_TEST *                      GLboolean
 // UNPACK_FLIP_Y_WEBGL                 GLboolean
 // UNPACK_PREMULTIPLY_ALPHA_WEBGL      GLboolean
-stateTracker.getBooleanStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+glpStateTracker.prototype.getBooleanStates = function() {
+  var gl = this.gl;
+
   this.BLEND = gl.getParameter(gl.BLEND);
   this.CULL_FACE = gl.getParameter(gl.CULL_FACE);
   this.DEPTH_TEST = gl.getParameter(gl.DEPTH_TEST);
@@ -149,10 +150,8 @@ stateTracker.getBooleanStates = function(gl) {
 // STENCIL_REF                         GLint
 // SUBPIXEL_BITS                       GLint
 // UNPACK_ALIGNMENT                    GLint
-stateTracker.getNumericalStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+glpStateTracker.prototype.getNumericalStates = function() {
+  var gl = this.gl;
   return {
     ALPHA_BITS: gl.getParameter(gl.ALPHA_BITS),
     BLUE_BITS: gl.getParameter(gl.BLUE_BITS),
@@ -208,10 +207,8 @@ stateTracker.getNumericalStates = function(gl) {
 // STENCIL_PASS_DEPTH_FAIL             GLenum
 // STENCIL_PASS_DEPTH_PASS             GLenum
 // UNPACK_COLORSPACE_CONVERSION_WEBGL  GLenum
-stateTracker.getEnumStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+glpStateTracker.prototype.getEnumStates = function() {
+  var gl = this.gl;
   return {
     ACTIVE_TEXTURE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.ACTIVE_TEXTURE)),
     BLEND_DST_ALPHA: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_ALPHA)),
@@ -267,6 +264,3 @@ RENDERBUFFER_BINDING                WebGLRenderbuffer
 TEXTURE_BINDING_2D                  WebGLTexture
 TEXTURE_BINDING_CUBE_MAP            WebGLTexture
 */
-
-return stateTracker;
-}());

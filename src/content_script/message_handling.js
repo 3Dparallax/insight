@@ -25,49 +25,49 @@ window.addEventListener('message', function(event) {
     return;
   }
 
-  var context = glpContexts.getWebGLContext(message.activeContext);
-  if (!context) {
+  var gl = glpContexts.getWebGLContext(message.activeContext);
+  if (!gl) {
     return;
   }
 
   if (message.type == messageType.PIXEL_INSPECTOR) {
-    context.glp.messages.pixelInspectorToggle(context, message.data.enabled);
+    gl.glp().messages.pixelInspectorToggle(message.data.enabled);
   } else if (message.type == messageType.GET_CALL_STACK) {
-    context.glp.messages.sendCallStack(context, message.data);
+    gl.glp().messages.sendCallStack(message.data);
   } else if (message.type == messageType.TOGGLE_CALL_STACK) {
-    context.glp.callStack.toggle(message.data.enabled);
+    gl.glp().callStack.toggle(message.data.enabled);
   } else if (message.type == messageType.TOGGLE_FUNCTION_HISTOGRAM) {
-    context.glp.histogram.toggle(message.data.enabled);
+    gl.glp().histogram.toggle(message.data.enabled);
   } else if (message.type == messageType.FUNCTION_HISTOGRAM) {
-    context.glp.messages.sendFunctionHistogram(context, message.data.threshold);
+    gl.glp().messages.sendFunctionHistogram(message.data.threshold);
   } else if (message.type == messageType.TOGGLE_PROGRAM_USAGE_COUNT) {
-    context.glp.programUsageCounter.toggle(message.data.enabled);
+    gl.glp().programUsageCounter.toggle(message.data.enabled);
   } else if (message.type == messageType.RESET_PROGRAM_USAGE_COUNT) {
-    context.glp.programUsageCounter.reset();
+    gl.glp().programUsageCounter.reset();
   } else if (message.type == messageType.GET_PROGRAM_USAGE_COUNT) {
-    context.glp.messages.getCurrentProgramUsageCount(context);
+    gl.glp().messages.getCurrentProgramUsageCount();
   } else if (message.type == messageType.TOGGLE_DUPLICATE_PROGRAM_USAGE) {
-    context.glp.duplicateProgramDetection.toggle(message.data.enabled);
+    gl.glp().duplicateProgramDetection.toggle(message.data.enabled);
   } else if (message.type == messageType.RESET_DUPLICATE_PROGRAM_USAGE) {
-    context.glp.duplicateProgramDetection.reset();
+    gl.glp().duplicateProgramDetection.reset();
   } else if (message.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
-    context.glp.messages.getDuplicateProgramUsage(context);
+    gl.glp().messages.getDuplicateProgramUsage();
   } else if (message.type == messageType.GET_TEXTURE) {
-    context.glp.messages.getTexture(context, message.data.index);
+    gl.glp().messages.getTexture(message.data.index);
   } else if (message.type == messageType.GET_TEXTURES) {
-    context.glp.messages.getTextures(context);
+    gl.glp().messages.getTextures();
   } else if (message.type == messageType.GET_BUFFER) {
-    context.glp.bufferViewer.getBuffer(context, message.data.index);
+    gl.glp().bufferViewer.getBuffer(message.data.index);
   } else if (message.type == messageType.GET_BUFFERS) {
-    context.glp.bufferViewer.getBuffers(context);
+    gl.glp().bufferViewer.getBuffers();
   } else if (message.type == messageType.GET_FRAME_BUFFERS) {
-    context.glp.bufferViewer.getFrameBuffers(context);
+    gl.glp().bufferViewer.getFrameBuffers();
   } else if (message.type == messageType.GET_RENDER_BUFFERS) {
-    context.glp.bufferViewer.getRenderBuffers(context);
+    gl.glp().bufferViewer.getRenderBuffers();
   } else if (message.type == messageType.STATE_VARS) {
-    context.glp.messages.sendStateVars(context, message.data);
+    gl.glp().messages.sendStateVars(message.data);
   } else if (message.type == messageType.TOGGLE_STATE_VARS) {
-    context.glp.stateTracker.toggle(context, message.data.enabled);
+    gl.glp().stateTracker.toggle(message.data.enabled);
   } else {
     console.error(message.type, message.data);
   }
