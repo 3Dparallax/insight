@@ -1,7 +1,9 @@
-var glpHistogram = function (gl) { this.gl = gl; }
+var glpHistogram = function (gl) {
+    this.gl = gl;
 
-glpHistogram.prototype.enabled = false;
-glpHistogram.prototype.histogram = {};
+    this.enabled = false;
+    this.histogram = {};
+}
 
 /**
  * Adds a data point to the function histogram

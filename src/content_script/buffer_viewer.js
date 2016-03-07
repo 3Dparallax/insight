@@ -1,9 +1,10 @@
-var glpBufferViewer = function (gl) { this.gl = gl; }
-
-glpBufferViewer.prototype.buffers = [];
-glpBufferViewer.prototype.frameBuffers = [];
-glpBufferViewer.prototype.renderBuffers = [];
-glpBufferViewer.prototype.boundBuffer = null;
+var glpBufferViewer = function (gl) {
+  this.gl = gl;
+  this.buffers = [];
+  this.frameBuffers = [];
+  this.renderBuffers = [];
+  this.boundBuffer = null;
+}
 
 /**
  * Sends the number of buffers created to the front end

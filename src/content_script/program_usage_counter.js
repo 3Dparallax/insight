@@ -1,7 +1,9 @@
-var glpProgramUsageCounter = function (gl) { this.gl = gl; }
+var glpProgramUsageCounter = function (gl) {
+  this.gl = gl;
 
-glpProgramUsageCounter.prototype.enabled = false;
-glpProgramUsageCounter.prototype.usages = {}; // program.__uuid : usage
+  this.enabled = false;
+  this.usages = {}; // program.__uuid : usage
+}
 
 glpProgramUsageCounter.prototype.toggle = function(enabled) {
 	if (enabled) {

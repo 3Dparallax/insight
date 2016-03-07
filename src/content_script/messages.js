@@ -1,4 +1,6 @@
-var glpMessages = function (gl) { this.gl = gl; }
+var glpMessages = function (gl) {
+  this.gl = gl;
+}
 
 /**
  * Sends messages to the devtools panel

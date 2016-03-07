@@ -1,19 +1,20 @@
-var glpPixelInspector = function (gl) { this.gl = gl; }
+var glpPixelInspector = function (gl) {
+  this.gl = gl;
 
-// Overdraw Inspector variables
-glpPixelInspector.prototype.blendProp = null;
-glpPixelInspector.prototype.blendFuncSFactor = null;
-glpPixelInspector.prototype.blendFuncDFactor = null;
-glpPixelInspector.prototype.depthTest = null;
-glpPixelInspector.prototype.clearColor = null;
-glpPixelInspector.prototype.vertexShaders = {};
-glpPixelInspector.prototype.fragmentShaders = {};
-glpPixelInspector.prototype.programs = [];
-glpPixelInspector.prototype.programsMap = {};
-glpPixelInspector.prototype.programUniformLocations = {};
-glpPixelInspector.prototype.originalPrograms = {};
-glpPixelInspector.prototype.locationMap = {};
-glpPixelInspector.prototype.enabled = false;
+  this.blendProp = null;
+  this.blendFuncSFactor = null;
+  this.blendFuncDFactor = null;
+  this.depthTest = null;
+  this.clearColor = null;
+  this.vertexShaders = {};
+  this.fragmentShaders = {};
+  this.programs = [];
+  this.programsMap = {};
+  this.programUniformLocations = {};
+  this.originalPrograms = {};
+  this.locationMap = {};
+  this.enabled = false;
+}
 
 /**
  * Applies uniform to WebGL context

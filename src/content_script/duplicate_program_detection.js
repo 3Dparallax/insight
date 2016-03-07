@@ -1,8 +1,10 @@
-var glpDuplicateProgramDetection = function (gl) { this.gl = gl; }
+var glpDuplicateProgramDetection = function (gl) {
+  this.gl = gl;
 
-glpDuplicateProgramDetection.prototype.enabled = false;
-glpDuplicateProgramDetection.prototype.duplicates = []; // list of { repeatedProgram : lineNumber }
-glpDuplicateProgramDetection.prototype.duplicatePrograms = {};
+  this.enabled = false;
+  this.duplicates = []; // list of { repeatedProgram : lineNumber }
+  this.duplicatePrograms = {};
+}
 
 /**
  * Toggles duplicate program usage detection
