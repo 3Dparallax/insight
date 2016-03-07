@@ -255,17 +255,22 @@
       <div class="tab" id="stateViewer">
         <div class="container-fluid">
           <div class="row-fluid">
-            <div class="col-sm-12 table-responsive">
-              <button class="btn btn-primary btn-wide" id="getStates">Get States</button>
-              <table class="table table-striped" id="stateVarTable">
-                <thead>
-                  <tr>
-                   <th>Variable</th>
-                   <th>State</th>
-                  </tr>
-                </thead>
-              </table>
+            <div class="pull-left">
+              <div class="bootstrap-switch-square" id="toggleStateViewer" >
+                <input type="checkbox" data-toggle="switch" id="stateViewerEnabled"/>
+              </div>
             </div>
+            <div class="pull-right">
+              <button title="Enable to toggle state variables.  Disable to return to their original states." data-placement="left" data-toggle="tooltip" class="btn btn-default mrs" type="button">?</button>
+            </div>
+            <table class="table table-striped" id="stateVarTable">
+              <thead>
+                <tr>
+                 <th>Variable</th>
+                 <th>State</th>
+                </tr>
+              </thead>
+            </table>
           </div>
         </div>
       </div>

@@ -15,6 +15,9 @@ var glpFcnBindings = {
       return original.apply(this, args);
     },
     enable: function(original, args, name) {
+        if (this.glp.stateTracker.freezeStates(this, args[0], true)) {
+          return;
+        }
         if (this.glp.pixelInspector.saveStates(this, args[0], true)) {
           return;
         }
@@ -22,6 +25,9 @@ var glpFcnBindings = {
         return original.apply(this, args);
     },
     disable: function(original, args, name) {
+        if (this.glp.stateTracker.freezeStates(this, args[0], false)) {
+          return;
+        }
         if (this.glp.pixelInspector.saveStates(this, args[0], false)) {
           return;
         }

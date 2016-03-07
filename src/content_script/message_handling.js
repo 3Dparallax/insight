@@ -65,7 +65,9 @@ window.addEventListener('message', function(event) {
   } else if (message.type == messageType.GET_RENDER_BUFFERS) {
     context.glp.bufferViewer.getRenderBuffers(context);
   } else if (message.type == messageType.STATE_VARS) {
-    context.glp.messages.sendStateVars(context);
+    context.glp.messages.sendStateVars(context, message.data);
+  } else if (message.type == messageType.TOGGLE_STATE_VARS) {
+    context.glp.stateTracker.toggle(context, message.data.enabled);
   } else {
     console.error(message.type, message.data);
   }

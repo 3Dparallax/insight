@@ -1,6 +1,73 @@
 var glpStateTracker = (function () {
 
-stateTracker = {}
+stateTracker = {};
+stateTracker.enabled = false;
+
+stateTracker.BLEND = null;
+stateTracker.CULL_FACE = null;
+stateTracker.DEPTH_TEST = null;
+stateTracker.DITHER = null;
+stateTracker.POLYGON_OFFSET_FILL = null;
+stateTracker.SAMPLE_COVERAGE_INVERT = null;
+stateTracker.SCISSOR_TEST = null;
+stateTracker.STENCIL_TEST = null;
+
+stateTracker.programRequestedStates = {
+  BLEND: null,
+  CULL_FACE: null,
+  DEPTH_TEST: null,
+  DITHER: null,
+  POLYGON_OFFSET_FILL: null,
+  SAMPLE_COVERAGE_INVERT: null,
+  SCISSOR_TEST: null,
+  STENCIL_TEST: null,
+};
+
+stateTracker.toggle = function(gl, enabled) {
+  if (enabled) {
+    this.enabled = true;
+    for (var key in this.programRequestedStates) {
+      this.programRequestedStates[key] = gl.getParameter(gl[key]);
+      console.log(key)
+    }
+  } else {
+    for (var key in this.programRequestedStates) {
+      this.toggleBoolState(gl, {
+        variable: key,
+        enable: this.programRequestedStates[key]
+      })
+    }
+    console.log(this.programRequestedStates)
+    console.log(this)
+    this.enabled = false;
+  }
+}
+
+stateTracker.freezeStates = function(gl, stateEnum, enable) {
+  if (!this.enabled) {
+    return false;
+  }
+  stateName = glpHelpers.getGLEnumName(gl, stateEnum)
+  if (this[stateName] != enable) {
+    this.programRequestedStates[stateName] = enable;
+    return true;
+  }
+  return false;
+}
+
+stateTracker.toggleBoolState = function(gl, request) {
+  if (!this.enabled) {
+    return false;
+  }
+  stateName = request.variable
+  if (request.enable) {
+    this[stateName] = true;
+    gl.enable(gl[stateName]);
+  } else {
+    this[stateName] = false;
+    gl.disable(gl[stateName]);
+  }
+}
 
 stateTracker.getStates = function(gl) {
   if (!gl) {
@@ -8,40 +75,48 @@ stateTracker.getStates = function(gl) {
   }
   return {
     boolStates: this.getBooleanStates(gl),
-    numericalStates: this.getNumericalStates(gl),
-    enumStates: this.getEnumStates(gl),
+    // numericalStates: this.getNumericalStates(gl),
+    // enumStates: this.getEnumStates(gl),
   }
 }
 
-// BLEND                               GLboolean
-// CULL_FACE                           GLboolean
-// DEPTH_TEST                          GLboolean
+// BLEND *                             GLboolean
+// CULL_FACE *                         GLboolean
+// DEPTH_TEST *                        GLboolean
 // DEPTH_WRITEMASK                     GLboolean
-// DITHER                              GLboolean
-// POLYGON_OFFSET_FILL                 GLboolean
-// SAMPLE_COVERAGE_INVERT              GLboolean
-// SCISSOR_TEST                        GLboolean
-// STENCIL_TEST                        GLboolean
+// DITHER *                            GLboolean
+// POLYGON_OFFSET_FILL *               GLboolean
+// SAMPLE_COVERAGE_INVERT *            GLboolean
+// SCISSOR_TEST *                      GLboolean
+// STENCIL_TEST *                      GLboolean
 // UNPACK_FLIP_Y_WEBGL                 GLboolean
 // UNPACK_PREMULTIPLY_ALPHA_WEBGL      GLboolean
 stateTracker.getBooleanStates = function(gl) {
   if (!gl) {
     return {};
   }
+  this.BLEND = gl.getParameter(gl.BLEND);
+  this.CULL_FACE = gl.getParameter(gl.CULL_FACE);
+  this.DEPTH_TEST = gl.getParameter(gl.DEPTH_TEST);
+  this.DITHER = gl.getParameter(gl.DITHER);
+  this.POLYGON_OFFSET_FILL = gl.getParameter(gl.POLYGON_OFFSET_FILL);
+  this.SAMPLE_COVERAGE_INVERT = gl.getParameter(gl.SAMPLE_COVERAGE_INVERT);
+  this.SCISSOR_TEST = gl.getParameter(gl.SCISSOR_TEST);
+  this.STENCIL_TEST = gl.getParameter(gl.STENCIL_TEST);
   return {
-    BLEND: gl.getParameter(gl.BLEND),
-    CULL_FACE: gl.getParameter(gl.CULL_FACE),
-    DEPTH_TEST: gl.getParameter(gl.DEPTH_TEST),
-    DEPTH_WRITEMASK: gl.getParameter(gl.DEPTH_WRITEMASK),
-    DITHER: gl.getParameter(gl.DITHER),
-    POLYGON_OFFSET_FILL: gl.getParameter(gl.POLYGON_OFFSET_FILL),
-    SAMPLE_ALPHA_TO_COVERAGE: gl.isEnabled(gl.SAMPLE_ALPHA_TO_COVERAGE), //Not compatible with getParameter
-    SAMPLE_COVERAGE: gl.isEnabled(gl.SAMPLE_COVERAGE), //Not compatible with getParameter
-    SAMPLE_COVERAGE_INVERT: gl.getParameter(gl.SAMPLE_COVERAGE_INVERT),
-    SCISSOR_TEST: gl.getParameter(gl.SCISSOR_TEST),
-    STENCIL_TEST: gl.getParameter(gl.STENCIL_TEST),
-    UNPACK_FLIP_Y_WEBGL: gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL),
-    UNPACK_PREMULTIPLY_ALPHA_WEBGL: gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL),
+    BLEND: this.BLEND,
+    CULL_FACE: this.CULL_FACE,
+    DEPTH_TEST: this.DEPTH_TEST,
+    // DEPTH_WRITEMASK: gl.getParameter(gl.DEPTH_WRITEMASK), //gl.depthMask(false);
+    DITHER: this.DITHER,
+    POLYGON_OFFSET_FILL: this.POLYGON_OFFSET_FILL,
+    // SAMPLE_ALPHA_TO_COVERAGE: gl.isEnabled(gl.SAMPLE_ALPHA_TO_COVERAGE), //Not compatible with getParameter
+    // SAMPLE_COVERAGE: gl.isEnabled(gl.SAMPLE_COVERAGE), //Not compatible with getParameter
+    // SAMPLE_COVERAGE_INVERT: this.SAMPLE_COVERAGE_INVERT, // gl.sampleCoverage(0.5, false);
+    SCISSOR_TEST: this.SCISSOR_TEST,
+    STENCIL_TEST: this.STENCIL_TEST,
+    // UNPACK_FLIP_Y_WEBGL: gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL), //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    // UNPACK_PREMULTIPLY_ALPHA_WEBGL: gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL), //gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   }
 }
 

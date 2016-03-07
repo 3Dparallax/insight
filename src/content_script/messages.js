@@ -94,7 +94,10 @@ messages.pixelInspectorToggle = function(context, enabled) {
 /**
  * Sends call state variable information to the panel
  */
-messages.sendStateVars = function(context) {
+messages.sendStateVars = function(context, data) {
+  if (data != "getStateVariables") {
+      context.glp.stateTracker.toggleBoolState(context, data);
+  }
   var stateVars = JSON.stringify(context.glp.stateTracker.getStates(context));
   this.sendMessage(
     context,
