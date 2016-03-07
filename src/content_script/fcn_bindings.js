@@ -66,7 +66,7 @@ var glpFcnBindings = {
     },
     createProgram: function(original, args, name) {
       var program = original.apply(this, args);
-      program.__uuid = guid();
+      program.__uuid = glpHelpers.guid();
       return program;
     },
     getUniformLocation: function(original, args, name) {

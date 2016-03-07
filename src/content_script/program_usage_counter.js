@@ -1,9 +1,11 @@
-glp.programUsageCounter = {};
+var glpProgramUsageCounter = (function () {
 
-glp.programUsageCounter.enabled = false;
-glp.programUsageCounter.usages = {}; // program.__uuid : usage
+programUsageCounter = {};
 
-glp.programUsageCounter.toggle = function(enabled) {
+programUsageCounter.enabled = false;
+programUsageCounter.usages = {}; // program.__uuid : usage
+
+programUsageCounter.toggle = function(enabled) {
 	if (enabled) {
 		this.enabled = true;
 	} else {
@@ -11,11 +13,11 @@ glp.programUsageCounter.toggle = function(enabled) {
 	}
 }
 
-glp.programUsageCounter.reset = function() {
+programUsageCounter.reset = function() {
   this.usages = {};
 }
 
-glp.programUsageCounter.addUsage = function(program) {
+programUsageCounter.addUsage = function(program) {
   if (this.enabled) {
     if (this.usages[program.__uuid] != undefined) {
       this.usages[program.__uuid] += 1;
@@ -24,3 +26,6 @@ glp.programUsageCounter.addUsage = function(program) {
     }
   }
 }
+
+return programUsageCounter;
+}());

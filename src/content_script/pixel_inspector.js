@@ -1,24 +1,26 @@
-glp.pixelInspector = {}
+var glpPixelInspector = (function () {
+
+pixelInspector = {}
 
 // Overdraw Inspector variables
-glp.pixelInspector.blendProp = null;
-glp.pixelInspector.blendFuncSFactor = null;
-glp.pixelInspector.blendFuncDFactor = null;
-glp.pixelInspector.depthTest = null;
-glp.pixelInspector.clearColor = null;
-glp.pixelInspector.vertexShaders = {};
-glp.pixelInspector.fragmentShaders = {};
-glp.pixelInspector.programs = [];
-glp.pixelInspector.programsMap = {};
-glp.pixelInspector.programUniformLocations = {};
-glp.pixelInspector.originalPrograms = {};
-glp.pixelInspector.locationMap = {};
-glp.pixelInspector.enabled = false;
+pixelInspector.blendProp = null;
+pixelInspector.blendFuncSFactor = null;
+pixelInspector.blendFuncDFactor = null;
+pixelInspector.depthTest = null;
+pixelInspector.clearColor = null;
+pixelInspector.vertexShaders = {};
+pixelInspector.fragmentShaders = {};
+pixelInspector.programs = [];
+pixelInspector.programsMap = {};
+pixelInspector.programUniformLocations = {};
+pixelInspector.originalPrograms = {};
+pixelInspector.locationMap = {};
+pixelInspector.enabled = false;
 
 /**
  * Applies uniform to WebGL context
  */
-glp.pixelInspector.applyUniform = function (gl, uniform) {
+pixelInspector.applyUniform = function (gl, uniform) {
   var loc = uniform.loc;
   var type = uniform.type;
   var value = uniform.value;
@@ -92,7 +94,7 @@ glp.pixelInspector.applyUniform = function (gl, uniform) {
  * Enables the pixel inspector and returns the appropriate fragment shader
  * @return {WebGLShader} Pixel Inspector Shader
  */
-glp.pixelInspector.enable = function(gl) {
+pixelInspector.enable = function(gl) {
     this.blendProp = gl.getParameter(gl.BLEND);
     gl.enable(gl.BLEND);
 
@@ -115,7 +117,7 @@ glp.pixelInspector.enable = function(gl) {
  * Disable the pixel inspector and returns the appropriate fragment shader
  * @return {WebGLShader} Pixel Inspector Shader
  */
-glp.pixelInspector.disable = function(gl) {
+pixelInspector.disable = function(gl) {
     if (!this.enabled) {
       return;
     }
@@ -148,7 +150,7 @@ glp.pixelInspector.disable = function(gl) {
 /**
  * Copies uniforms from oldProgram to newProgram
  */
-glp.pixelInspector.copyUniforms = function(gl, oldProgram, program) {
+pixelInspector.copyUniforms = function(gl, oldProgram, program) {
   var activeUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
   this.locationMap[program.__uuid] = {};
 
@@ -172,7 +174,7 @@ glp.pixelInspector.copyUniforms = function(gl, oldProgram, program) {
 /**
  * Copies attributes from oldProgram to newProgram
  */
-glp.pixelInspector.copyAttributes = function(gl, oldProgram, program) {
+pixelInspector.copyAttributes = function(gl, oldProgram, program) {
   var activeAttributes = gl.getProgramParameter(oldProgram, gl.ACTIVE_ATTRIBUTES);
 
   for (var i=0; i < activeAttributes; i++) {
@@ -190,7 +192,7 @@ glp.pixelInspector.copyAttributes = function(gl, oldProgram, program) {
 /**
  * Switches the current program to the pixel inspector program
  */
-glp.pixelInspector.switchToProgram = function(gl) {
+pixelInspector.switchToProgram = function(gl) {
   var oldProgram = gl.getParameter(gl.CURRENT_PROGRAM);
   var program = this.getProgram(gl, oldProgram);
   this.originalPrograms[program.__uuid] = oldProgram;
@@ -200,7 +202,7 @@ glp.pixelInspector.switchToProgram = function(gl) {
 /**
  * Switches the current program and copies over location and attribute data
  */
-glp.pixelInspector.switchProgram = function(gl, oldProgram, program) {
+pixelInspector.switchProgram = function(gl, oldProgram, program) {
   if (!this.enabled) {
     return;
   }
@@ -210,7 +212,7 @@ glp.pixelInspector.switchProgram = function(gl, oldProgram, program) {
   // TODO: Swap attributes!
 }
 
-glp.pixelInspector.hasProgram = function(program) {
+pixelInspector.hasProgram = function(program) {
   return this.programs.indexOf(program.__uuid) >= 0;
 }
 
@@ -218,7 +220,7 @@ glp.pixelInspector.hasProgram = function(program) {
  * Returns the pixel inspector fragment shader
  * @return {WebGLShader} Pixel Inspector Fragment Shader
  */
-glp.pixelInspector.getFragShader = function(gl) {
+pixelInspector.getFragShader = function(gl) {
     var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
     var shaderStr = 'precision mediump float;' +
         'void main(void) {' +
@@ -236,7 +238,7 @@ glp.pixelInspector.getFragShader = function(gl) {
  * @param {WebGLProgram} Original Program
  * @return {WebGLProgram.__uuid} Pixel Inspector Progam
  */
-glp.pixelInspector.getProgram = function(gl, originalProgram) {
+pixelInspector.getProgram = function(gl, originalProgram) {
     if (originalProgram.__uuid in this.programsMap) {
         return this.programsMap[originalProgram.__uuid];
     }
@@ -254,7 +256,7 @@ glp.pixelInspector.getProgram = function(gl, originalProgram) {
     return program;
 }
 
-glp.pixelInspector.storeShaders = function(gl, program, shader) {
+pixelInspector.storeShaders = function(gl, program, shader) {
   var shaderType = gl.getShaderParameter(shader, gl.SHADER_TYPE);
 
   // TODO: verify valid input
@@ -266,7 +268,7 @@ glp.pixelInspector.storeShaders = function(gl, program, shader) {
   }
 }
 
-glp.pixelInspector.saveStates = function(gl, arg, truth) {
+pixelInspector.saveStates = function(gl, arg, truth) {
   if (this.enabled) {
     if (arg == gl.DEPTH_TEST) {
       this.depthTest = truth;
@@ -279,7 +281,7 @@ glp.pixelInspector.saveStates = function(gl, arg, truth) {
   return this.enabled;
 }
 
-glp.pixelInspector.storeBlendStates = function(sFactor, dFactor) {
+pixelInspector.storeBlendStates = function(sFactor, dFactor) {
   if (this.enabled) {
     this.blendFuncSFactor = sFactor;
     this.blendFuncDFactor = dFactor;
@@ -287,7 +289,7 @@ glp.pixelInspector.storeBlendStates = function(sFactor, dFactor) {
   return this.enabled;
 }
 
-glp.pixelInspector.storeClearColorStates = function(args) {
+pixelInspector.storeClearColorStates = function(args) {
   // TODO: verify valid input
   if (this.enabled) {
     this.clearColor = args;
@@ -295,7 +297,7 @@ glp.pixelInspector.storeClearColorStates = function(args) {
   return this.enabled;
 }
 
-glp.pixelInspector.uniforms = function(gl, args) {
+pixelInspector.uniforms = function(gl, args) {
   if (this.enabled) {
     var program = args[0];
     var location = args[1];
@@ -314,22 +316,22 @@ glp.pixelInspector.uniforms = function(gl, args) {
   return args;
 }
 
-glp.pixelInspector.hasUniformLocation = function(program, name) {
+pixelInspector.hasUniformLocation = function(program, name) {
   if (!(program.__uuid in this.programUniformLocations)) {
     this.programUniformLocations[program.__uuid] = {}
   }
   return (name in this.programUniformLocations[program.__uuid]);
 }
 
-glp.pixelInspector.getUniformLocation = function(program, name) {
+pixelInspector.getUniformLocation = function(program, name) {
   if (!(program.__uuid in this.programUniformLocations)) {
     this.programUniformLocations[program.__uuid] = {}
   }
   return this.programUniformLocations[program.__uuid][name];
 }
 
-glp.pixelInspector.setUniformLocation = function(program, name, location) {
-  location.__uuid = guid();
+pixelInspector.setUniformLocation = function(program, name, location) {
+  location.__uuid = glpHelpers.guid();
   if (!(program.__uuid in this.programUniformLocations)) {
     this.programUniformLocations[program.__uuid] = {}
   }
@@ -337,7 +339,7 @@ glp.pixelInspector.setUniformLocation = function(program, name, location) {
   return location;
 }
 
-glp.pixelInspector.remapLocations = function(gl, args) {
+pixelInspector.remapLocations = function(gl, args) {
   if (this.enabled) {
     if (args[0] && this.programs.indexOf(gl.getParameter(gl.CURRENT_PROGRAM).__uuid) >= 0) {
       args[0] = this.locationMap[gl.getParameter(gl.CURRENT_PROGRAM).__uuid][args[0].__uuid];
@@ -345,3 +347,6 @@ glp.pixelInspector.remapLocations = function(gl, args) {
   }
   return args
 }
+
+return pixelInspector;
+}());

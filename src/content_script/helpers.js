@@ -1,4 +1,8 @@
-function guid() {
+var glpHelpers = (function () {
+
+helpers = {};
+
+helpers.guid = function() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
@@ -9,7 +13,7 @@ function guid() {
 }
 
 _glEnums = {}
-function getGLEnumName(gl, e) {
+helpers.getGLEnumName = function(gl, e) {
   if (Object.keys(_glEnums).length != 0) {
     return _glEnums[e];
   }
@@ -20,7 +24,7 @@ function getGLEnumName(gl, e) {
   return _glEnums[e];
 }
 
-function getGLArgsString(gl, args) {
+helpers.getGLArgsString = function(gl, args) {
   if (!args) {
     return "";
   }
@@ -30,7 +34,7 @@ function getGLArgsString(gl, args) {
     if (i != 0) {
       argsString += ", ";
     }
-    var glEnumName = getGLEnumName(gl, args[i]);
+    var glEnumName = this.getGLEnumName(gl, args[i]);
     if (typeof glEnumName == "string") {
       argsString += glEnumName;
     } else {
@@ -40,10 +44,13 @@ function getGLArgsString(gl, args) {
   return argsString;
 }
 
-function getGLArgsList(gl, calls) {
+helpers.getGLArgsList = function(gl, calls) {
   var argsList = [];
   for (var i = 0; i < calls.length; i++) {
-    argsList.push(getGLArgsString(gl, calls[i]));
+    argsList.push(this.getGLArgsString(gl, calls[i]));
   }
   return argsList;
 }
+
+return helpers;
+}());

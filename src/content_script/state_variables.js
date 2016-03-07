@@ -1,6 +1,8 @@
-glp.stateTracker = {}
+var glpStateTracker = (function () {
 
-glp.stateTracker.getStates = function(gl) {
+stateTracker = {}
+
+stateTracker.getStates = function(gl) {
   if (!gl) {
     return {};
   }
@@ -22,7 +24,7 @@ glp.stateTracker.getStates = function(gl) {
 // STENCIL_TEST                        GLboolean
 // UNPACK_FLIP_Y_WEBGL                 GLboolean
 // UNPACK_PREMULTIPLY_ALPHA_WEBGL      GLboolean
-glp.stateTracker.getBooleanStates = function(gl) {
+stateTracker.getBooleanStates = function(gl) {
   if (!gl) {
     return {};
   }
@@ -40,7 +42,6 @@ glp.stateTracker.getBooleanStates = function(gl) {
     STENCIL_TEST: gl.getParameter(gl.STENCIL_TEST),
     UNPACK_FLIP_Y_WEBGL: gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL),
     UNPACK_PREMULTIPLY_ALPHA_WEBGL: gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL),
-
   }
 }
 
@@ -73,7 +74,7 @@ glp.stateTracker.getBooleanStates = function(gl) {
 // STENCIL_REF                         GLint
 // SUBPIXEL_BITS                       GLint
 // UNPACK_ALIGNMENT                    GLint
-glp.stateTracker.getNumericalStates = function(gl) {
+stateTracker.getNumericalStates = function(gl) {
   if (!gl) {
     return {};
   }
@@ -132,33 +133,33 @@ glp.stateTracker.getNumericalStates = function(gl) {
 // STENCIL_PASS_DEPTH_FAIL             GLenum
 // STENCIL_PASS_DEPTH_PASS             GLenum
 // UNPACK_COLORSPACE_CONVERSION_WEBGL  GLenum
-glp.stateTracker.getEnumStates = function(gl) {
+stateTracker.getEnumStates = function(gl) {
   if (!gl) {
     return {};
   }
   return {
-    ACTIVE_TEXTURE: getGLEnumName(gl, gl.getParameter(gl.ACTIVE_TEXTURE)),
-    BLEND_DST_ALPHA: getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_ALPHA)),
-    BLEND_DST_RGB: getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_RGB)),
-    BLEND_EQUATION_ALPHA: getGLEnumName(gl, gl.getParameter(gl.BLEND_EQUATION_ALPHA)),
-    BLEND_EQUATION_RGB: getGLEnumName(gl, gl.getParameter(gl.BLEND_EQUATION_RGB)),
-    BLEND_SRC_ALPHA: getGLEnumName(gl, gl.getParameter(gl.BLEND_SRC_ALPHA)),
-    BLEND_SRC_RGB: getGLEnumName(gl, gl.getParameter(gl.BLEND_SRC_RGB)),
-    CULL_FACE_MODE: getGLEnumName(gl, gl.getParameter(gl.CULL_FACE_MODE)),
-    DEPTH_FUNC: getGLEnumName(gl, gl.getParameter(gl.DEPTH_FUNC)),
-    FRONT_FACE: getGLEnumName(gl, gl.getParameter(gl.FRONT_FACE)),
-    GENERATE_MIPMAP_HINT: getGLEnumName(gl, gl.getParameter(gl.GENERATE_MIPMAP_HINT)),
-    IMPLEMENTATION_COLOR_READ_FORMAT: getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT)),
-    IMPLEMENTATION_COLOR_READ_TYPE: getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE)),
-    STENCIL_BACK_FAIL: getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FAIL)),
-    STENCIL_BACK_FUNC: getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FUNC)),
-    STENCIL_BACK_PASS_DEPTH_FAIL: getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_FAIL)),
-    STENCIL_BACK_PASS_DEPTH_PASS: getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_PASS)),
-    STENCIL_FAIL: getGLEnumName(gl, gl.getParameter(gl.STENCIL_FAIL)),
-    STENCIL_FUNC: getGLEnumName(gl, gl.getParameter(gl.STENCIL_FUNC)),
-    STENCIL_PASS_DEPTH_FAIL: getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL)),
-    STENCIL_PASS_DEPTH_PASS: getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS)),
-    UNPACK_COLORSPACE_CONVERSION_WEBGL: getGLEnumName(gl, gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL)),
+    ACTIVE_TEXTURE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.ACTIVE_TEXTURE)),
+    BLEND_DST_ALPHA: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_ALPHA)),
+    BLEND_DST_RGB: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_RGB)),
+    BLEND_EQUATION_ALPHA: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_EQUATION_ALPHA)),
+    BLEND_EQUATION_RGB: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_EQUATION_RGB)),
+    BLEND_SRC_ALPHA: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_SRC_ALPHA)),
+    BLEND_SRC_RGB: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_SRC_RGB)),
+    CULL_FACE_MODE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.CULL_FACE_MODE)),
+    DEPTH_FUNC: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.DEPTH_FUNC)),
+    FRONT_FACE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.FRONT_FACE)),
+    GENERATE_MIPMAP_HINT: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.GENERATE_MIPMAP_HINT)),
+    IMPLEMENTATION_COLOR_READ_FORMAT: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT)),
+    IMPLEMENTATION_COLOR_READ_TYPE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE)),
+    STENCIL_BACK_FAIL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FAIL)),
+    STENCIL_BACK_FUNC: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FUNC)),
+    STENCIL_BACK_PASS_DEPTH_FAIL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_FAIL)),
+    STENCIL_BACK_PASS_DEPTH_PASS: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_PASS)),
+    STENCIL_FAIL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_FAIL)),
+    STENCIL_FUNC: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_FUNC)),
+    STENCIL_PASS_DEPTH_FAIL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL)),
+    STENCIL_PASS_DEPTH_PASS: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS)),
+    UNPACK_COLORSPACE_CONVERSION_WEBGL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL)),
   }
 }
 
@@ -191,3 +192,6 @@ RENDERBUFFER_BINDING                WebGLRenderbuffer
 TEXTURE_BINDING_2D                  WebGLTexture
 TEXTURE_BINDING_CUBE_MAP            WebGLTexture
 */
+
+return stateTracker;
+}());
