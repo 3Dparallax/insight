@@ -5,8 +5,7 @@ var tabMap = {
     "tabBar-program-duplicate": "programDuplicate",
     "tabBar-call-stack": "callStack",
     "tabBar-call-histogram": "callHistogram",
-    "tabBar-texture-viewer": "textureViewer",
-    "tabBar-buffer-viewer": "bufferViewer",
+    "tabBar-resource-viewer": "resourceViewer",
     "tabBar-state-viewer": "stateViewer",
 }
 
@@ -33,7 +32,7 @@ for (var i = 0; i < elements.length; i++) {
 
 var updateTabs = function(state) {
     displayTexture(state.texture);
-    updateTextureList(state.textureList);
+    updateTextureList(state.textures.length);
     displayBuffer(state.buffer.buffer);
     updateBufferList(state.buffer.bufferSize);
     updateFrameBufferList(state.buffer.frameBufferSize);

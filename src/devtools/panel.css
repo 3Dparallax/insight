@@ -95,13 +95,9 @@ body {
 #textureCanvas {
   background: url("../../static/checkerboard-512x512.png");
 }
-.scrollable-menu {
-    height: auto;
-    max-height: 256px;
-    overflow-x: hidden;
-}
-canvas {
-  margin-top: 25px;
+#texture-list tr.active td {
+  background-color: rgb(57, 118, 225) !important;
+  color: #FFF;
 }
 /* Program usage */
 #programUsageTableContainer {
