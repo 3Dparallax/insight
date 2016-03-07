@@ -5,21 +5,27 @@ var glpStateTracker = function (gl) {
   this.BLEND = null;
   this.CULL_FACE = null;
   this.DEPTH_TEST = null;
+  this.DEPTH_WRITEMASK = null;
   this.DITHER = null;
   this.POLYGON_OFFSET_FILL = null;
   this.SAMPLE_COVERAGE_INVERT = null;
   this.SCISSOR_TEST = null;
   this.STENCIL_TEST = null;
+  this.UNPACK_FLIP_Y_WEBGL = null;
+  this.UNPACK_PREMULTIPLY_ALPHA_WEBGL = null;
 
   this.programRequestedStates = {
     BLEND: null,
     CULL_FACE: null,
     DEPTH_TEST: null,
+    DEPTH_WRITEMASK: null,
     DITHER: null,
     POLYGON_OFFSET_FILL: null,
     SAMPLE_COVERAGE_INVERT: null,
     SCISSOR_TEST: null,
     STENCIL_TEST: null,
+    UNPACK_FLIP_Y_WEBGL: null,
+    UNPACK_PREMULTIPLY_ALPHA_WEBGL: null,
   };
 }
 
@@ -34,13 +40,11 @@ glpStateTracker.prototype.toggle = function(enabled) {
     }
   } else {
     for (var key in this.programRequestedStates) {
-      this.toggleBoolState(gl, {
+      this.toggleBoolState({
         variable: key,
         enable: this.programRequestedStates[key]
       })
     }
-    console.log(this.programRequestedStates)
-    console.log(this)
     this.enabled = false;
   }
 }
@@ -63,15 +67,16 @@ glpStateTracker.prototype.toggleBoolState = function(request) {
   }
   var gl = this.gl;
   stateName = request.variable
-  if (request.enable) {
-    this[stateName] = true;
+  this[stateName] = request.enable;
+  if (stateName == "UNPACK_FLIP_Y_WEBGL" || stateName == "UNPACK_PREMULTIPLY_ALPHA_WEBGL") {
+    gl.pixelStorei(gl[stateName], request.enable);
+  } else if (stateName == "DEPTH_WRITEMASK") {
+    gl.depthMask(request.enable);
+  } else if (request.enable) {
     gl.enable(gl[stateName]);
   } else {
-    this[stateName] = false;
     gl.disable(gl[stateName]);
   }
-  console.log(request)
-  console.log(this)
 }
 
 glpStateTracker.prototype.getStates = function() {
@@ -99,25 +104,24 @@ glpStateTracker.prototype.getBooleanStates = function() {
   this.BLEND = gl.getParameter(gl.BLEND);
   this.CULL_FACE = gl.getParameter(gl.CULL_FACE);
   this.DEPTH_TEST = gl.getParameter(gl.DEPTH_TEST);
+  this.DEPTH_WRITEMASK = gl.getParameter(gl.DEPTH_WRITEMASK);
   this.DITHER = gl.getParameter(gl.DITHER);
   this.POLYGON_OFFSET_FILL = gl.getParameter(gl.POLYGON_OFFSET_FILL);
-  this.SAMPLE_COVERAGE_INVERT = gl.getParameter(gl.SAMPLE_COVERAGE_INVERT);
   this.SCISSOR_TEST = gl.getParameter(gl.SCISSOR_TEST);
   this.STENCIL_TEST = gl.getParameter(gl.STENCIL_TEST);
+  this.UNPACK_FLIP_Y_WEBGL = gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL);
+  this.UNPACK_PREMULTIPLY_ALPHA_WEBGL = gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL);
   return {
     BLEND: this.BLEND,
     CULL_FACE: this.CULL_FACE,
     DEPTH_TEST: this.DEPTH_TEST,
-    // DEPTH_WRITEMASK: gl.getParameter(gl.DEPTH_WRITEMASK), //gl.depthMask(false);
+    DEPTH_WRITEMASK: this.DEPTH_WRITEMASK, //gl.depthMask(false);
     DITHER: this.DITHER,
     POLYGON_OFFSET_FILL: this.POLYGON_OFFSET_FILL,
-    // SAMPLE_ALPHA_TO_COVERAGE: gl.isEnabled(gl.SAMPLE_ALPHA_TO_COVERAGE), //Not compatible with getParameter
-    // SAMPLE_COVERAGE: gl.isEnabled(gl.SAMPLE_COVERAGE), //Not compatible with getParameter
-    // SAMPLE_COVERAGE_INVERT: this.SAMPLE_COVERAGE_INVERT, // gl.sampleCoverage(0.5, false);
     SCISSOR_TEST: this.SCISSOR_TEST,
     STENCIL_TEST: this.STENCIL_TEST,
-    // UNPACK_FLIP_Y_WEBGL: gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL), //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    // UNPACK_PREMULTIPLY_ALPHA_WEBGL: gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL), //gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    UNPACK_FLIP_Y_WEBGL: this.UNPACK_FLIP_Y_WEBGL, //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    UNPACK_PREMULTIPLY_ALPHA_WEBGL: this.UNPACK_PREMULTIPLY_ALPHA_WEBGL, //gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   }
 }
 

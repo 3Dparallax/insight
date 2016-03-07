@@ -138,6 +138,18 @@ var glpFcnBindings = {
       this.glp().bufferViewer.deleteBuffer(args[0]);
       return original.apply(this, args);
     },
+    pixelStorei: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(args[0], args[1])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
+    depthMask: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(this.DEPTH_WRITEMASK, args[0])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
 }
 
 var glpUniformFcn = function(original, args, name) {
