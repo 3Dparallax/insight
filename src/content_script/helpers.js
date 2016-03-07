@@ -19,7 +19,7 @@ helpers.getGLEnumName = function(gl, e) {
   }
 
   for (var name in gl) {
-    _glEnums[name] = gl[name];
+    _glEnums[gl[name]] = name;
   }
   return _glEnums[e];
 }
