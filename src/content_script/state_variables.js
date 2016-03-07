@@ -1,15 +1,10 @@
-var glpStateTracker = (function () {
+var glpStateTracker = function (gl) { this.gl = gl; }
 
-stateTracker = {}
-
-stateTracker.getStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+glpStateTracker.prototype.getStates = function() {
   return {
-    boolStates: this.getBooleanStates(gl),
-    numericalStates: this.getNumericalStates(gl),
-    enumStates: this.getEnumStates(gl),
+    boolStates: this.getBooleanStates(),
+    numericalStates: this.getNumericalStates(),
+    enumStates: this.getEnumStates(),
   }
 }
 
@@ -24,10 +19,8 @@ stateTracker.getStates = function(gl) {
 // STENCIL_TEST                        GLboolean
 // UNPACK_FLIP_Y_WEBGL                 GLboolean
 // UNPACK_PREMULTIPLY_ALPHA_WEBGL      GLboolean
-stateTracker.getBooleanStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+glpStateTracker.prototype.getBooleanStates = function() {
+  var gl = this.gl;
   return {
     BLEND: gl.getParameter(gl.BLEND),
     CULL_FACE: gl.getParameter(gl.CULL_FACE),
@@ -74,10 +67,8 @@ stateTracker.getBooleanStates = function(gl) {
 // STENCIL_REF                         GLint
 // SUBPIXEL_BITS                       GLint
 // UNPACK_ALIGNMENT                    GLint
-stateTracker.getNumericalStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+glpStateTracker.prototype.getNumericalStates = function() {
+  var gl = this.gl;
   return {
     ALPHA_BITS: gl.getParameter(gl.ALPHA_BITS),
     BLUE_BITS: gl.getParameter(gl.BLUE_BITS),
@@ -133,10 +124,8 @@ stateTracker.getNumericalStates = function(gl) {
 // STENCIL_PASS_DEPTH_FAIL             GLenum
 // STENCIL_PASS_DEPTH_PASS             GLenum
 // UNPACK_COLORSPACE_CONVERSION_WEBGL  GLenum
-stateTracker.getEnumStates = function(gl) {
-  if (!gl) {
-    return {};
-  }
+glpStateTracker.prototype.getEnumStates = function() {
+  var gl = this.gl;
   return {
     ACTIVE_TEXTURE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.ACTIVE_TEXTURE)),
     BLEND_DST_ALPHA: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_ALPHA)),
@@ -192,6 +181,3 @@ RENDERBUFFER_BINDING                WebGLRenderbuffer
 TEXTURE_BINDING_2D                  WebGLTexture
 TEXTURE_BINDING_CUBE_MAP            WebGLTexture
 */
-
-return stateTracker;
-}());

@@ -4,6 +4,8 @@ function requestContexts() {
     sendMessage(messageType.GET_CONTEXTS, {});
 }
 
+document.getElementById("no-context-button").addEventListener("click", requestContexts);
+
 function updateContexts(contexts) {
     var noContext = document.getElementById("no-context")
     noContext.classList.remove("no-context-hidden");

@@ -1,14 +1,15 @@
-var glpHistogram = (function () {
+var glpHistogram = function (gl) {
+    this.gl = gl;
 
-histogram = {};
-histogram.enabled = false;
-histogram.histogram = {};
+    this.enabled = false;
+    this.histogram = {};
+}
 
 /**
  * Adds a data point to the function histogram
  * @param {String} Name of function
  */
-histogram.add = function(name) {
+glpHistogram.prototype.add = function(name) {
   if (!this.enabled) {
     return;
   }
@@ -19,9 +20,6 @@ histogram.add = function(name) {
   }
 }
 
-histogram.toggle = function(enabled) {
+glpHistogram.prototype.toggle = function(enabled) {
   this.enabled = enabled;
 }
-
-return histogram;
-}());
