@@ -1,12 +1,11 @@
-var glpCallStack = (function (gl) {
+var glpCallStack = function (gl) { this.gl = gl; }
 
-callStack = {}
-callStack.helper = {}
+glpCallStack.prototype.helper = {}
 
-callStack.enabled = false;
-callStack.maxSize = 100;
-callStack.mostRecentCalls = [];
-callStack.callsSinceDraw = [];
+glpCallStack.prototype.enabled = false;
+glpCallStack.prototype.maxSize = 100;
+glpCallStack.prototype.mostRecentCalls = [];
+glpCallStack.prototype.callsSinceDraw = [];
 
 /*
  * Determines which file and line number called a certain function
@@ -18,7 +17,7 @@ callStack.callsSinceDraw = [];
  * http://stackoverflow.com/questions/11386492/accessing-line-number-in-v8-javascript-chrome-node-js
  * https://github.com/v8/v8/wiki/Stack%20Trace%20API
 */
-callStack.helper.getStack = function() {
+glpCallStack.prototype.helper.getStack = function() {
     var orig = Error.prepareStackTrace;
     Error.prepareStackTrace = function(_, stack){ return stack; };
     var err = new Error;
@@ -32,7 +31,7 @@ callStack.helper.getStack = function() {
  * Returns "FileName:LineNumber" of requested call site
  * @param {CallSite} call site object
  */
-callStack.helper.getCallSiteDetails = function(stack) {
+glpCallStack.prototype.helper.getCallSiteDetails = function(stack) {
   if (!stack) {
     return "";
   }
@@ -42,7 +41,7 @@ callStack.helper.getCallSiteDetails = function(stack) {
 /**
  * Returns the first call stack trace from the user
  */
-callStack.helper.getFirstUserStack = function() {
+glpCallStack.prototype.helper.getFirstUserStack = function() {
   fullStack = this.getStack()
   for(var i = 1; i < fullStack.length; i++) {
     if (!~fullStack[i].getFileName().indexOf("src/content_script")) {
@@ -53,7 +52,7 @@ callStack.helper.getFirstUserStack = function() {
   return null;
 }
 
-callStack.toggle = function(enabled) {
+glpCallStack.prototype.toggle = function(enabled) {
   this.enabled = enabled;
 }
 
@@ -63,7 +62,7 @@ callStack.toggle = function(enabled) {
  * only on request because it's too expensive at storage time
  * @param {String} "mostRecentCalls" or "callsSinceDraw"
  */
-callStack.getStack = function() {
+glpCallStack.prototype.getStack = function() {
   var formatted = {};
   formatted.mostRecentCalls = this.mostRecentCalls;
   formatted.callsSinceDraw = this.callsSinceDraw;
@@ -90,7 +89,7 @@ callStack.getStack = function() {
  * Formats a date object to HH:MM:SS.mmm
  * @param {Date} d
  */
-callStack.helper.dateTimeFormat = function(d) {
+glpCallStack.prototype.helper.dateTimeFormat = function(d) {
   return d.getHours() + ":"
       + ('00'+d.getMinutes()).substring(d.getMinutes().toString().length) + ":"
       + ('00'+d.getSeconds()).substring(d.getSeconds().toString().length) + "."
@@ -102,7 +101,7 @@ callStack.helper.dateTimeFormat = function(d) {
  * @param {String} Name of function
  * @param {Dictionary} arguments used by the function
  */
-callStack.push = function(name, args) {
+glpCallStack.prototype.push = function(name, args) {
   if (!this.enabled) {
     return;
   }
@@ -136,7 +135,7 @@ callStack.push = function(name, args) {
  * @param {String} Name of function
  * @param {CallSite} Obtained from getFirstUserStack
  */
-callStack.update = function(name) {
+glpCallStack.prototype.update = function(name) {
   if (!this.enabled) {
     return;
   }
@@ -152,6 +151,3 @@ callStack.update = function(name) {
     this.callsSinceDraw[i].time = (((endTime - this.callsSinceDraw[i].time) * 1000) + 0.5) | 0
   }
 }
-
-return callStack;
-});

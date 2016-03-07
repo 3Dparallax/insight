@@ -1,11 +1,9 @@
-var glpProgramUsageCounter = (function (gl) {
+var glpProgramUsageCounter = function (gl) { this.gl = gl; }
 
-programUsageCounter = {};
+glpProgramUsageCounter.prototype.enabled = false;
+glpProgramUsageCounter.prototype.usages = {}; // program.__uuid : usage
 
-programUsageCounter.enabled = false;
-programUsageCounter.usages = {}; // program.__uuid : usage
-
-programUsageCounter.toggle = function(enabled) {
+glpProgramUsageCounter.prototype.toggle = function(enabled) {
 	if (enabled) {
 		this.enabled = true;
 	} else {
@@ -13,11 +11,11 @@ programUsageCounter.toggle = function(enabled) {
 	}
 }
 
-programUsageCounter.reset = function() {
+glpProgramUsageCounter.prototype.reset = function() {
   this.usages = {};
 }
 
-programUsageCounter.addUsage = function(program) {
+glpProgramUsageCounter.prototype.addUsage = function(program) {
   if (this.enabled) {
     if (this.usages[program.__uuid] != undefined) {
       this.usages[program.__uuid] += 1;
@@ -26,6 +24,3 @@ programUsageCounter.addUsage = function(program) {
     }
   }
 }
-
-return programUsageCounter;
-});

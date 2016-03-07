@@ -1,27 +1,26 @@
-var glpDuplicateProgramDetection = (function (gl) {
+var glpDuplicateProgramDetection = function (gl) { this.gl = gl; }
 
-duplicateProgramDetection = {};
-duplicateProgramDetection.enabled = false;
-duplicateProgramDetection.duplicates = []; // list of { repeatedProgram : lineNumber }
-duplicateProgramDetection.duplicatePrograms = {};
+glpDuplicateProgramDetection.prototype.enabled = false;
+glpDuplicateProgramDetection.prototype.duplicates = []; // list of { repeatedProgram : lineNumber }
+glpDuplicateProgramDetection.prototype.duplicatePrograms = {};
 
 /**
  * Toggles duplicate program usage detection
  */
-duplicateProgramDetection.toggle = function(enable) {
+glpDuplicateProgramDetection.prototype.toggle = function(enable) {
   this.enabled = enable;
 }
 
-duplicateProgramDetection.reset = function() {
+glpDuplicateProgramDetection.prototype.reset = function() {
   this.duplicates = []
   this.duplicatePrograms = {};
 }
 
-duplicateProgramDetection.useProgramCalled = function(program) {
+glpDuplicateProgramDetection.prototype.useProgramCalled = function(program) {
   if (!this.enabled) {
     return
   }
-  var currentProgram = gl.getParameter(gl.CURRENT_PROGRAM);
+  var currentProgram = this.gl.getParameter(this.gl.CURRENT_PROGRAM);
 
   if(currentProgram != undefined &&
      currentProgram.__uuid != undefined &&
@@ -29,8 +28,8 @@ duplicateProgramDetection.useProgramCalled = function(program) {
     /*
      * callStack gets the current call stack information up to this point
      */
-    var callStack = gl.glp().callStack.helper.getStack();
-    var userStack = gl.glp().callStack.helper.getFirstUserStack(callStack);
+    var callStack = this.gl.glp().callStack.helper.getStack();
+    var userStack = this.gl.glp().callStack.helper.getFirstUserStack(callStack);
     var lineNumber = ""
     var functionName = "";
     if (userStack != null) {
@@ -55,6 +54,3 @@ duplicateProgramDetection.useProgramCalled = function(program) {
     }
   }
 }
-
-return duplicateProgramDetection;
-});
