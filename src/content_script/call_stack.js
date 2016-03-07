@@ -1,11 +1,13 @@
-var glpCallStack = function (gl) { this.gl = gl; }
+var glpCallStack = function (gl) {
+  this.gl = gl;
 
-glpCallStack.prototype.helper = {}
+  this.helper = {}
 
-glpCallStack.prototype.enabled = false;
-glpCallStack.prototype.maxSize = 100;
-glpCallStack.prototype.mostRecentCalls = [];
-glpCallStack.prototype.callsSinceDraw = [];
+  this.enabled = false;
+  this.maxSize = 100;
+  this.mostRecentCalls = [];
+  this.callsSinceDraw = [];
+}
 
 /*
  * Determines which file and line number called a certain function

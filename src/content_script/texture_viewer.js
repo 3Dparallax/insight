@@ -1,7 +1,9 @@
-var glpTextureViewer = function (gl) { this.gl = gl; }
+var glpTextureViewer = function (gl) {
+    this.gl = gl;
 
-glpTextureViewer.prototype.textures = [];
-glpTextureViewer.prototype.boundTexture = null;
+    this.textures = [];
+    this.boundTexture = null;
+}
 
 /**
  * Sends the number of textures created to the front end
