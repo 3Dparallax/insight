@@ -21,4 +21,5 @@ var messageType = {
   GET_RENDER_BUFFER : "renderBuffer",
   GET_RENDER_BUFFERS : "renderBuffers",
   STATE_VARS : "stateVariables",
+  TOGGLE_STATE_VARS : "toggleStateVariables",
 }

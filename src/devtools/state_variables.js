@@ -1,8 +1,11 @@
-function getStateVariables(e) {
+function toggleStateViewer(e) {
+    var checked = document.getElementById("stateViewerEnabled").checked;
+    var data = {"enabled": checked};
+    sendMessage(messageType.TOGGLE_STATE_VARS, data)
     sendMessage(messageType.STATE_VARS, "getStateVariables");
 }
 
-document.getElementById("getStates").addEventListener("click", getStateVariables);
+document.getElementById("toggleStateViewer").addEventListener("click", toggleStateViewer);
 
 function convertStateVarDataIntoTableData(initialStateVarData) {
     var retData = [];
@@ -17,6 +20,34 @@ function convertStateVarDataIntoTableData(initialStateVarData) {
     return retData;
 }
 
+function initializeStateVariableEventListeners() {
+    var checkEvent = function (e, row, element) {
+        sendMessage(messageType.STATE_VARS, {
+            variable: row.name,
+            enable: element[0].checked
+        })
+    };
+    $('#stateVarTable').on('check.bs.table', checkEvent)
+    $('#stateVarTable').on('uncheck.bs.table', checkEvent);
+    $('#stateVarTable').on('check-all.bs.table', function(e, rows) {
+        for (var i = 0; i < rows.length; i++) {
+            sendMessage(messageType.STATE_VARS, {
+                variable: rows[i].name,
+                enable: true
+            })
+        }
+    });
+    $('#stateVarTable').on('check-all.bs.table', function(e, rows) {
+        for (var i = 0; i < rows.length; i++) {
+            sendMessage(messageType.STATE_VARS, {
+                variable: rows[i].name,
+                enable: false
+            })
+        }
+    });
+
+}
+
 function initializeStateVariableTables(initialStateVarData) {
     $('#stateVarTable').bootstrapTable({
         columns: [{
@@ -25,10 +56,12 @@ function initializeStateVariableTables(initialStateVarData) {
         },
         {
             field: 'value',
-            title: 'State'
+            title: 'State',
+            checkbox: true
         }],
         data: convertStateVarDataIntoTableData(initialStateVarData)
     });
+    initializeStateVariableEventListeners()
 }
 
 function updateStateVariableTables(newStateVarData) {
@@ -46,7 +79,8 @@ function updateStateVariableTables(newStateVarData) {
         var action = 'updateRow';
         $('#stateVarTable').bootstrapTable(action, {
             index: i,
-            row: dataPair
+            row: dataPair,
+            uniqueId: dataPair.name
         });
     }
 }

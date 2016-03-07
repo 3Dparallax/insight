@@ -1,4 +1,7 @@
 function pixelInspectorChanged(e) {
+    if ($("#stateViewerEnabled").checked) {
+      $("#stateViewerEnabled").trigger("click");
+    }
     var checked = document.getElementById("pixelInspectorEnable").checked;
     var data = {"enabled": checked};
     sendMessage(messageType.PIXEL_INSPECTOR, data);

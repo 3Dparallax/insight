@@ -15,6 +15,9 @@ var glpFcnBindings = {
       return original.apply(this, args);
     },
     enable: function(original, args, name) {
+        if (this.glp().stateTracker.freezeStates(args[0], true)) {
+          return;
+        }
         if (this.glp().pixelInspector.saveStates(args[0], true)) {
           return;
         }
@@ -22,6 +25,9 @@ var glpFcnBindings = {
         return original.apply(this, args);
     },
     disable: function(original, args, name) {
+        if (this.glp().stateTracker.freezeStates(args[0], false)) {
+          return;
+        }
         if (this.glp().pixelInspector.saveStates(args[0], false)) {
           return;
         }
@@ -130,6 +136,18 @@ var glpFcnBindings = {
     },
     deleteBuffer: function(original, args, name) {
       this.glp().bufferViewer.deleteBuffer(args[0]);
+      return original.apply(this, args);
+    },
+    pixelStorei: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(args[0], args[1])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
+    depthMask: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(this.DEPTH_WRITEMASK, args[0])) {
+        return;
+      }
       return original.apply(this, args);
     },
 }

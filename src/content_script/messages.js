@@ -90,7 +90,10 @@ glpMessages.prototype.pixelInspectorToggle = function(enabled) {
 /**
  * Sends call state variable information to the panel
  */
-glpMessages.prototype.sendStateVars = function() {
+glpMessages.prototype.sendStateVars = function(data) {
+  if (data != "getStateVariables") {
+      this.gl.glp().stateTracker.toggleBoolState(data);
+  }
   var stateVars = JSON.stringify(this.gl.glp().stateTracker.getStates());
   this.sendMessage(
     messageType.STATE_VARS,
