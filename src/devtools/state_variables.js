@@ -65,10 +65,26 @@ function initializeBoolTable(data) {
     initializeStateVariableEventListeners();
 }
 
+function isEditableState(name) {
+    isEditable = [
+                  "DEPTH_CLEAR_VALUE",
+                  "LINE_WIDTH",
+                  "PACK_ALIGNMENT",
+                  "POLYGON_OFFSET_FACTOR",
+                  "POLYGON_OFFSET_UNITS",
+                  "STENCIL_REF",
+                  "STENCIL_BACK_REF",
+                 ]
+    return (isEditable.indexOf(name) != -1)
+}
+
 function addTextboxToNumberTable() {
     rowElements = $('#stateVarNumTable').children()[1].children;
     for (var i = 0; i < rowElements.length; i++) {
         name = rowElements[i].children[0].innerText;
+        if (!isEditableState(name)) {
+            continue;
+        }
         var input = document.createElement("input");
         input.type = "number";
         input.id = name + "Input";
@@ -83,7 +99,6 @@ function addTextboxToNumberTable() {
                     variable: variableName,
                     value: document.getElementById(variableName + "Input").value
                 });
-                console.log(variableName + " " + document.getElementById(variableName + "Input").value)
             };
         }(name));
         cell.appendChild(input);

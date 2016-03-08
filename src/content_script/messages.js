@@ -92,7 +92,11 @@ glpMessages.prototype.pixelInspectorToggle = function(enabled) {
  */
 glpMessages.prototype.sendStateVars = function(data) {
   if (data != "getStateVariables") {
-      this.gl.glp().stateTracker.toggleBoolState(data);
+      if (data.type == "bool") {
+        this.gl.glp().stateTracker.toggleBoolState(data);
+      } else if (data.type = "num") {
+        this.gl.glp().stateTracker.changeNumberState(data);
+      }
   }
   var stateVars = JSON.stringify(this.gl.glp().stateTracker.getStates());
   this.sendMessage(

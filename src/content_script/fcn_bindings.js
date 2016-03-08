@@ -150,6 +150,40 @@ var glpFcnBindings = {
       }
       return original.apply(this, args);
     },
+    clearDepth: function(original, args, name) {
+      // range = [0,1]
+      if (this.glp().stateTracker.freezeStates(this.DEPTH_CLEAR_VALUE, args[0])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
+    lineWidth: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(this.LINE_WIDTH, args[0])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
+    polygonOffset: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(this.POLYGON_OFFSET_FACTOR, args[0])) {
+        return;
+      }
+      if (this.glp().stateTracker.freezeStates(this.POLYGON_OFFSET_UNITS, args[1])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
+    stencilFunc: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(this.STENCIL_REF, args[1])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
+    stencilFuncSeparate: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStencilStates(args[0], args[2])) {
+        return;
+      }
+      return original.apply(this, args);
+    }
 }
 
 var glpUniformFcn = function(original, args, name) {
