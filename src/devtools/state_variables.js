@@ -9,13 +9,11 @@ document.getElementById("toggleStateViewer").addEventListener("click", toggleSta
 
 function convertStateVarDataIntoTableData(initialStateVarData) {
     var retData = [];
-    for (var type in initialStateVarData) {
-        for (var key in initialStateVarData[type]) {
-            var dataElement = {};
-            dataElement.name = key;
-            dataElement.value = initialStateVarData[type][key];
-            retData.push(dataElement);
-        }
+    for (var key in initialStateVarData) {
+        var dataElement = {};
+        dataElement.name = key;
+        dataElement.value = initialStateVarData[key];
+        retData.push(dataElement);
     }
     return retData;
 }
@@ -27,9 +25,9 @@ function initializeStateVariableEventListeners() {
             enable: element[0].checked
         })
     };
-    $('#stateVarTable').on('check.bs.table', checkEvent)
-    $('#stateVarTable').on('uncheck.bs.table', checkEvent);
-    $('#stateVarTable').on('check-all.bs.table', function(e, rows) {
+    $('#stateVarBoolTable').on('check.bs.table', checkEvent)
+    $('#stateVarBoolTable').on('uncheck.bs.table', checkEvent);
+    $('#stateVarBoolTable').on('check-all.bs.table', function(e, rows) {
         for (var i = 0; i < rows.length; i++) {
             sendMessage(messageType.STATE_VARS, {
                 variable: rows[i].name,
@@ -37,7 +35,7 @@ function initializeStateVariableEventListeners() {
             })
         }
     });
-    $('#stateVarTable').on('check-all.bs.table', function(e, rows) {
+    $('#stateVarBoolTable').on('check-all.bs.table', function(e, rows) {
         for (var i = 0; i < rows.length; i++) {
             sendMessage(messageType.STATE_VARS, {
                 variable: rows[i].name,
@@ -49,7 +47,7 @@ function initializeStateVariableEventListeners() {
 }
 
 function initializeStateVariableTables(initialStateVarData) {
-    $('#stateVarTable').bootstrapTable({
+    $('#stateVarBoolTable').bootstrapTable({
         columns: [{
             field: 'name',
             title: 'Variable'
@@ -59,9 +57,31 @@ function initializeStateVariableTables(initialStateVarData) {
             title: 'State',
             checkbox: true
         }],
-        data: convertStateVarDataIntoTableData(initialStateVarData)
+        data: convertStateVarDataIntoTableData(initialStateVarData.boolStates)
     });
     initializeStateVariableEventListeners()
+    $('#stateVarNumTable').bootstrapTable({
+        columns: [{
+            field: 'name',
+            title: 'Variable'
+        },
+        {
+            field: 'value',
+            title: 'Value',
+        }],
+        data: convertStateVarDataIntoTableData(initialStateVarData.numberStates)
+    });
+    $('#stateVarEnumTable').bootstrapTable({
+        columns: [{
+            field: 'name',
+            title: 'Variable'
+        },
+        {
+            field: 'value',
+            title: 'State',
+        }],
+        data: convertStateVarDataIntoTableData(initialStateVarData.enumStates)
+    });
 }
 
 function updateStateVariableTables(newStateVarData) {
@@ -73,14 +93,21 @@ function updateStateVariableTables(newStateVarData) {
         newStateVarData.initialized = true;
         return;
     }
-    tableData = convertStateVarDataIntoTableData(newStateVarData.data);
-    for (var i = 0; i < tableData.length; i++) {
-        dataPair = tableData[i]
-        var action = 'updateRow';
-        $('#stateVarTable').bootstrapTable(action, {
-            index: i,
-            row: dataPair,
-            uniqueId: dataPair.name
-        });
+    tableIDs = {
+        boolStates: '#stateVarBoolTable',
+        numberStates: '#stateVarNumTable',
+        enumStates: '#stateVarEnumTable',
+    }
+    for (type in newStateVarData.data) {
+        tableData = convertStateVarDataIntoTableData(newStateVarData.data[type]);
+        for (var i = 0; i < tableData.length; i++) {
+            dataPair = tableData[i]
+            var action = 'updateRow';
+            $(tableIDs[type]).bootstrapTable(action, {
+                index: i,
+                row: dataPair,
+                uniqueId: dataPair.name
+            });
+        }
     }
 }

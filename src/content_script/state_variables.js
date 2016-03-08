@@ -36,7 +36,6 @@ glpStateTracker.prototype.toggle = function(enabled) {
     this.enabled = true;
     for (var key in this.programRequestedStates) {
       this.programRequestedStates[key] = gl.getParameter(gl[key]);
-      console.log(key)
     }
   } else {
     for (var key in this.programRequestedStates) {
@@ -82,8 +81,8 @@ glpStateTracker.prototype.toggleBoolState = function(request) {
 glpStateTracker.prototype.getStates = function() {
   return {
     boolStates: this.getBooleanStates(),
-    // numericalStates: this.getNumericalStates(),
-    // enumStates: this.getEnumStates(),
+    numberStates: this.getNumberStates(),
+    enumStates: this.getEnumStates(),
   }
 }
 
@@ -154,7 +153,7 @@ glpStateTracker.prototype.getBooleanStates = function() {
 // STENCIL_REF                         GLint
 // SUBPIXEL_BITS                       GLint
 // UNPACK_ALIGNMENT                    GLint
-glpStateTracker.prototype.getNumericalStates = function() {
+glpStateTracker.prototype.getNumberStates = function() {
   var gl = this.gl;
   return {
     ALPHA_BITS: gl.getParameter(gl.ALPHA_BITS),
