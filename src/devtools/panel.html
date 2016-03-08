@@ -263,14 +263,43 @@
             <div class="pull-right">
               <button title="Enable to toggle state variables.  Disable to return to their original states." data-placement="left" data-toggle="tooltip" class="btn btn-default mrs" type="button">?</button>
             </div>
-            <table class="table table-striped" id="stateVarTable">
-              <thead>
-                <tr>
-                 <th>Variable</th>
-                 <th>State</th>
-                </tr>
-              </thead>
-            </table>
+            <ul class="nav nav-pills" data-tabs="pill">
+              <li class="active"><a data-toggle="pill" href="#stateVarsBools">Boolean</a></li>
+              <li><a data-toggle="pill" href="#stateVarsNum">Numeric</a></li>
+              <li><a data-toggle="pill" href="#stateVarsEnums">Enums</a></li>
+            </ul>
+            <div class="tab-content">
+              <div id="stateVarsBools" class="tab-pane fade in active">
+                <table class="table table-striped" id="stateVarBoolTable">
+                  <thead>
+                    <tr>
+                     <th>Variable</th>
+                     <th>State</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div id="stateVarsNum" class="tab-pane fade">
+                <table class="table table-striped" id="stateVarNumTable">
+                  <thead>
+                    <tr>
+                     <th>Variable</th>
+                     <th>Value</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div id="stateVarsEnums" class="tab-pane fade">
+                <table class="table table-striped" id="stateVarEnumTable">
+                  <thead>
+                    <tr>
+                     <th>Variable</th>
+                     <th>State</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
