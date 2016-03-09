@@ -141,20 +141,14 @@ function updateRenderBufferList(length) {
     }
 }
 
-function getBuffers(e) {
+document.getElementById("getBuffers").addEventListener("click", function getBuffers(e) {
     sendMessage(messageType.GET_BUFFERS, "");
-}
+});
 
-document.getElementById("getBuffers").addEventListener("click", getBuffers);
-
-function getFrameBuffers(e) {
+document.getElementById("getFrameBuffers").addEventListener("click", function(e) {
     sendMessage(messageType.GET_FRAME_BUFFERS, "");
-}
+});
 
-document.getElementById("getFrameBuffers").addEventListener("click", getFrameBuffers);
-
-function getRenderBuffers(e) {
+document.getElementById("getRenderBuffers").addEventListener("click", function(e) {
     sendMessage(messageType.GET_RENDER_BUFFERS, "");
-}
-
-document.getElementById("getRenderBuffers").addEventListener("click", getRenderBuffers);
+});
