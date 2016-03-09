@@ -50,6 +50,7 @@ function bindWebGL() {
         var modules = {}
         modules.bufferViewer = new glpBufferViewer(this);
         modules.callStack = new glpCallStack(this);
+        modules.frameControl = new glpFrameControl(this, window);
         modules.duplicateProgramDetection = new glpDuplicateProgramDetection(this);
         modules.histogram = new glpHistogram(this);
         modules.messages = new glpMessages(this);

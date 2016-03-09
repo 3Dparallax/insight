@@ -68,6 +68,10 @@ window.addEventListener('message', function(event) {
     gl.glp().messages.sendStateVars(message.data);
   } else if (message.type == messageType.TOGGLE_STATE_VARS) {
     gl.glp().stateTracker.toggle(message.data.enabled);
+  } else if (message.type == messageType.FRAME_CONTROL_PLAY) {
+    gl.glp().frameControl.play();
+  } else if (message.type == messageType.FRAME_CONTROL_PAUSE) {
+    gl.glp().frameControl.pause();
   } else {
     console.error(message.type, message.data);
   }
