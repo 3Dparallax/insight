@@ -72,6 +72,8 @@ window.addEventListener('message', function(event) {
     gl.glp().frameControl.play();
   } else if (message.type == messageType.FRAME_CONTROL_PAUSE) {
     gl.glp().frameControl.pause();
+  } else if (message.type == messageType.FRAME_CONTROL_NEXT_FRAME) {
+    gl.glp().frameControl.nextFrame();
   } else {
     console.error(message.type, message.data);
   }

@@ -24,4 +24,5 @@ var messageType = {
   TOGGLE_STATE_VARS : "toggleStateVariables",
   FRAME_CONTROL_PLAY : "frameControlPlay",
   FRAME_CONTROL_PAUSE : "frameControlPause",
+  FRAME_CONTROL_NEXT_FRAME : "frameControlNextFrame",
 }

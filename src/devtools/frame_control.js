@@ -6,3 +6,6 @@ document.getElementById("frameControlPause").addEventListener("click", function(
     sendMessage(messageType.FRAME_CONTROL_PAUSE, "");
 });
 
+document.getElementById("frameControlNextFrame").addEventListener("click", function(e) {
+    sendMessage(messageType.FRAME_CONTROL_NEXT_FRAME, "");
+});

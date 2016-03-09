@@ -29,8 +29,10 @@ var glpFrameControl = function (gl, window) {
         if (paused) {
             return -1;
         }
+
         requestFrameCall.context = context;
         requestFrameCall.arguments = arguments;
+
         requestFrameCall.timerId = original.apply(context, arguments);
         return requestFrameCall.timerId;
     }
@@ -100,4 +102,12 @@ var glpFrameControl = function (gl, window) {
             }
         }
     };
+
+    this.nextFrame = function() {
+        if (paused) {
+            if (requestFrameCall.arguments) {
+                requestAnimationFrameCall.apply(requestFrameCall.context, requestFrameCall.arguments);
+            }
+        }
+    }
 }
