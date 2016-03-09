@@ -44,7 +44,29 @@ var glpStateTracker = function (gl) {
   this.STENCIL_REF = null;
   this.SUBPIXEL_BITS = null;
   this.UNPACK_ALIGNMENT = null;
-
+  //enum
+  this.ACTIVE_TEXTURE = null;
+  this.BLEND_DST_ALPHA = null;
+  this.BLEND_DST_RGB = null;
+  this.BLEND_EQUATION_ALPHA = null;
+  this.BLEND_EQUATION_RGB = null;
+  this.BLEND_SRC_ALPHA = null;
+  this.BLEND_SRC_RGB = null;
+  this.CULL_FACE_MODE = null;
+  this.DEPTH_FUNC = null;
+  this.FRONT_FACE = null;
+  this.GENERATE_MIPMAP_HINT = null;
+  this.IMPLEMENTATION_COLOR_READ_FORMAT = null;
+  this.IMPLEMENTATION_COLOR_READ_TYPE = null;
+  this.STENCIL_BACK_FAIL = null;
+  this.STENCIL_BACK_FUNC = null;
+  this.STENCIL_BACK_PASS_DEPTH_FAIL = null;
+  this.STENCIL_BACK_PASS_DEPTH_PASS = null;
+  this.STENCIL_FAIL = null;
+  this.STENCIL_FUNC = null;
+  this.STENCIL_PASS_DEPTH_FAIL = null;
+  this.STENCIL_PASS_DEPTH_PASS = null;
+  this.UNPACK_COLORSPACE_CONVERSION_WEBGL = null;
   this.programRequestedStates = {
     bool: {
       BLEND: null,
@@ -90,6 +112,30 @@ var glpStateTracker = function (gl) {
       SUBPIXEL_BITS: null,
       UNPACK_ALIGNMENT: null, //gl.pixelStorei(gl.UNPACK_ALIGNMENT, param); param in {1, 2, 4, 8}
     },
+    enums: {
+      ACTIVE_TEXTURE: null, //gl.activeTexture(texture);
+      BLEND_DST_ALPHA: null, //gl.blendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+      BLEND_DST_RGB: null, //gl.blendFuncSeparate
+      BLEND_EQUATION_ALPHA: null, //gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_SUBTRACT);
+      BLEND_EQUATION_RGB: null, //gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_SUBTRACT);
+      BLEND_SRC_ALPHA: null, //gl.blendFuncSeparate
+      BLEND_SRC_RGB: null, //gl.blendFuncSeparate
+      CULL_FACE_MODE: null, //gl.cullFace(mode);
+      DEPTH_FUNC: null, //gl.depthFunc(func);
+      FRONT_FACE: null, //gl.frontFace(mode);
+      GENERATE_MIPMAP_HINT: null,
+      IMPLEMENTATION_COLOR_READ_FORMAT: null,
+      IMPLEMENTATION_COLOR_READ_TYPE: null,
+      STENCIL_BACK_FAIL: null,
+      STENCIL_BACK_FUNC: null,
+      STENCIL_BACK_PASS_DEPTH_FAIL: null,
+      STENCIL_BACK_PASS_DEPTH_PASS: null,
+      STENCIL_FAIL: null,
+      STENCIL_FUNC: null,
+      STENCIL_PASS_DEPTH_FAIL: null,
+      STENCIL_PASS_DEPTH_PASS: null,
+      UNPACK_COLORSPACE_CONVERSION_WEBGL: null, //gl.pixelstorei(pname, param);
+    }
   };
 }
 
@@ -116,6 +162,12 @@ glpStateTracker.prototype.toggle = function(enabled) {
         value: this.programRequestedStates.number[key]
       })
     }
+    for (var key in this.programRequestedStates.enums) {
+      this.changeEnumState({
+        variable: key,
+        value: glpHelpers.getGLEnumName(this.gl, this.programRequestedStates.enums[key])
+      })
+    }
     this.enabled = false;
   }
 }
@@ -136,7 +188,12 @@ glpStateTracker.prototype.freezeStates = function(stateEnum, value) {
     return false;
   }
   stateName = glpHelpers.getGLEnumName(this.gl, stateEnum)
-  if (this[stateName] != value) {
+  if (this.programRequestedStates.enums[stateName] != null) {
+    if (this[stateName] != glpHelpers.getGLEnumName(this.gl, value)) {
+      this.programRequestedStates.enums[stateName] = value;
+      return true;
+    }
+  } else if (this[stateName] != value) {
     if (typeof(value) === "boolean") {
       this.programRequestedStates.bool[stateName] = value;
     } else {
@@ -186,6 +243,95 @@ glpStateTracker.prototype.toggleBoolState = function(request) {
     gl.enable(gl[stateName]);
   } else {
     gl.disable(gl[stateName]);
+  }
+}
+
+glpStateTracker.prototype.changeEnumState = function(request) {
+  if (!this.enabled) {
+    return false;
+  }
+  var gl = this.gl;
+  stateName = request.variable;
+  enumifiedValue = gl[request.value];
+  this[stateName] = request.value;
+  if (stateName == "ACTIVE_TEXTURE") {
+    gl.activeTexture(enumifiedValue);
+  } else if (stateName == "BLEND_DST_ALPHA") {
+    gl.blendFuncSeparate(gl.getParameter(gl.BLEND_SRC_RGB),
+                         gl.getParameter(gl.BLEND_DST_RGB),
+                         gl.getParameter(gl.BLEND_SRC_ALPHA),
+                         enumifiedValue);
+  } else if (stateName == "BLEND_DST_RGB") {
+    gl.blendFuncSeparate(gl.getParameter(gl.BLEND_SRC_RGB),
+                         enumifiedValue,
+                         gl.getParameter(gl.BLEND_SRC_ALPHA),
+                         gl.getParameter(gl.BLEND_DST_ALPHA));
+  } else if (stateName == "BLEND_SRC_ALPHA") {
+    gl.blendFuncSeparate(gl.getParameter(gl.BLEND_SRC_RGB),
+                         gl.getParameter(gl.BLEND_DST_RGB),
+                         enumifiedValue,
+                         gl.getParameter(gl.BLEND_DST_ALPHA));
+  } else if (stateName == "BLEND_SRC_RGB") {
+    gl.blendFuncSeparate(enumifiedValue,
+                         gl.getParameter(gl.BLEND_DST_RGB),
+                         gl.getParameter(gl.BLEND_SRC_ALPHA),
+                         gl.getParameter(gl.BLEND_DST_ALPHA));
+  } else if (stateName == "BLEND_EQUATION_ALPHA") {
+    gl.blendEquationSeparate(gl.getParameter(gl.BLEND_EQUATION_RGB), enumifiedValue);
+  } else if (stateName == "BLEND_EQUATION_RGB") {
+    gl.blendEquationSeparate(enumifiedValue, gl.getParameter(gl.BLEND_EQUATION_ALPHA));
+  } else if (stateName == "CULL_FACE_MODE") {
+    gl.cullFace(enumifiedValue);
+  } else if (stateName == "DEPTH_FUNC") {
+    gl.depthFunc(enumifiedValue);
+  } else if (stateName == "FRONT_FACE") {
+    gl.frontFace(enumifiedValue);
+  } else if (stateName == "UNPACK_COLORSPACE_CONVERSION_WEBGL") {
+    gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, enumifiedValue);
+  }
+}
+
+glpStateTracker.prototype.getEnumOptions = function() {
+  var gl = this.gl
+  textureOptions = [];
+  for (var i = 0; i < gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS); i++) {
+    textureOptions.push("TEXTURE" + i);
+  }
+  blendOptions = [
+    "ONE",
+    "SRC_COLOR",
+    "ONE_MINUS_SRC_COLOR",
+    "DST_COLOR",
+    "ONE_MINUS_DST_COLOR",
+    "SRC_ALPHA",
+    "ONE_MINUS_SRC_ALPHA",
+    "ONE_MINUS_SRC_ALPHA",
+    "ONE_MINUS_DST_ALPHA",
+    "SRC_ALPHA_SATURATE"
+  ];
+  return {
+    ACTIVE_TEXTURE: textureOptions,
+    BLEND_DST_ALPHA: blendOptions,
+    BLEND_DST_RGB: blendOptions,
+    BLEND_EQUATION_ALPHA: ["FUNC_ADD", "FUNC_SUBTRACT", "FUNC_REVERSE_SUBTRACT"],
+    BLEND_EQUATION_RGB: ["FUNC_ADD", "FUNC_SUBTRACT", "FUNC_REVERSE_SUBTRACT"],
+    BLEND_SRC_ALPHA: blendOptions,
+    BLEND_SRC_RGB: blendOptions,
+    CULL_FACE_MODE: ["FRONT", "BACK", "FRONT_AND_BACK"],
+    DEPTH_FUNC: ["NEVER", "LESS", "EQUAL", "LEQUAL", "GREATER", "NOTEQUAL", "GEQUAL", "ALWAYS"],
+    FRONT_FACE: ["CW", "CCW"],
+    GENERATE_MIPMAP_HINT: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.GENERATE_MIPMAP_HINT))],
+    IMPLEMENTATION_COLOR_READ_FORMAT: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT))],
+    IMPLEMENTATION_COLOR_READ_TYPE: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE))],
+    STENCIL_BACK_FAIL: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FAIL))],
+    STENCIL_BACK_FUNC: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FUNC))],
+    STENCIL_BACK_PASS_DEPTH_FAIL: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_FAIL))],
+    STENCIL_BACK_PASS_DEPTH_PASS: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_PASS))],
+    STENCIL_FAIL: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_FAIL))],
+    STENCIL_FUNC: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_FUNC))],
+    STENCIL_PASS_DEPTH_FAIL: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL))],
+    STENCIL_PASS_DEPTH_PASS: [glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS))],
+    UNPACK_COLORSPACE_CONVERSION_WEBGL: ["BROWSER_DEFAULT_WEBGL", "NONE"],
   }
 }
 
@@ -352,29 +498,52 @@ glpStateTracker.prototype.getNumberStates = function() {
 // UNPACK_COLORSPACE_CONVERSION_WEBGL  GLenum
 glpStateTracker.prototype.getEnumStates = function() {
   var gl = this.gl;
+  this.ACTIVE_TEXTURE =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.ACTIVE_TEXTURE));
+  this.BLEND_DST_ALPHA =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_ALPHA));
+  this.BLEND_DST_RGB =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_RGB));
+  this.BLEND_EQUATION_ALPHA =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_EQUATION_ALPHA));
+  this.BLEND_EQUATION_RGB =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_EQUATION_RGB));
+  this.BLEND_SRC_ALPHA =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_SRC_ALPHA));
+  this.BLEND_SRC_RGB =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_SRC_RGB));
+  this.CULL_FACE_MODE =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.CULL_FACE_MODE));
+  this.DEPTH_FUNC =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.DEPTH_FUNC));
+  this.FRONT_FACE =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.FRONT_FACE));
+  this.GENERATE_MIPMAP_HINT =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.GENERATE_MIPMAP_HINT));
+  this.IMPLEMENTATION_COLOR_READ_FORMAT =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT));
+  this.IMPLEMENTATION_COLOR_READ_TYPE =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE));
+  this.STENCIL_BACK_FAIL =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FAIL));
+  this.STENCIL_BACK_FUNC =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FUNC));
+  this.STENCIL_BACK_PASS_DEPTH_FAIL =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_FAIL));
+  this.STENCIL_BACK_PASS_DEPTH_PASS =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_PASS));
+  this.STENCIL_FAIL =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_FAIL));
+  this.STENCIL_FUNC =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_FUNC));
+  this.STENCIL_PASS_DEPTH_FAIL =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL));
+  this.STENCIL_PASS_DEPTH_PASS =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS));
+  this.UNPACK_COLORSPACE_CONVERSION_WEBGL =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL));
+
   return {
-    ACTIVE_TEXTURE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.ACTIVE_TEXTURE)),
-    BLEND_DST_ALPHA: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_ALPHA)),
-    BLEND_DST_RGB: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_DST_RGB)),
-    BLEND_EQUATION_ALPHA: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_EQUATION_ALPHA)),
-    BLEND_EQUATION_RGB: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_EQUATION_RGB)),
-    BLEND_SRC_ALPHA: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_SRC_ALPHA)),
-    BLEND_SRC_RGB: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.BLEND_SRC_RGB)),
-    CULL_FACE_MODE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.CULL_FACE_MODE)),
-    DEPTH_FUNC: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.DEPTH_FUNC)),
-    FRONT_FACE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.FRONT_FACE)),
-    GENERATE_MIPMAP_HINT: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.GENERATE_MIPMAP_HINT)),
-    IMPLEMENTATION_COLOR_READ_FORMAT: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT)),
-    IMPLEMENTATION_COLOR_READ_TYPE: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE)),
-    STENCIL_BACK_FAIL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FAIL)),
-    STENCIL_BACK_FUNC: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_FUNC)),
-    STENCIL_BACK_PASS_DEPTH_FAIL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_FAIL)),
-    STENCIL_BACK_PASS_DEPTH_PASS: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_BACK_PASS_DEPTH_PASS)),
-    STENCIL_FAIL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_FAIL)),
-    STENCIL_FUNC: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_FUNC)),
-    STENCIL_PASS_DEPTH_FAIL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL)),
-    STENCIL_PASS_DEPTH_PASS: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS)),
-    UNPACK_COLORSPACE_CONVERSION_WEBGL: glpHelpers.getGLEnumName(gl, gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL)),
+    ACTIVE_TEXTURE: this.ACTIVE_TEXTURE,
+    BLEND_DST_ALPHA: this.BLEND_DST_ALPHA,
+    BLEND_DST_RGB: this.BLEND_DST_RGB,
+    BLEND_EQUATION_ALPHA: this.BLEND_EQUATION_ALPHA,
+    BLEND_EQUATION_RGB: this.BLEND_EQUATION_RGB,
+    BLEND_SRC_ALPHA: this.BLEND_SRC_ALPHA,
+    BLEND_SRC_RGB: this.BLEND_SRC_RGB,
+    CULL_FACE_MODE: this.CULL_FACE_MODE,
+    DEPTH_FUNC: this.DEPTH_FUNC,
+    FRONT_FACE: this.FRONT_FACE,
+    GENERATE_MIPMAP_HINT: this.GENERATE_MIPMAP_HINT,
+    IMPLEMENTATION_COLOR_READ_FORMAT: this.IMPLEMENTATION_COLOR_READ_FORMAT,
+    IMPLEMENTATION_COLOR_READ_TYPE: this.IMPLEMENTATION_COLOR_READ_TYPE,
+    STENCIL_BACK_FAIL: this.STENCIL_BACK_FAIL,
+    STENCIL_BACK_FUNC: this.STENCIL_BACK_FUNC,
+    STENCIL_BACK_PASS_DEPTH_FAIL: this.STENCIL_BACK_PASS_DEPTH_FAIL,
+    STENCIL_BACK_PASS_DEPTH_PASS: this.STENCIL_BACK_PASS_DEPTH_PASS,
+    STENCIL_FAIL: this.STENCIL_FAIL,
+    STENCIL_FUNC: this.STENCIL_FUNC,
+    STENCIL_PASS_DEPTH_FAIL: this.STENCIL_PASS_DEPTH_FAIL,
+    STENCIL_PASS_DEPTH_PASS: this.STENCIL_PASS_DEPTH_PASS,
+    UNPACK_COLORSPACE_CONVERSION_WEBGL: this.UNPACK_COLORSPACE_CONVERSION_WEBGL,
   }
 }
 

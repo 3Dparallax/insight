@@ -52,9 +52,17 @@ backgroundPageConnection.onMessage.addListener(function(msg) {
         state.buffer.renderBufferSize = msg.data.length;
     } else if (msg.type == messageType.STATE_VARS) {
         if (!state.stateVars) {
-            state.stateVars = {data: JSON.parse(msg.data.stateVars), initialized: false};
+            state.stateVars = {
+                data: JSON.parse(msg.data.stateVars),
+                enumOptions: JSON.parse(msg.data.enumOptions),
+                initialized: false
+            };
         } else {
-            state.stateVars = {data: JSON.parse(msg.data.stateVars), initialized: state.stateVars.initialized};
+            state.stateVars = {
+                data: JSON.parse(msg.data.stateVars),
+                enumOptions: JSON.parse(msg.data.enumOptions),
+                initialized: state.stateVars.initialized
+            };
         }
     }
 
