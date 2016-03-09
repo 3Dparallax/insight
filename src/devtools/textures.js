@@ -11,14 +11,6 @@ function displayTexture(texture) {
     imageData.data.set(texture.pixels);
     ctx.putImageData(imageData, 0, 0);
 
-    if (texture.texImage2DCalls) {
-        for (var i = 0; i < texture.texImage2DCalls.length; i++) {
-            var texImage2DDescription = document.createElement("dd");
-            texImage2DDescription.innerHTML = texture.texImage2DCalls[i];
-            texParams.appendChild(texImage2DDescription);
-        }
-    }
-
     var texParams = document.getElementById("textureParameters");
     texParams.innerHTML = "";
 
