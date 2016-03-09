@@ -94,12 +94,18 @@ glpMessages.prototype.sendStateVars = function(data) {
   if (data != "getStateVariables") {
       if (data.type == "bool") {
         this.gl.glp().stateTracker.toggleBoolState(data);
-      } else if (data.type = "num") {
+      } else if (data.type == "num") {
         this.gl.glp().stateTracker.changeNumberState(data);
+      } else if (data.type == "enum") {
+        this.gl.glp().stateTracker.changeEnumState(data);
       }
   }
   var stateVars = JSON.stringify(this.gl.glp().stateTracker.getStates());
+  var enumOptions = JSON.stringify(this.gl.glp().stateTracker.getEnumOptions());
   this.sendMessage(
     messageType.STATE_VARS,
-    {"stateVars": stateVars})
+    {
+      "stateVars": stateVars,
+      "enumOptions": enumOptions
+    })
 }

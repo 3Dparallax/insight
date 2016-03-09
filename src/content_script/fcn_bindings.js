@@ -36,6 +36,31 @@ var glpFcnBindings = {
     },
     blendFunc: function(original, args, name) {
         // TODO: verify valid input
+        if (this.glp().stateTracker.freezeStates(this.BLEND_SRC_RGB, args[0])) {
+          return;
+        }
+        if (this.glp().stateTracker.freezeStates(this.BLEND_DST_RGB, args[1])) {
+          return;
+        }
+        if (this.glp().pixelInspector.storeBlendStates(args[0], args[1])) {
+          return;
+        }
+        return original.apply(this, args);
+    },
+    blendFuncSeparate: function(original, args, name) {
+        // TODO: verify valid input
+        if (this.glp().stateTracker.freezeStates(this.BLEND_SRC_RGB, args[0])) {
+          return;
+        }
+        if (this.glp().stateTracker.freezeStates(this.BLEND_DST_RGB, args[1])) {
+          return;
+        }
+        if (this.glp().stateTracker.freezeStates(this.BLEND_SRC_ALPHA, args[2])) {
+          return;
+        }
+        if (this.glp().stateTracker.freezeStates(this.BLEND_DST_ALPHA, args[3])) {
+          return;
+        }
         if (this.glp().pixelInspector.storeBlendStates(args[0], args[1])) {
           return;
         }
@@ -183,7 +208,34 @@ var glpFcnBindings = {
         return;
       }
       return original.apply(this, args);
-    }
+    },
+    blendEquationSeparate: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(this.BLEND_EQUATION_RGB, args[0])) {
+        return;
+      }
+      if (this.glp().stateTracker.freezeStates(this.BLEND_EQUATION_ALPHA, args[1])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
+    cullFace: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(this.CULL_FACE_MODE, args[0])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
+    depthFunc: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(this.DEPTH_FUNC, args[0])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
+    frontFace: function(original, args, name) {
+      if (this.glp().stateTracker.freezeStates(this.FRONT_FACE, args[0])) {
+        return;
+      }
+      return original.apply(this, args);
+    },
 }
 
 var glpUniformFcn = function(original, args, name) {

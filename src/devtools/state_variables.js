@@ -121,7 +121,45 @@ function initializeNumberTable(data) {
     addTextboxToNumberTable();
 }
 
-function initializeEnumTable(data) {
+function addSelectToEnumTable(optionList) {
+    rowElements = $('#stateVarEnumTable').children()[1].children;
+    for (var i = 0; i < rowElements.length; i++) {
+        name = rowElements[i].children[0].innerText;
+        options = optionList[name];
+        if (options.length <= 1) {
+            continue;
+        }
+        var select = document.createElement("select");
+        select.id = name + "Select";
+        cell = rowElements[i].children[1];
+
+        for (var j = 0; j < options.length; j++) {
+            option = document.createElement("option");
+            option.value = options[j]
+            option.innerHTML = options[j]
+            if (options[j] == cell.innerText) {
+                option.selected = "selected";
+            }
+            select.appendChild(option);
+        }
+        cell.innerText = "";
+
+        select.addEventListener("change", function(variableName){
+            return function() {
+                var selectBox = document.getElementById(variableName + "Select")
+                var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+                sendMessage(messageType.STATE_VARS, {
+                    type: "enum",
+                    variable: variableName,
+                    value: selectedValue
+                });
+            };
+        }(name));
+        cell.appendChild(select);
+    }
+}
+
+function initializeEnumTable(data, options) {
     $('#stateVarEnumTable').bootstrapTable({
         columns: [{
             field: 'name',
@@ -133,12 +171,14 @@ function initializeEnumTable(data) {
         }],
         data: convertStateVarDataIntoTableData(data)
     });
+    addSelectToEnumTable(options);
 }
 
 function initializeStateVariableTables(initialStateVarData) {
-    initializeBoolTable(initialStateVarData.boolStates);
-    initializeNumberTable(initialStateVarData.numberStates);
-    initializeEnumTable(initialStateVarData.enumStates);
+    initializeBoolTable(initialStateVarData.data.boolStates);
+    initializeNumberTable(initialStateVarData.data.numberStates);
+    initializeEnumTable(initialStateVarData.data.enumStates,
+                        initialStateVarData.enumOptions);
 }
 
 function updateStateVariableTables(newStateVarData) {
@@ -146,7 +186,7 @@ function updateStateVariableTables(newStateVarData) {
         return;
     }
     if (!newStateVarData.initialized) {
-        initializeStateVariableTables(newStateVarData.data);
+        initializeStateVariableTables(newStateVarData);
         newStateVarData.initialized = true;
         return;
     }
@@ -167,4 +207,5 @@ function updateStateVariableTables(newStateVarData) {
         }
     }
     addTextboxToNumberTable();
+    addSelectToEnumTable(newStateVarData.enumOptions);
 }
