@@ -21,32 +21,35 @@ function convertStateVarDataIntoTableData(initialStateVarData) {
 function initializeStateVariableEventListeners() {
     var checkEvent = function (e, row, element) {
         sendMessage(messageType.STATE_VARS, {
+            type: "bool",
             variable: row.name,
             enable: element[0].checked
-        })
+        });
     };
     $('#stateVarBoolTable').on('check.bs.table', checkEvent)
     $('#stateVarBoolTable').on('uncheck.bs.table', checkEvent);
     $('#stateVarBoolTable').on('check-all.bs.table', function(e, rows) {
         for (var i = 0; i < rows.length; i++) {
             sendMessage(messageType.STATE_VARS, {
+                type: "bool",
                 variable: rows[i].name,
                 enable: true
-            })
+            });
         }
     });
     $('#stateVarBoolTable').on('check-all.bs.table', function(e, rows) {
         for (var i = 0; i < rows.length; i++) {
             sendMessage(messageType.STATE_VARS, {
+                type: "bool",
                 variable: rows[i].name,
                 enable: false
-            })
+            });
         }
     });
 
 }
 
-function initializeStateVariableTables(initialStateVarData) {
+function initializeBoolTable(data) {
     $('#stateVarBoolTable').bootstrapTable({
         columns: [{
             field: 'name',
@@ -57,9 +60,52 @@ function initializeStateVariableTables(initialStateVarData) {
             title: 'State',
             checkbox: true
         }],
-        data: convertStateVarDataIntoTableData(initialStateVarData.boolStates)
+        data: convertStateVarDataIntoTableData(data)
     });
-    initializeStateVariableEventListeners()
+    initializeStateVariableEventListeners();
+}
+
+function isEditableState(name) {
+    isEditable = [
+                  "DEPTH_CLEAR_VALUE",
+                  "LINE_WIDTH",
+                  "PACK_ALIGNMENT",
+                  "POLYGON_OFFSET_FACTOR",
+                  "POLYGON_OFFSET_UNITS",
+                  "STENCIL_REF",
+                  "STENCIL_BACK_REF",
+                 ]
+    return (isEditable.indexOf(name) != -1)
+}
+
+function addTextboxToNumberTable() {
+    rowElements = $('#stateVarNumTable').children()[1].children;
+    for (var i = 0; i < rowElements.length; i++) {
+        name = rowElements[i].children[0].innerText;
+        if (!isEditableState(name)) {
+            continue;
+        }
+        var input = document.createElement("input");
+        input.type = "number";
+        input.id = name + "Input";
+        cell = rowElements[i].children[1];
+        input.defaultValue = cell.innerText;
+        cell.innerText = "";
+
+        input.addEventListener("change", function(variableName){
+            return function() {
+                sendMessage(messageType.STATE_VARS, {
+                    type: "num",
+                    variable: variableName,
+                    value: document.getElementById(variableName + "Input").value
+                });
+            };
+        }(name));
+        cell.appendChild(input);
+    }
+}
+
+function initializeNumberTable(data) {
     $('#stateVarNumTable').bootstrapTable({
         columns: [{
             field: 'name',
@@ -69,8 +115,13 @@ function initializeStateVariableTables(initialStateVarData) {
             field: 'value',
             title: 'Value',
         }],
-        data: convertStateVarDataIntoTableData(initialStateVarData.numberStates)
+        data: convertStateVarDataIntoTableData(data),
+        uniqueId: "unique"
     });
+    addTextboxToNumberTable();
+}
+
+function initializeEnumTable(data) {
     $('#stateVarEnumTable').bootstrapTable({
         columns: [{
             field: 'name',
@@ -80,8 +131,14 @@ function initializeStateVariableTables(initialStateVarData) {
             field: 'value',
             title: 'State',
         }],
-        data: convertStateVarDataIntoTableData(initialStateVarData.enumStates)
+        data: convertStateVarDataIntoTableData(data)
     });
+}
+
+function initializeStateVariableTables(initialStateVarData) {
+    initializeBoolTable(initialStateVarData.boolStates);
+    initializeNumberTable(initialStateVarData.numberStates);
+    initializeEnumTable(initialStateVarData.enumStates);
 }
 
 function updateStateVariableTables(newStateVarData) {
@@ -106,8 +163,8 @@ function updateStateVariableTables(newStateVarData) {
             $(tableIDs[type]).bootstrapTable(action, {
                 index: i,
                 row: dataPair,
-                uniqueId: dataPair.name
             });
         }
     }
+    addTextboxToNumberTable();
 }
