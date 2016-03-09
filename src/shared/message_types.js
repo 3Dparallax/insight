@@ -22,4 +22,7 @@ var messageType = {
   GET_RENDER_BUFFERS : "renderBuffers",
   STATE_VARS : "stateVariables",
   TOGGLE_STATE_VARS : "toggleStateVariables",
+  FRAME_CONTROL_PLAY : "frameControlPlay",
+  FRAME_CONTROL_PAUSE : "frameControlPause",
+  FRAME_CONTROL_NEXT_FRAME : "frameControlNextFrame",
 }

@@ -3,6 +3,7 @@ var fileDirectory = "src/content_script/"
 files = [
   "helpers.js",
   "buffer_viewer.js",
+  "frame_control.js",
   "program_usage_counter.js",
   "duplicate_program_detection.js",
   "pixel_inspector.js",
