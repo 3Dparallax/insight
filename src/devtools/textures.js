@@ -6,10 +6,13 @@ function displayTexture(texture) {
     var textureCanvas = document.getElementById("textureCanvas");
     textureCanvas.width = texture.width;
     textureCanvas.height = texture.height;
+
     var ctx = textureCanvas.getContext("2d");
-    var imageData = ctx.getImageData(0, 0, texture.width, texture.height);
-    imageData.data.set(texture.pixels);
-    ctx.putImageData(imageData, 0, 0);
+    var image = new Image();
+    image.onload = function() {
+        ctx.drawImage(image, 0, 0);
+    };
+    image.src = texture.base64url;
 
     if (texture.texImage2DCalls) {
         for (var i = 0; i < texture.texImage2DCalls.length; i++) {
