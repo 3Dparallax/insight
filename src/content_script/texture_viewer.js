@@ -82,9 +82,21 @@ glpTextureViewer.prototype.getTexture = function(index) {
     if (canRead) {
         var pixels = new Uint8Array(size.x * size.y * 4);
         gl.readPixels(0, 0, size.x, size.y, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+        var canvas = document.createElement("canvas");
+        canvas.width = size.x;
+        canvas.height = size.y;
+
+        var context = canvas.getContext("2d");
+        var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        imageData.data.set(pixels);
+        context.putImageData(imageData, 0, 0);
+
+        var base64url = canvas.toDataURL();
+
         gl.glp().messages.sendMessage(messageType.GET_TEXTURE, JSON.stringify({
             "index": index,
-            "pixels": Array.prototype.slice.call(pixels),
+            "base64url" : base64url,
             "texImage2DCalls": glpHelpers.getGLArgsList(gl, texture.texImage2DCalls),
             "texParameteriCalls": glpHelpers.getGLArgsList(gl, texture.texParameteriCalls),
             "width": size.x,
