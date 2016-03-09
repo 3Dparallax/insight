@@ -44,6 +44,13 @@ var glpFrameControl = function (gl, window) {
         return original.apply(context, arguments);
     }
 
+    var nextCall = function(call, originalSet, originalClear) {
+        call.timerId = originalSet.call(call.context, function() {
+            call.arguments[0]();
+            originalClear.call(call.context, call.timerId);
+        }, call.arguments[1]);
+    }
+
     var requestAnimationFrameCall = window.requestAnimationFrame;
     var cancelAnimationFrameCall = window.cancelAnimationFrame;
     var setIntervalCall = window.setInterval;
@@ -107,6 +114,14 @@ var glpFrameControl = function (gl, window) {
         if (paused) {
             if (requestFrameCall.arguments) {
                 requestAnimationFrameCall.apply(requestFrameCall.context, requestFrameCall.arguments);
+            }
+
+            if (intervalCall.arguments) {
+                nextCall(intervalCall, setIntervalCall, clearIntervalCall);
+            }
+
+            if (timeoutCall.arguments) {
+                nextCall(timeoutCall, setTimeoutCall, clearTimeoutCall);
             }
         }
     }
