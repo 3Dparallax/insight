@@ -99,6 +99,18 @@ body {
   background-color: rgb(57, 118, 225) !important;
   color: #FFF;
 }
+#buffer-list tr.active td {
+  background-color: rgb(57, 118, 225) !important;
+  color: #FFF;
+}
+#frame-buffer-list tr.active td {
+  background-color: rgb(57, 118, 225) !important;
+  color: #FFF;
+}
+#render-buffer-list tr.active td {
+  background-color: rgb(57, 118, 225) !important;
+  color: #FFF;
+}
 /* Program usage */
 #programUsageTableContainer {
   width: 50%;
