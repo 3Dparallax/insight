@@ -25,6 +25,11 @@ function displayBuffer(buffer) {
 }
 
 function updateBufferTable(bootstrapTableId, length, onRowClick) {
+    var bootstrapTableRows = $(bootstrapTableId + " > tbody");
+    if (bootstrapTableRows.length && bootstrapTableRows.children().length == length) {
+        return;
+    }
+
     var bufferData = [];
     for (var i = 0; i < length; i++) {
         var value = "buffer" + i;

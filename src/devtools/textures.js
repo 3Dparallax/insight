@@ -43,6 +43,10 @@ function displayTexture(texture) {
 }
 
 function updateTextureList(length) {
+    var bootstrapTableRows = $('#texture-list > tbody');
+    if (bootstrapTableRows.length && bootstrapTableRows.children().length == length) {
+        return;
+    }
 
     var textureData = [];
     for (var i = 0; i < length; i++) {
