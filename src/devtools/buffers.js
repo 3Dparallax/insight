@@ -14,29 +14,14 @@ function displayBuffer(buffer) {
     deletedDescription.innerHTML = buffer.deleted ? "Destroyed" : "Active";
     bufferParams.appendChild(deletedDescription);
 
-    var bufferDataTerm = document.createElement("dt");
-    bufferDataTerm.innerHTML = "bufferData";
-    bufferParams.appendChild(bufferDataTerm);
+    var bufferTerm = document.createElement("dt");
+    bufferTerm.innerHTML = "buffer";
+    bufferParams.appendChild(bufferTerm);
 
-    if (buffer.bufferDataCalls) {
-        for (var i = 0; i < buffer.bufferDataCalls.length; i++) {
-            var bufferDataDescription = document.createElement("dd");
-            bufferDataDescription.innerHTML = buffer.bufferDataCalls[i];
-            bufferParams.appendChild(bufferDataDescription);
-        }
-    }
+    var bufferDataDescription = document.createElement("dd");
+    bufferDataDescription.innerHTML = buffer.buffer;
+    bufferParams.appendChild(bufferDataDescription);
 
-    var bufferSubDataTerm = document.createElement("dt");
-    bufferSubDataTerm.innerHTML = "bufferSubData";
-    bufferParams.appendChild(bufferSubDataTerm);
-
-    if (buffer.bufferSubDataCalls) {
-        for (var i = 0; i < buffer.bufferSubDataCalls.length; i++) {
-            var bufferSubDataDescription = document.createElement("dd");
-            bufferSubDataDescription.innerHTML = buffer.bufferSubDataCalls[i];
-            bufferParams.appendChild(bufferSubDataDescription);
-        }
-    }
 }
 
 function updateBufferTable(bootstrapTableId, length, onRowClick) {

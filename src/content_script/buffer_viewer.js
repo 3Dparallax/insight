@@ -37,21 +37,25 @@ glpBufferViewer.prototype.unbindBuffer = function() {
 
 glpBufferViewer.prototype.bufferData = function(args) {
   if (this.boundBuffer != null && args != null) {
-    if (!this.boundBuffer.bufferDataCalls) {
-      this.boundBuffer.bufferDataCalls = [];
+
+    if (typeof args[1] == "number") {
+      this.boundBuffer.buffer = new ArrayBuffer(args[1]);
+    } else {
+      this.boundBuffer.buffer = args[1].slice();
     }
 
-    this.boundBuffer.bufferDataCalls.push(glpHelpers.getGLArgsString(this.gl, args));
   }
 }
 
 glpBufferViewer.prototype.bufferSubData = function(args) {
   if (this.boundBuffer != null && args != null) {
-    if (!this.boundBuffer.bufferSubDataCalls) {
-      this.boundBuffer.bufferSubDataCalls = [];
+
+    if (this.boundBuffer.buffer) {
+      for (var i = 0; i < args[2].length; i++) {
+        this.boundBuffer.buffer[args[1]+i] = args[2][i];
+      }
     }
 
-    this.boundBuffer.bufferSubDataCalls.push(glpHelpers.getGLArgsString(this.gl, args));
   }
 }
 
@@ -67,8 +71,7 @@ glpBufferViewer.prototype.getBuffer = function(index) {
   var buffer = this.buffers[index];
   this.gl.glp().messages.sendMessage(messageType.GET_BUFFER, JSON.stringify({
     "index" : index,
-    "bufferDataCalls" : buffer.bufferDataCalls ? Array.prototype.slice.call(buffer.bufferDataCalls) : [],
-    "bufferSubDataCalls" : buffer.bufferSubDataCalls ? Array.prototype.slice.call(buffer.bufferSubDataCalls) : [],
+    "buffer" : Array.prototype.slice.call(buffer.buffer),
     "deleted" : buffer.deleted,
   }));
 }
