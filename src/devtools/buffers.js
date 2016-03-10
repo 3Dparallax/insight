@@ -14,147 +14,68 @@ function displayBuffer(buffer) {
     deletedDescription.innerHTML = buffer.deleted ? "Destroyed" : "Active";
     bufferParams.appendChild(deletedDescription);
 
-    var bufferDataTerm = document.createElement("dt");
-    bufferDataTerm.innerHTML = "bufferData";
-    bufferParams.appendChild(bufferDataTerm);
+    var bufferTerm = document.createElement("dt");
+    bufferTerm.innerHTML = "buffer";
+    bufferParams.appendChild(bufferTerm);
 
-    if (buffer.bufferDataCalls) {
-        for (var i = 0; i < buffer.bufferDataCalls.length; i++) {
-            var bufferDataDescription = document.createElement("dd");
-            bufferDataDescription.innerHTML = buffer.bufferDataCalls[i];
-            bufferParams.appendChild(bufferDataDescription);
-        }
+    var bufferDataDescription = document.createElement("dd");
+    bufferDataDescription.innerHTML = buffer.buffer;
+    bufferParams.appendChild(bufferDataDescription);
+
+}
+
+function updateBufferTable(bootstrapTableId, length, onRowClick) {
+    var bootstrapTableRows = $(bootstrapTableId + " > tbody");
+    if (bootstrapTableRows.length && bootstrapTableRows.children().length == length) {
+        return;
     }
 
-    var bufferSubDataTerm = document.createElement("dt");
-    bufferSubDataTerm.innerHTML = "bufferSubData";
-    bufferParams.appendChild(bufferSubDataTerm);
-
-    if (buffer.bufferSubDataCalls) {
-        for (var i = 0; i < buffer.bufferSubDataCalls.length; i++) {
-            var bufferSubDataDescription = document.createElement("dd");
-            bufferSubDataDescription.innerHTML = buffer.bufferSubDataCalls[i];
-            bufferParams.appendChild(bufferSubDataDescription);
-        }
+    var bufferData = [];
+    for (var i = 0; i < length; i++) {
+        var value = "buffer" + i;
+        var element = { "bufferId" : value };
+        bufferData.push(element);
     }
+
+    if (length == 0) {
+        $(bootstrapTableId).bootstrapTable({});
+    } else {
+        $(bootstrapTableId).bootstrapTable("load", bufferData);
+    }
+
+    $(bootstrapTableId + " > tbody > tr").on("click", function(event) {
+        $(this).addClass("active").siblings().removeClass("active");
+
+        onRowClick($(this).index());
+    });
 }
 
 function updateBufferList(length) {
-    var bufferList = document.getElementById("buffers-list");
-
-    var elementsToAdd = length - bufferList.children.length;
-    if (elementsToAdd == 0) {
-        return;
-    }
-
-    var baseIndex = bufferList.children.length;
-    if (elementsToAdd < 0) {
-        bufferList.innerHTML = "";
-        elementsToAdd = length;
-        baseIndex = 0;
-    }
-
-    for (var i = 0; i < elementsToAdd; i++) {
-        var elementIndex = i + baseIndex;
-
-        var bufferElementA = document.createElement("a");
-        bufferElementA.href = "#";
-        bufferElementA.innerHTML = "buffer" + elementIndex;
-
-        var bufferElementLi = document.createElement("li");
-        bufferElementLi.id = elementIndex;
-        bufferElementLi.appendChild(bufferElementA);
-
-        bufferElementLi.onclick = function() {
-            sendMessage(messageType.GET_BUFFER, { "index": this.id });
-        };
-
-        bufferList.appendChild(bufferElementLi);
-    }
+    updateBufferTable("#buffer-list", length, function(idx) {
+        sendMessage(messageType.GET_BUFFER, { "index": idx });
+    });
 }
 
 function updateFrameBufferList(length) {
-    var bufferList = document.getElementById("frame-buffers-list");
-
-    var elementsToAdd = length - bufferList.children.length;
-    if (elementsToAdd == 0) {
-        return;
-    }
-
-    var baseIndex = bufferList.children.length;
-    if (elementsToAdd < 0) {
-        bufferList.innerHTML = "";
-        elementsToAdd = length;
-        baseIndex = 0;
-    }
-
-    for (var i = 0; i < elementsToAdd; i++) {
-        var elementIndex = i + baseIndex;
-
-        var bufferElementA = document.createElement("a");
-        bufferElementA.href = "#";
-        bufferElementA.innerHTML = "buffer" + elementIndex;
-
-        var bufferElementLi = document.createElement("li");
-        bufferElementLi.id = elementIndex;
-        bufferElementLi.appendChild(bufferElementA);
-
-        bufferElementLi.onclick = function() {
-            sendMessage(messageType.GET_FRAME_BUFFER, { "index": this.id });
-        };
-
-        bufferList.appendChild(bufferElementLi);
-    }
+    updateBufferTable("#frame-buffer-list", length, function(idx) {
+        sendMessage(messageType.GET_FRAME_BUFFER, { "index": idx });
+    });
 }
 
 function updateRenderBufferList(length) {
-    var bufferList = document.getElementById("render-buffers-list");
-
-    var elementsToAdd = length - bufferList.children.length;
-    if (elementsToAdd == 0) {
-        return;
-    }
-
-    var baseIndex = bufferList.children.length;
-    if (elementsToAdd < 0) {
-        bufferList.innerHTML = "";
-        elementsToAdd = length;
-        baseIndex = 0;
-    }
-
-    for (var i = 0; i < elementsToAdd; i++) {
-        var elementIndex = i + baseIndex;
-
-        var bufferElementA = document.createElement("a");
-        bufferElementA.href = "#";
-        bufferElementA.innerHTML = "buffer" + elementIndex;
-
-        var bufferElementLi = document.createElement("li");
-        bufferElementLi.id = elementIndex;
-        bufferElementLi.appendChild(bufferElementA);
-
-        bufferElementLi.onclick = function() {
-            sendMessage(messageType.GET_RENDER_BUFFER, { "index": this.id });
-        };
-
-        bufferList.appendChild(bufferElementLi);
-    }
+    updateBufferTable("#render-buffer-list", length, function(idx) {
+        sendMessage(messageType.GET_RENDER_BUFFER, { "index": idx });
+    });
 }
 
-function getBuffers(e) {
+document.getElementById("getBuffers").addEventListener("click", function getBuffers(e) {
     sendMessage(messageType.GET_BUFFERS, "");
-}
+});
 
-document.getElementById("getBuffers").addEventListener("click", getBuffers);
-
-function getFrameBuffers(e) {
+document.getElementById("getFrameBuffers").addEventListener("click", function(e) {
     sendMessage(messageType.GET_FRAME_BUFFERS, "");
-}
+});
 
-document.getElementById("getFrameBuffers").addEventListener("click", getFrameBuffers);
-
-function getRenderBuffers(e) {
+document.getElementById("getRenderBuffers").addEventListener("click", function(e) {
     sendMessage(messageType.GET_RENDER_BUFFERS, "");
-}
-
-document.getElementById("getRenderBuffers").addEventListener("click", getRenderBuffers);
+});
