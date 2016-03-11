@@ -14,6 +14,7 @@ files = [
   "call_stack.js",
   "histogram.js",
   "state_variables.js",
+  "shader_viewer.js",
   "fcn_bindings.js",
   "webgl_bind.js",
 ];

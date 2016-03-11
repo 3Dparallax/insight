@@ -109,3 +109,14 @@ glpMessages.prototype.sendStateVars = function(data) {
       "enumOptions": enumOptions
     })
 }
+
+glpMessages.prototype.getShaders = function(programId) {
+  var shaders = JSON.stringify(this.gl.glp().shaderViewer.getShaderSources(programId));
+  this.sendMessage(
+    messageType.SHADERS,
+    {
+      "programId" : programId,
+      "shaderSources" : shaders
+    }
+  );
+}

@@ -58,6 +58,7 @@ function bindWebGL() {
         modules.programUsageCounter = new glpProgramUsageCounter(this);
         modules.stateTracker = new glpStateTracker(this);
         modules.textureViewer = new glpTextureViewer(this);
+        modules.shaderViewer = new glpShaderViewer(this);
         _glpModuleInstances[this.__uuid] = modules;
         return modules;
     }
