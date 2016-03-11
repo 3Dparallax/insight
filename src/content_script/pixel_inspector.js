@@ -14,8 +14,8 @@ var glpPixelInspector = function (gl) {
   this.originalPrograms = {};
   this.locationMap = {};
   this.enabled = false;
-  this.FramebufferIsBound = false;
-  this.RenderbufferIsBound = false;
+  this.framebufferIsBound = false;
+  this.renderbufferIsBound = false;
 }
 
 /**
@@ -96,7 +96,7 @@ glpPixelInspector.prototype.applyUniform = function (uniform) {
  * @return {WebGLShader} Pixel Inspector Shader
  */
 glpPixelInspector.prototype.enable = function() {
-    if (this.FramebufferIsBound || this.RenderbufferIsBound) {
+    if (this.framebufferIsBound || this.renderbufferIsBound) {
       return;
     }
     this.blendProp = this.gl.getParameter(this.gl.BLEND);
@@ -151,14 +151,22 @@ glpPixelInspector.prototype.disable = function() {
     }
 }
 
+glpPixelInspector.prototype.bindFrameBuffer = function(enable) {
+  this.framebufferIsBound = !!enable;
+  this.toggleByBuffer(!!enable);
+}
+
+glpPixelInspector.prototype.bindRenderBuffer = function(enable) {
+  this.renderbufferIsBound = !!enable;
+  this.toggleByBuffer(!!enable);
+}
+
 glpPixelInspector.prototype.toggleByBuffer = function(enable) {
-  this.FramebufferIsBound = !!enable;
-  this.RenderbufferIsBound = !!enable;
   if (!this.enabled) {
     return;
   }
 
-  if (!this.FramebufferIsBound && !this.RenderbufferIsBound) {
+  if (!this.framebufferIsBound && !this.renderbufferIsBound) {
     this.enable();
   } else {
     this.disable();
