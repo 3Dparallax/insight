@@ -23,14 +23,15 @@ function (TabBar, Shaders, Profiles, StateView, Settings, Messages) {
         },
         render: function() {
             var tab;
+            var key = String(Math.random()); // TODO: Use a unique key to ensure refresh
             if (this.state.currentTab == 0) {
-                tab = <Shaders activeContext={this.props.activeContext}/>;
+                tab = <Shaders key={key} activeContext={this.props.activeContext}/>;
             } else if (this.state.currentTab == 1) {
-                tab = <Profiles activeContext={this.props.activeContext}/>;
+                tab = <Profiles key={key} activeContext={this.props.activeContext}/>;
             } else if (this.state.currentTab == 2) {
-                tab = <StateView activeContext={this.props.activeContext}/>;
+                tab = <StateView key={key} activeContext={this.props.activeContext}/>;
             } else {
-                tab = <Settings activeContext={this.props.activeContext}/>;
+                tab = <Settings key={key} activeContext={this.props.activeContext}/>;
             }
             return <div className="context">
                 <TabBar tabs={contextTabs} changeTab={this.changeTab} />

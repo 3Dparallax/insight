@@ -30,6 +30,7 @@ html, body, .main {
 .heading {
   font-size: 20px;
   font-weight: bold;
+  padding-bottom: 20px;
 }
 
 .context-container {
@@ -150,5 +151,14 @@ html, body, .main {
   padding: 20px;
 }
 .pixel-inspector div {
+  padding-bottom: 20px;
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+.settings div {
   padding-bottom: 20px;
 }

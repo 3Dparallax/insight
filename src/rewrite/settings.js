@@ -7,9 +7,11 @@ define([], function () {
             });
         },
         render: function() {
-            return <div>
-                        Settings Tab
-                        <button onClick={this.disableExtension}>Disable Extension</button>
+            return <div className="settings">
+                        <div className="heading">Settings</div>
+                        <div>
+                            Disable WebGL Insight&nbsp;&nbsp;<button onClick={this.disableExtension}>Disable</button>
+                        </div>
                    </div>;
         }
     });
