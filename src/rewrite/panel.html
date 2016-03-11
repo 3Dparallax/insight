@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>WebGL Insight</title>
+    <link rel="stylesheet" type="text/css" href="panel.css">
+    <script src="lib/react.js"></script>
+    <script src="lib/react-dom.js"></script>
+    <script src="lib/require.js"></script>
+    <script>
+      require.config({
+        'paths' : {
+          'JSXTransformer' : 'lib/JSXTransformer',
+          'text' : 'lib/text',
+          'jsx' : 'lib/jsx'
+        }
+      });
+      require(["jsx!main"]);
+    </script>
+  </head>
+  <body>
+    <div id="main"></div>
+  </body>
+</html>
