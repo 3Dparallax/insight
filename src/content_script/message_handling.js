@@ -74,6 +74,8 @@ window.addEventListener('message', function(event) {
     gl.glp().frameControl.pause();
   } else if (message.type == messageType.FRAME_CONTROL_NEXT_FRAME) {
     gl.glp().frameControl.nextFrame();
+  } else if (message.type == messageType.SHADERS) {
+    gl.glp().messages.getShaders(message.data);
   } else {
     console.error(message.type, message.data);
   }
