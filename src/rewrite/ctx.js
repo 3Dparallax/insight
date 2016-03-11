@@ -1,12 +1,12 @@
-tabs = [
-    "Inspector",
+contextTabs = [
+    "Shaders",
     "Profiles",
     "State",
     "Settings"
 ]
 
-define(["jsx!tab_bar", "jsx!inspector", "jsx!profiles", "jsx!state_view", "jsx!settings", "messages"],
-function (TabBar, Inspector, Profiles, StateView, Settings, Messages) {
+define(["jsx!tab_bar", "jsx!shaders", "jsx!profiles", "jsx!state_view", "jsx!settings", "messages"],
+function (TabBar, Shaders, Profiles, StateView, Settings, Messages) {
     var ctx = React.createClass({
         getInitialState: function() {
             return {"currentTab": 0}
@@ -24,7 +24,7 @@ function (TabBar, Inspector, Profiles, StateView, Settings, Messages) {
         render: function() {
             var tab;
             if (this.state.currentTab == 0) {
-                tab = <Inspector activeContext={this.props.activeContext}/>;
+                tab = <Shaders activeContext={this.props.activeContext}/>;
             } else if (this.state.currentTab == 1) {
                 tab = <Profiles activeContext={this.props.activeContext}/>;
             } else if (this.state.currentTab == 2) {
@@ -32,8 +32,8 @@ function (TabBar, Inspector, Profiles, StateView, Settings, Messages) {
             } else {
                 tab = <Settings activeContext={this.props.activeContext}/>;
             }
-            return <div>
-                <TabBar tabs={tabs} changeTab={this.changeTab} />
+            return <div className="context">
+                <TabBar tabs={contextTabs} changeTab={this.changeTab} />
                 <div className="tab-container">{tab}</div>
             </div>;
         }

@@ -7,9 +7,9 @@ define([], function () {
             });
         },
         render: function() {
-            return <div>
-                        The extension is currently disabled.
-                        <button onClick={this.enableExtension}>Enable Extension</button>
+            return <div className="center">
+                        <div className="heading">WebGL Insight is currently disabled</div>
+                        <button onClick={this.enableExtension}>Click to refresh page and enable</button>
                    </div>;
         }
     });
