@@ -10,7 +10,7 @@ define(["jsx!panel", "jsx!disabled_panel"], function (Panel, DisabledPanel) {
     },
     render: function() {
         var panel = this.state.enabled ? <Panel /> : <DisabledPanel />;
-        return <div>
+        return <div className="main">
             {panel}
         </div>
     }
@@ -18,6 +18,6 @@ define(["jsx!panel", "jsx!disabled_panel"], function (Panel, DisabledPanel) {
 
   ReactDOM.render(
     <Main />,
-    document.getElementById('main')
+    document.body
   );
 });

@@ -27,7 +27,7 @@ function (TabBar, Inspector, Profiles, StateView, Settings) {
             }
             return <div>
                 <TabBar tabs={tabs} changeTab={this.changeTab} />
-                {tab}
+                <div className="tab-container">{tab}</div>
             </div>;
         }
     });
