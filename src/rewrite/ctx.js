@@ -1,21 +1,33 @@
 tabs = [
-    "Program Usage",
-    "Program Duplicates",
-    "Call Stack",
-    "Call Histogram",
-    "Resources",
-    "States"
+    "Inspector",
+    "Profiles",
+    "State",
+    "Settings"
 ]
 
-define(["jsx!tab_bar"], function (TabBar) {
+define(["jsx!tab_bar", "jsx!inspector", "jsx!profiles", "jsx!state_view", "jsx!settings"],
+function (TabBar, Inspector, Profiles, StateView, Settings) {
     var ctx = React.createClass({
+        getInitialState: function() {
+            return {"currentTab": 0}
+        },
         changeTab: function(i) {
-            console.log("UP", i);
+            this.setState({currentTab: i});
         },
         render: function() {
+            var tab;
+            if (this.state.currentTab == 0) {
+                tab = <Inspector />;
+            } else if (this.state.currentTab == 1) {
+                tab = <Profiles />;
+            } else if (this.state.currentTab == 2) {
+                tab = <StateView />;
+            } else {
+                tab = <Settings />;
+            }
             return <div>
                 <TabBar tabs={tabs} changeTab={this.changeTab} />
-                <div>Content</div>
+                {tab}
             </div>;
         }
     });

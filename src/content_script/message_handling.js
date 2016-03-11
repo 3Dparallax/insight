@@ -74,6 +74,8 @@ window.addEventListener('message', function(event) {
     gl.glp().frameControl.pause();
   } else if (message.type == messageType.FRAME_CONTROL_NEXT_FRAME) {
     gl.glp().frameControl.nextFrame();
+  } else if (message.type == messageType.RELOAD_PAGE) {
+    window.location.reload();
   } else {
     console.error(message.type, message.data);
   }

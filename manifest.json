@@ -26,7 +26,8 @@
     "scripts": ["src/background_page/background_page_init.js"]
   },
   "permissions": [
-        "tabs"
+        "tabs",
+        "storage"
     ],
   "content_scripts": [
     {
