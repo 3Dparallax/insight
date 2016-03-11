@@ -14,7 +14,6 @@ function (TabBar, Inspector, Profiles, StateView, Settings, Messages) {
         componentWillMount: function() {
             Messages.sendMessage(this.props.activeContext, messageType.DISABLE_ALL, {});
             window.addEventListener('unload', function() {
-                Messages.sendMessage("", messageType.GET_CONTEXTS, {});
                 Messages.sendMessage(this.props.activeContext, messageType.DISABLE_ALL, {});
             }.bind(this))
         },
