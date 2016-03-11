@@ -14,6 +14,8 @@ var glpPixelInspector = function (gl) {
   this.originalPrograms = {};
   this.locationMap = {};
   this.enabled = false;
+  this.FramebufferIsBound = false;
+  this.RenderbufferIsBound = false;
 }
 
 /**
@@ -94,6 +96,9 @@ glpPixelInspector.prototype.applyUniform = function (uniform) {
  * @return {WebGLShader} Pixel Inspector Shader
  */
 glpPixelInspector.prototype.enable = function() {
+    if (this.FramebufferIsBound || this.RenderbufferIsBound) {
+      return;
+    }
     this.blendProp = this.gl.getParameter(this.gl.BLEND);
     this.gl.enable(this.gl.BLEND);
 
@@ -144,6 +149,20 @@ glpPixelInspector.prototype.disable = function() {
       this.gl.useProgram(newProgram);
       this.copyUniforms(currentProgram, newProgram);
     }
+}
+
+glpPixelInspector.prototype.toggleByBuffer = function(enable) {
+  this.FramebufferIsBound = !!enable;
+  this.RenderbufferIsBound = !!enable;
+  if (!this.enabled) {
+    return;
+  }
+
+  if (!this.FramebufferIsBound && !this.RenderbufferIsBound) {
+    this.enable();
+  } else {
+    this.disable();
+  }
 }
 
 /**
