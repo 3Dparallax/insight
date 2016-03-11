@@ -39,12 +39,9 @@ function bindWebGL() {
         }
     }
 
-    WebGLRenderingContext.prototype.glp = function() {
-        if (this.__uuid == null) {
+    WebGLRenderingContext.prototype.__newGLP = function() {
+        if (this.__uuid === undefined) {
             this.__uuid = glpHelpers.guid();
-        }
-        if (this.__uuid in _glpModuleInstances) {
-            return _glpModuleInstances[this.__uuid];
         }
 
         var modules = {}
@@ -61,6 +58,10 @@ function bindWebGL() {
         modules.shaderViewer = new glpShaderViewer(this);
         _glpModuleInstances[this.__uuid] = modules;
         return modules;
+    }
+
+    WebGLRenderingContext.prototype.glp = function() {
+        return _glpModuleInstances[this.__uuid] ? _glpModuleInstances[this.__uuid] : this.__newGLP();
     }
 }
 
