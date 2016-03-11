@@ -10,7 +10,6 @@ define(["jsx!panel", "jsx!disabled_panel"], function (Panel, DisabledPanel) {
     },
     render: function() {
         var panel = this.state.enabled ? <Panel /> : <DisabledPanel />;
-        console.log(this.state.enabled, panel);
         return <div>
             {panel}
         </div>

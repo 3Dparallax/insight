@@ -2,6 +2,7 @@ define([], function () {
     var DisabledPanel = React.createClass({
         enableExtension: function() {
             chrome.storage.sync.set({"glpEnabled": true}, function(e) {
+                chrome.devtools.inspectedWindow.reload();
                 window.location.reload();
             });
         },

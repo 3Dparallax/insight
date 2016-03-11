@@ -7,7 +7,7 @@ function _glpInit() {
 _glpInit();
 
 // Send contexts whenever page is loaded
-document.addEventListener("DOMContentLoaded", glpContexts.sendContexts);
+document.addEventListener("DOMContentLoaded", setTimeout(glpContexts.sendContexts, 500));
 
 /**
  * Receive messages from the devtools panel
@@ -74,8 +74,6 @@ window.addEventListener('message', function(event) {
     gl.glp().frameControl.pause();
   } else if (message.type == messageType.FRAME_CONTROL_NEXT_FRAME) {
     gl.glp().frameControl.nextFrame();
-  } else if (message.type == messageType.RELOAD_PAGE) {
-    window.location.reload();
   } else {
     console.error(message.type, message.data);
   }

@@ -5,4 +5,5 @@ require.config({
         'jsx' : 'lib/jsx'
     }
 });
-require(["jsx!main"]);
+
+require(["messages", "jsx!main"]);
