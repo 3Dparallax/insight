@@ -3,14 +3,16 @@ var glpProgramUsageCounter = function (gl) {
 
   this.enabled = false;
   this.usages = {}; // program.__uuid : usage
+  this.idToProgram = {} //program.__uuid : program
 }
 
 glpProgramUsageCounter.prototype.toggle = function(enabled) {
-	if (enabled) {
-		this.enabled = true;
-	} else {
-		this.enabled = false;
-	}
+  if (enabled) {
+    this.enabled = true;
+  } else {
+    this.enabled = false;
+  }
+  this.gl.glp().shaderViewer.toggle(enabled);
 }
 
 glpProgramUsageCounter.prototype.reset = function() {
@@ -23,6 +25,11 @@ glpProgramUsageCounter.prototype.addUsage = function(program) {
       this.usages[program.__uuid] += 1;
     } else {
       this.usages[program.__uuid] = 1;
+      this.idToProgram[program.__uuid] = program;
     }
   }
+}
+
+glpProgramUsageCounter.prototype.getProgram = function(prgoramUUid) {
+  return this.idToProgram[prgoramUUid];
 }

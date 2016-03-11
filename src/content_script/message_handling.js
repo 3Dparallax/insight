@@ -94,6 +94,8 @@ window.addEventListener('message', function(event) {
     gl.glp().frameControl.nextFrame();
   } else if (message.type == messageType.DISABLE_ALL) {
     disableContext(gl);
+  } else if (message.type == messageType.SHADERS) {
+    gl.glp().messages.getShaders(message.data);
   } else {
     console.error(message.type, message.data);
   }
