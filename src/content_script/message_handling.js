@@ -25,6 +25,24 @@ window.addEventListener('message', function(event) {
     return;
   }
 
+  // TODO: verify that all features are disabled
+  var disableContext = function(gl) {
+    gl.glp().messages.pixelInspectorToggle(false);
+    gl.glp().callStack.toggle(false);
+    gl.glp().histogram.toggle(false);
+    gl.glp().programUsageCounter.toggle(false);
+    gl.glp().duplicateProgramDetection.toggle(false);
+    gl.glp().stateTracker.toggle(false);
+  }
+
+  if (message.type == messageType.DISABLE_ALL_CONTEXTS) {
+    // Dev panel closed -- disable all features
+    var c = glpContexts.getWebGLContexts();
+    for (var i = 0; i < c.length; i++) {
+      disableContext(c[i]);
+    }
+  }
+
   var gl = glpContexts.getWebGLContext(message.activeContext);
   if (!gl) {
     return;
@@ -74,13 +92,9 @@ window.addEventListener('message', function(event) {
     gl.glp().frameControl.pause();
   } else if (message.type == messageType.FRAME_CONTROL_NEXT_FRAME) {
     gl.glp().frameControl.nextFrame();
+  } else if (message.type == messageType.DISABLE_ALL) {
+    disableContext(gl);
   } else {
     console.error(message.type, message.data);
-  }
-
-  if (message.data) {
-    console.log("Received " + message.type + " with " + message.data);
-  } else {
-    console.log("Received " + message.type);
   }
 });

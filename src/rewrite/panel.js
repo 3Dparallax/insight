@@ -1,4 +1,5 @@
-define(["jsx!ctx", "messages", "jsx!no_contexts", "jsx!context_bar_element"], function (Ctx, Messages, NoContexts, ContextBarElement) {
+define(["jsx!ctx", "messages", "jsx!no_contexts", "jsx!context_bar_element"],
+function (Ctx, Messages, NoContexts, ContextBarElement) {
     var Panel = React.createClass({
         getInitialState: function() {
             return {"contexts": [], "activeContext": null}
@@ -31,6 +32,12 @@ define(["jsx!ctx", "messages", "jsx!no_contexts", "jsx!context_bar_element"], fu
             }.bind(this));
             Messages.sendMessage("", messageType.GET_CONTEXTS, {});
         },
+        componentWillUpdate: function(nextProps, nextState) {
+            // If we're switch to a new context, disable the old context
+            if (this.state.activeContext != nextState.activeContext) {
+                Messages.sendMessage(this.state.activeContext, messageType.DISABLE_ALL, {});
+            }
+        },
         handleContextClick: function(uuid) {
             this.setState({"activeContext": uuid});
         },
@@ -50,7 +57,7 @@ define(["jsx!ctx", "messages", "jsx!no_contexts", "jsx!context_bar_element"], fu
             }
             return <div className="panel">
                 <div className="context-container">
-                    <Ctx />
+                    <Ctx activeContext={this.state.activeContext}/>
                 </div>
                 <div className="context-bar">
                     {this.getContextElements()}
