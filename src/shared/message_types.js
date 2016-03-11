@@ -25,5 +25,7 @@ var messageType = {
   FRAME_CONTROL_PLAY : "frameControlPlay",
   FRAME_CONTROL_PAUSE : "frameControlPause",
   FRAME_CONTROL_NEXT_FRAME : "frameControlNextFrame",
+  DISABLE_ALL : "disableAll",
+  DISABLE_ALL_CONTEXTS : "disableAllContexts",
   SHADERS : "programShaders",
 }

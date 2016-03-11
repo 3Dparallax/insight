@@ -82,7 +82,7 @@ var glpFcnBindings = {
         this.glp().duplicateProgramDetection.useProgramCalled(program);
 
         var retVal = original.apply(this, args);
-        if (program && !this.glp().pixelInspector.hasProgram(program)) {
+        if (program && this.glp().pixelInspector.enabled && !this.glp().pixelInspector.hasProgram(program)) {
           this.glp().pixelInspector.switchToProgram();
         }
 

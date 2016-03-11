@@ -7,7 +7,7 @@ function _glpInit() {
 _glpInit();
 
 // Send contexts whenever page is loaded
-document.addEventListener("DOMContentLoaded", glpContexts.sendContexts);
+document.addEventListener("DOMContentLoaded", setTimeout(glpContexts.sendContexts, 500));
 
 /**
  * Receive messages from the devtools panel
@@ -23,6 +23,24 @@ window.addEventListener('message', function(event) {
   if (message.type == messageType.GET_CONTEXTS) {
     glpContexts.sendContexts();
     return;
+  }
+
+  // TODO: verify that all features are disabled
+  var disableContext = function(gl) {
+    gl.glp().messages.pixelInspectorToggle(false);
+    gl.glp().callStack.toggle(false);
+    gl.glp().histogram.toggle(false);
+    gl.glp().programUsageCounter.toggle(false);
+    gl.glp().duplicateProgramDetection.toggle(false);
+    gl.glp().stateTracker.toggle(false);
+  }
+
+  if (message.type == messageType.DISABLE_ALL_CONTEXTS) {
+    // Dev panel closed -- disable all features
+    var c = glpContexts.getWebGLContexts();
+    for (var i = 0; i < c.length; i++) {
+      disableContext(c[i]);
+    }
   }
 
   var gl = glpContexts.getWebGLContext(message.activeContext);
@@ -74,15 +92,11 @@ window.addEventListener('message', function(event) {
     gl.glp().frameControl.pause();
   } else if (message.type == messageType.FRAME_CONTROL_NEXT_FRAME) {
     gl.glp().frameControl.nextFrame();
+  } else if (message.type == messageType.DISABLE_ALL) {
+    disableContext(gl);
   } else if (message.type == messageType.SHADERS) {
     gl.glp().messages.getShaders(message.data);
   } else {
     console.error(message.type, message.data);
-  }
-
-  if (message.data) {
-    console.log("Received " + message.type + " with " + message.data);
-  } else {
-    console.log("Received " + message.type);
   }
 });
