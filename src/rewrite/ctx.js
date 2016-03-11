@@ -19,6 +19,7 @@ function (TabBar, Inspector, Profiles, StateView, Settings, Messages) {
             }.bind(this))
         },
         changeTab: function(i) {
+            Messages.sendMessage(this.props.activeContext, messageType.DISABLE_ALL, {});
             this.setState({currentTab: i});
         },
         render: function() {

@@ -55,9 +55,10 @@ function (Ctx, Messages, NoContexts, ContextBarElement) {
             if (this.state.contexts.length == 0) {
                 return <NoContexts />;
             }
+            var contextKey = String(Math.random()); // TODO: Use a unique key to ensure context refreshes
             return <div className="panel">
                 <div className="context-container">
-                    <Ctx activeContext={this.state.activeContext}/>
+                    <Ctx key={contextKey} activeContext={this.state.activeContext}/>
                 </div>
                 <div className="context-bar">
                     {this.getContextElements()}
