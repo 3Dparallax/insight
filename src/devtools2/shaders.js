@@ -2,8 +2,9 @@ shaderTabs = [
     "Pixel Inspector",
     "Mip Map Inspector",
     "Depth Inspector",
+    "Frame Control",
 ]
-define(["jsx!pixel_inspector", "jsx!depth_inspector", "jsx!mipmap_inspector", "messages"], function (PixelInspector, DepthInspector, MipmapInspector, Messages) {
+define(["jsx!pixel_inspector", "jsx!depth_inspector", "jsx!mipmap_inspector", "jsx!frame_control", "messages"], function (PixelInspector, DepthInspector, MipmapInspector, FrameControl, Messages) {
     var Shaders = React.createClass({
         getInitialState: function() {
             return {selectedTab: 0};
@@ -37,6 +38,8 @@ define(["jsx!pixel_inspector", "jsx!depth_inspector", "jsx!mipmap_inspector", "m
                 tab = <MipmapInspector activeContext={this.props.activeContext} />
             } else if (this.state.selectedTab == 2) {
                 tab = <DepthInspector activeContext={this.props.activeContext} />
+            } else if (this.state.selectedTab == 3) {
+                tab = <FrameControl activeContext={this.props.activeContext} />
             }
             return <div className="split-view">
                 <div className="split-view-table">{this.getTabs()}</div>
