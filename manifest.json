@@ -8,6 +8,7 @@
     "src/content_script/buffer_viewer.js",
     "src/content_script/call_stack.js",
     "src/content_script/contexts.js",
+    "src/content_script/depth_inspector.js",
     "src/content_script/duplicate_program_detection.js",
     "src/content_script/fcn_bindings.js",
     "src/content_script/frame_control.js",

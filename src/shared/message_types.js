@@ -31,4 +31,5 @@ var messageType = {
   DISABLE_ALL : "disableAll",
   DISABLE_ALL_CONTEXTS : "disableAllContexts",
   SHADERS : "programShaders",
+  DEPTH_INSPECTOR : "depthInspector",
 }

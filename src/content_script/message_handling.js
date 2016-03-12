@@ -51,6 +51,8 @@ window.addEventListener('message', function(event) {
 
   if (message.type == messageType.PIXEL_INSPECTOR) {
     gl.glp().messages.pixelInspectorToggle(message.data.enabled);
+  } else if (message.type == messageType.DEPTH_INSPECTOR) {
+    gl.glp().messages.depthInspectorToggle(message.data.enabled, message.data.range);
   } else if (message.type == messageType.GET_CALL_STACK) {
     gl.glp().messages.sendCallStack(message.data);
   } else if (message.type == messageType.GET_CALL_STACK_DRAW) {
