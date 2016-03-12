@@ -96,6 +96,27 @@ glpMessages.prototype.pixelInspectorToggle = function(enabled) {
     this.gl.glp().pixelInspector.disable();
   }
 }
+
+/**
+ * Toggles the status of the mipmapViewer being enabled/disabled
+ * @param {Bool} Enabled
+ * @param {UUID} uuid of the texture
+ */
+glpMessages.prototype.mipmapViewerToggle = function(enabled, texture) {
+  if (enabled) {
+    this.gl.glp().mipmapViewer.enable(texture);
+  } else {
+    this.gl.glp().mipmapViewer.disable();
+  }
+}
+
+glpMessages.prototype.mipmapGetTextures = function() {
+  this.sendMessage(
+    messageType.MIPMAP_TEXTURES,
+    {
+      "textures": JSON.stringify(this.gl.glp().mipmapViewer.getTextureList())
+    })
+}
 /**
  * Toggles the status of the depth inspector being enabled/disabled
  * @param {Bool} Enabled
