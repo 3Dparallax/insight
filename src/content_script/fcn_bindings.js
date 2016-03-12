@@ -6,9 +6,8 @@ var glpFcnBindings = {
     default: function(original, args, name) {
       this.glp().callStack.push(name, args);
       this.glp().histogram.add(name);
-      var ret = original.apply(this, args);
       this.glp().callStack.update(name);
-      return ret;
+      return original.apply(this, args);
     },
     attachShader : function(original, args, name) {
       this.glp().pixelInspector.storeShaders(args[0], args[1]);
@@ -129,10 +128,13 @@ var glpFcnBindings = {
     },
     createTexture : function(original, args, name) {
       var texture = original.apply(this, args);
-      return this.glp().textureViewer.pushTexture(texture);
+      this.glp().textureViewer.pushTexture(texture);
+      this.glp().mipmapViewer.pushTextureKey(texture);
+      return texture;
     },
     bindTexture : function(original, args, name) {
       this.glp().textureViewer.bindTexture(args[0], args[1]);
+      this.glp().mipmapViewer.updateActiveTexture(args[1]);
       return original.apply(this, args);
     },
     unbindTexture : function(original, args, name) {
@@ -141,18 +143,21 @@ var glpFcnBindings = {
     },
     texImage2D : function(original, args, name) {
       this.glp().textureViewer.texImage2D(args);
+      this.glp().mipmapViewer.texImage2D(original, args);
       return original.apply(this, args);
     },
     texSubImage2D : function(original, args, name) {
-      this.glp().textureViewer.texSubImage2D(args);
+      this.glp().mipmapViewer.texSubImage2D(original, args);
       return original.apply(this, args);
     },
     texParameteri : function(original, args, name) {
       this.glp().textureViewer.texParameteri(args);
+      this.glp().mipmapViewer.storeFunctions(original, args);
       return original.apply(this, args);
     },
     texParameterf : function(original, args, name) {
       this.glp().textureViewer.texParameterf(args);
+      this.glp().mipmapViewer.storeFunctions(original, args);
       return original.apply(this, args);
     },
     createBuffer: function(original, args, name) {
@@ -290,6 +295,10 @@ var glpFcnBindings = {
       if (this.glp().stateTracker.freezeStates(this.FRONT_FACE, args[0])) {
         return;
       }
+      return original.apply(this, args);
+    },
+    generateMipmap: function(original, args, name) {
+      this.glp().mipmapViewer.generateMipmap(original, args);
       return original.apply(this, args);
     },
 }

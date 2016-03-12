@@ -20,6 +20,7 @@ function injectExtension() {
       "duplicate_program_detection.js",
       "pixel_inspector.js",
       "depth_inspector.js",
+      "mipmap_viewer.js",
       "texture_viewer.js",
       "contexts.js",
       "messages.js",
