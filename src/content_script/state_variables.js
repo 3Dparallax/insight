@@ -336,11 +336,20 @@ glpStateTracker.prototype.getEnumOptions = function() {
 }
 
 glpStateTracker.prototype.getStates = function() {
-  return {
-    boolStates: this.getBooleanStates(),
-    numberStates: this.getNumberStates(),
-    enumStates: this.getEnumStates(),
+  var boolStates = this.getBooleanStates();
+  var numberStates = this.getNumberStates();
+  var enumStates = this.getEnumStates();
+  var allStates = {};
+  for (var key in boolStates) {
+    allStates[key] = boolStates[key];
   }
+  for (var key in numberStates) {
+    allStates[key] = numberStates[key];
+  }
+  for (var key in enumStates) {
+    allStates[key] = enumStates[key];
+  }
+  return allStates;
 }
 
 // BLEND *                             GLboolean
@@ -368,16 +377,16 @@ glpStateTracker.prototype.getBooleanStates = function() {
   this.UNPACK_FLIP_Y_WEBGL = gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL);
   this.UNPACK_PREMULTIPLY_ALPHA_WEBGL = gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL);
   return {
-    BLEND: this.BLEND,
-    CULL_FACE: this.CULL_FACE,
-    DEPTH_TEST: this.DEPTH_TEST,
-    DEPTH_WRITEMASK: this.DEPTH_WRITEMASK,
-    DITHER: this.DITHER,
-    POLYGON_OFFSET_FILL: this.POLYGON_OFFSET_FILL,
-    SCISSOR_TEST: this.SCISSOR_TEST,
-    STENCIL_TEST: this.STENCIL_TEST,
-    UNPACK_FLIP_Y_WEBGL: this.UNPACK_FLIP_Y_WEBGL,
-    UNPACK_PREMULTIPLY_ALPHA_WEBGL: this.UNPACK_PREMULTIPLY_ALPHA_WEBGL,
+    BLEND: {value: this.BLEND, type:"bool"},
+    CULL_FACE: {value: this.CULL_FACE, type:"bool"},
+    DEPTH_TEST: {value: this.DEPTH_TEST, type:"bool"},
+    DEPTH_WRITEMASK: {value: this.DEPTH_WRITEMASK, type:"bool"},
+    DITHER: {value: this.DITHER, type:"bool"},
+    POLYGON_OFFSET_FILL: {value: this.POLYGON_OFFSET_FILL, type:"bool"},
+    SCISSOR_TEST: {value: this.SCISSOR_TEST, type:"bool"},
+    STENCIL_TEST: {value: this.STENCIL_TEST, type:"bool"},
+    UNPACK_FLIP_Y_WEBGL: {value: this.UNPACK_FLIP_Y_WEBGL, type:"bool"},
+    UNPACK_PREMULTIPLY_ALPHA_WEBGL: {value: this.UNPACK_PREMULTIPLY_ALPHA_WEBGL, type:"bool"},
   }
 }
 
@@ -442,35 +451,35 @@ glpStateTracker.prototype.getNumberStates = function() {
   this.SUBPIXEL_BITS = gl.getParameter(gl.SUBPIXEL_BITS);
   this.UNPACK_ALIGNMENT = gl.getParameter(gl.UNPACK_ALIGNMENT);
   return {
-    ALPHA_BITS: this.ALPHA_BITS,
-    BLUE_BITS: this.BLUE_BITS,
-    DEPTH_BITS: this.DEPTH_BITS,
-    DEPTH_CLEAR_VALUE: this.DEPTH_CLEAR_VALUE,
-    GREEN_BITS: this.GREEN_BITS,
-    LINE_WIDTH: this.LINE_WIDTH,
-    MAX_COMBINED_TEXTURE_IMAGE_UNITS: this.MAX_COMBINED_TEXTURE_IMAGE_UNITS,
-    MAX_CUBE_MAP_TEXTURE_SIZE: this.MAX_CUBE_MAP_TEXTURE_SIZE,
-    MAX_FRAGMENT_UNIFORM_VECTORS: this.MAX_FRAGMENT_UNIFORM_VECTORS,
-    MAX_RENDERBUFFER_SIZE: this.MAX_RENDERBUFFER_SIZE,
-    MAX_TEXTURE_IMAGE_UNITS: this.MAX_TEXTURE_IMAGE_UNITS,
-    MAX_TEXTURE_SIZE: this.MAX_TEXTURE_SIZE,
-    MAX_VARYING_VECTORS: this.MAX_VARYING_VECTORS,
-    MAX_VERTEX_ATTRIBS: this.MAX_VERTEX_ATTRIBS,
-    MAX_VERTEX_TEXTURE_IMAGE_UNITS: this.MAX_VERTEX_TEXTURE_IMAGE_UNITS,
-    MAX_VERTEX_UNIFORM_VECTORS: this.MAX_VERTEX_UNIFORM_VECTORS,
-    PACK_ALIGNMENT: this.PACK_ALIGNMENT,
-    POLYGON_OFFSET_FACTOR: this.POLYGON_OFFSET_FACTOR,
-    POLYGON_OFFSET_UNITS: this.POLYGON_OFFSET_UNITS,
-    RED_BITS: this.RED_BITS,
-    SAMPLE_BUFFERS: this.SAMPLE_BUFFERS,
-    SAMPLE_COVERAGE_VALUE: this.SAMPLE_COVERAGE_VALUE,
-    SAMPLES: this.SAMPLES,
-    STENCIL_BACK_REF: this.STENCIL_BACK_REF,
-    STENCIL_BITS: this.STENCIL_BITS,
-    STENCIL_CLEAR_VALUE: this.STENCIL_CLEAR_VALUE,
-    STENCIL_REF: this.STENCIL_REF,
-    SUBPIXEL_BITS: this.SUBPIXEL_BITS,
-    UNPACK_ALIGNMENT: this.UNPACK_ALIGNMENT,
+    ALPHA_BITS: {value: this.ALPHA_BITS, type: "number"},
+    BLUE_BITS: {value: this.BLUE_BITS, type: "number"},
+    DEPTH_BITS: {value: this.DEPTH_BITS, type: "number"},
+    DEPTH_CLEAR_VALUE: {value: this.DEPTH_CLEAR_VALUE, type: "number"},
+    GREEN_BITS: {value: this.GREEN_BITS, type: "number"},
+    LINE_WIDTH: {value: this.LINE_WIDTH, type: "number"},
+    MAX_COMBINED_TEXTURE_IMAGE_UNITS: {value: this.MAX_COMBINED_TEXTURE_IMAGE_UNITS, type: "number"},
+    MAX_CUBE_MAP_TEXTURE_SIZE: {value: this.MAX_CUBE_MAP_TEXTURE_SIZE, type: "number"},
+    MAX_FRAGMENT_UNIFORM_VECTORS: {value: this.MAX_FRAGMENT_UNIFORM_VECTORS, type: "number"},
+    MAX_RENDERBUFFER_SIZE: {value: this.MAX_RENDERBUFFER_SIZE, type: "number"},
+    MAX_TEXTURE_IMAGE_UNITS: {value: this.MAX_TEXTURE_IMAGE_UNITS, type: "number"},
+    MAX_TEXTURE_SIZE: {value: this.MAX_TEXTURE_SIZE, type: "number"},
+    MAX_VARYING_VECTORS: {value: this.MAX_VARYING_VECTORS, type: "number"},
+    MAX_VERTEX_ATTRIBS: {value: this.MAX_VERTEX_ATTRIBS, type: "number"},
+    MAX_VERTEX_TEXTURE_IMAGE_UNITS: {value: this.MAX_VERTEX_TEXTURE_IMAGE_UNITS, type: "number"},
+    MAX_VERTEX_UNIFORM_VECTORS: {value: this.MAX_VERTEX_UNIFORM_VECTORS, type: "number"},
+    PACK_ALIGNMENT: {value: this.PACK_ALIGNMENT, type: "number"},
+    POLYGON_OFFSET_FACTOR: {value: this.POLYGON_OFFSET_FACTOR, type: "number"},
+    POLYGON_OFFSET_UNITS: {value: this.POLYGON_OFFSET_UNITS, type: "number"},
+    RED_BITS: {value: this.RED_BITS, type: "number"},
+    SAMPLE_BUFFERS: {value: this.SAMPLE_BUFFERS, type: "number"},
+    SAMPLE_COVERAGE_VALUE: {value: this.SAMPLE_COVERAGE_VALUE, type: "number"},
+    SAMPLES: {value: this.SAMPLES, type: "number"},
+    STENCIL_BACK_REF: {value: this.STENCIL_BACK_REF, type: "number"},
+    STENCIL_BITS: {value: this.STENCIL_BITS, type: "number"},
+    STENCIL_CLEAR_VALUE: {value: this.STENCIL_CLEAR_VALUE, type: "number"},
+    STENCIL_REF: {value: this.STENCIL_REF, type: "number"},
+    SUBPIXEL_BITS: {value: this.SUBPIXEL_BITS, type: "number"},
+    UNPACK_ALIGNMENT: {value: this.UNPACK_ALIGNMENT, type: "number"},
   }
 }
 
@@ -522,28 +531,28 @@ glpStateTracker.prototype.getEnumStates = function() {
   this.UNPACK_COLORSPACE_CONVERSION_WEBGL =  glpHelpers.getGLEnumName(gl, gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL));
 
   return {
-    ACTIVE_TEXTURE: this.ACTIVE_TEXTURE,
-    BLEND_DST_ALPHA: this.BLEND_DST_ALPHA,
-    BLEND_DST_RGB: this.BLEND_DST_RGB,
-    BLEND_EQUATION_ALPHA: this.BLEND_EQUATION_ALPHA,
-    BLEND_EQUATION_RGB: this.BLEND_EQUATION_RGB,
-    BLEND_SRC_ALPHA: this.BLEND_SRC_ALPHA,
-    BLEND_SRC_RGB: this.BLEND_SRC_RGB,
-    CULL_FACE_MODE: this.CULL_FACE_MODE,
-    DEPTH_FUNC: this.DEPTH_FUNC,
-    FRONT_FACE: this.FRONT_FACE,
-    GENERATE_MIPMAP_HINT: this.GENERATE_MIPMAP_HINT,
-    IMPLEMENTATION_COLOR_READ_FORMAT: this.IMPLEMENTATION_COLOR_READ_FORMAT,
-    IMPLEMENTATION_COLOR_READ_TYPE: this.IMPLEMENTATION_COLOR_READ_TYPE,
-    STENCIL_BACK_FAIL: this.STENCIL_BACK_FAIL,
-    STENCIL_BACK_FUNC: this.STENCIL_BACK_FUNC,
-    STENCIL_BACK_PASS_DEPTH_FAIL: this.STENCIL_BACK_PASS_DEPTH_FAIL,
-    STENCIL_BACK_PASS_DEPTH_PASS: this.STENCIL_BACK_PASS_DEPTH_PASS,
-    STENCIL_FAIL: this.STENCIL_FAIL,
-    STENCIL_FUNC: this.STENCIL_FUNC,
-    STENCIL_PASS_DEPTH_FAIL: this.STENCIL_PASS_DEPTH_FAIL,
-    STENCIL_PASS_DEPTH_PASS: this.STENCIL_PASS_DEPTH_PASS,
-    UNPACK_COLORSPACE_CONVERSION_WEBGL: this.UNPACK_COLORSPACE_CONVERSION_WEBGL,
+    ACTIVE_TEXTURE: {value: this.ACTIVE_TEXTURE, type: "enum"},
+    BLEND_DST_ALPHA: {value: this.BLEND_DST_ALPHA, type: "enum"},
+    BLEND_DST_RGB: {value: this.BLEND_DST_RGB, type: "enum"},
+    BLEND_EQUATION_ALPHA: {value: this.BLEND_EQUATION_ALPHA, type: "enum"},
+    BLEND_EQUATION_RGB: {value: this.BLEND_EQUATION_RGB, type: "enum"},
+    BLEND_SRC_ALPHA: {value: this.BLEND_SRC_ALPHA, type: "enum"},
+    BLEND_SRC_RGB: {value: this.BLEND_SRC_RGB, type: "enum"},
+    CULL_FACE_MODE: {value: this.CULL_FACE_MODE, type: "enum"},
+    DEPTH_FUNC: {value: this.DEPTH_FUNC, type: "enum"},
+    FRONT_FACE: {value: this.FRONT_FACE, type: "enum"},
+    GENERATE_MIPMAP_HINT: {value: this.GENERATE_MIPMAP_HINT, type: "enum"},
+    IMPLEMENTATION_COLOR_READ_FORMAT: {value: this.IMPLEMENTATION_COLOR_READ_FORMAT, type: "enum"},
+    IMPLEMENTATION_COLOR_READ_TYPE: {value: this.IMPLEMENTATION_COLOR_READ_TYPE, type: "enum"},
+    STENCIL_BACK_FAIL: {value: this.STENCIL_BACK_FAIL, type: "enum"},
+    STENCIL_BACK_FUNC: {value: this.STENCIL_BACK_FUNC, type: "enum"},
+    STENCIL_BACK_PASS_DEPTH_FAIL: {value: this.STENCIL_BACK_PASS_DEPTH_FAIL, type: "enum"},
+    STENCIL_BACK_PASS_DEPTH_PASS: {value: this.STENCIL_BACK_PASS_DEPTH_PASS, type: "enum"},
+    STENCIL_FAIL: {value: this.STENCIL_FAIL, type: "enum"},
+    STENCIL_FUNC: {value: this.STENCIL_FUNC, type: "enum"},
+    STENCIL_PASS_DEPTH_FAIL: {value: this.STENCIL_PASS_DEPTH_FAIL, type: "enum"},
+    STENCIL_PASS_DEPTH_PASS: {value: this.STENCIL_PASS_DEPTH_PASS, type: "enum"},
+    UNPACK_COLORSPACE_CONVERSION_WEBGL: {value: this.UNPACK_COLORSPACE_CONVERSION_WEBGL, type: "enum"},
   }
 }
 
