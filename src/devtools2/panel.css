@@ -161,6 +161,7 @@ html, body, .main {
   flex-direction: column;
   flex: 1 0 auto;
   border-right:rgb(200, 200, 200) 1px solid;
+  min-width: 0;
 }
 .profile-table-column-element-header {
   background-color: rgb(238, 238, 238);
@@ -169,7 +170,14 @@ html, body, .main {
   font-weight: bold;
 }
 .profile-table-column-element {
-  padding: 20px 0 20px 0;
+  padding: 20px 10px 20px 10px;
   text-align: center;
   align-items: center;
+  height: 17px;
+}
+.profile-table-column-element-truncate {
+  max-width: 350px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

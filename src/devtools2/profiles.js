@@ -15,7 +15,7 @@ define(["messages", "jsx!profile_table"], function (Messages, ProfileTable) {
                 } else if (msg.type == messageType.CALL_STACK) {
                     newProfile = [2, msg.data.functionNames]
                 } else if (msg.type == messageType.CALL_STACK_DRAW) {
-                    newProfile = [3, JSON.parse(msg.data.functionNames)]
+                    newProfile = [3, msg.data.functionNames]
                 } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
                     newProfile = [4, JSON.parse(msg.data)];
                 }

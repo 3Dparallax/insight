@@ -1,11 +1,14 @@
 define([], function () {
     var ProfileTable = React.createClass({
-        getProfileColumn: function(data) {
+        getProfileColumn: function(data, truncate) {
             result = [];
             for (var i = 0; i < data.length; i++) {
                 var className = "profile-table-column-element";
                 if (i == 0) {
                     className += " profile-table-column-element-header";
+                }
+                if (truncate) {
+                    className += " profile-table-column-element-truncate"
                 }
                 el = <div className={className}>{data[i]}</div>
                 result.push(el);
@@ -44,7 +47,6 @@ define([], function () {
                     histogram[id] = [1, x]
                 }
             }
-            console.log(histogram);
 
             var sortList = []
             for (x in histogram) {
@@ -65,15 +67,55 @@ define([], function () {
             columns.push(this.getProfileColumn(occurences));
             return columns;
         },
+        getCallStackColumns: function(data) {
+            maxSize = 0;
+            for (var i=0; i<data.length; i++) {
+                arg = JSON.parse(data[i].args);
+                data[i].argsList = arg;
+                maxSize = Math.max(Object.keys(arg).length, maxSize);
+            }
+            var functionCall = ["Function Call"].concat(data.map(function(a) {return a.name}));
+            var time = ["Time"].concat(data.map(function(a) {return a.executionTime}));
+            var duration = ["Duration (μs)"].concat(data.map(function(a) {return a.time}));
+
+            var columns = [];
+            columns.push(this.getProfileColumn(functionCall));
+            columns.push(this.getProfileColumn(time));
+            columns.push(this.getProfileColumn(duration));
+
+            for (var i=0; i<maxSize; i++) {
+                args = ["Argument" + i].concat(data.map(function(a) {
+                    if (i <= (Object.keys(a).length - 1)) {
+                        val = a.argsList[String(i)];
+                        if (val && val.__uuid) {
+                            delete val["__uuid"];
+                        }
+                        return JSON.stringify(val);
+                    } else {
+                        return "";
+                    }
+                }));
+                columns.push(this.getProfileColumn(args, true));
+            }
+
+            return columns;
+        },
         render: function() {
             var type = this.props.profileData[0];
             var data = this.props.profileData[1];
             var columns = [];
-            // Program Usage Counts
             if (type == 0) {
+                // Program Usage Counts
                 columns = this.getProgamUsageCountColumns(data);
             } else if (type == 1) {
+                // Duplicate Program Usage
                 columns = this.getDuplicateProgramColumns(data);
+            } else if (type == 2) {
+                // Call Stack
+                columns = this.getCallStackColumns(data);
+            } else if (type == 3) {
+                // Call Stack Draw
+                columns = this.getCallStackColumns(data);
             }
             return <div className="profile-table">
                 {columns}
