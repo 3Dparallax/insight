@@ -86,6 +86,18 @@ glpMessages.prototype.pixelInspectorToggle = function(enabled) {
     this.gl.glp().pixelInspector.disable();
   }
 }
+/**
+ * Toggles the status of the depth inspector being enabled/disabled
+ * @param {Bool} Enabled
+ * @param {Object} {near: float, far: float}
+ */
+glpMessages.prototype.depthInspectorToggle = function(enabled, range) {
+  if (enabled) {
+    this.gl.glp().depthInspector.enable(range.near, range.far);
+  } else {
+    this.gl.glp().depthInspector.disable();
+  }
+}
 
 /**
  * Sends call state variable information to the panel

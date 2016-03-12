@@ -52,6 +52,7 @@ function bindWebGL() {
         modules.histogram = new glpHistogram(this);
         modules.messages = new glpMessages(this);
         modules.pixelInspector = new glpPixelInspector(this);
+        modules.depthInspector = new glpDepthInspector(this);
         modules.programUsageCounter = new glpProgramUsageCounter(this);
         modules.stateTracker = new glpStateTracker(this);
         modules.textureViewer = new glpTextureViewer(this);

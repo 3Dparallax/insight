@@ -12,6 +12,7 @@ var glpFcnBindings = {
     },
     attachShader : function(original, args, name) {
       this.glp().pixelInspector.storeShaders(args[0], args[1]);
+      this.glp().depthInspector.storeShaders(args[0], args[1]);
       return original.apply(this, args);
     },
     enable: function(original, args, name) {
@@ -71,6 +72,9 @@ var glpFcnBindings = {
         if (this.glp().pixelInspector.storeClearColorStates(args)) {
           return;
         }
+        if (this.glp().depthInspector.storeClearColorStates(args)) {
+          return;
+        }
         return original.apply(this, args);
     },
     useProgram: function(original, args, name) {
@@ -85,12 +89,16 @@ var glpFcnBindings = {
         if (program && !this.glp().pixelInspector.hasProgram(program)) {
           this.glp().pixelInspector.switchToProgram();
         }
+        if (program && !this.glp().depthInspector.hasProgram(program)) {
+          this.glp().depthInspector.switchToProgram();
+        }
 
         this.glp().programUsageCounter.addUsage(program);
 
         return retVal;
     },
     getUniform: function(original, args, name) {
+      args = this.glp().depthInspector.uniforms(args);
       args = this.glp().pixelInspector.uniforms(args);
       return original.apply(this, args);
     },
@@ -108,6 +116,13 @@ var glpFcnBindings = {
           return;
         }
         return this.glp().pixelInspector.setUniformLocation(program, n, location);
+      }
+      if (!(this.glp().depthInspector.hasUniformLocation(program, n))) {
+        var location = original.apply(this, args);
+        if (!location) {
+          return;
+        }
+        return this.glp().depthInspector.setUniformLocation(program, n, location);
       }
       return this.glp().pixelInspector.getUniformLocation(program, n);
     },
@@ -240,6 +255,7 @@ var glpFcnBindings = {
 
 var glpUniformFcn = function(original, args, name) {
   args = this.glp().pixelInspector.remapLocations(args);
+  args = this.glp().depthInspector.remapLocations(args);
   return original.apply(this, args);
 }
 var uniformMethods = [

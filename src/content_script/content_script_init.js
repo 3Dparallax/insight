@@ -7,6 +7,7 @@ files = [
   "program_usage_counter.js",
   "duplicate_program_detection.js",
   "pixel_inspector.js",
+  "depth_inspector.js",
   "texture_viewer.js",
   "contexts.js",
   "messages.js",
