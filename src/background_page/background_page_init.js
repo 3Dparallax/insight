@@ -34,6 +34,8 @@ chrome.runtime.onConnect.addListener(function (port) {
         var tabs = Object.keys(connections);
         for (var i=0, len=tabs.length; i < len; i++) {
           if (connections[tabs[i]] == port) {
+            // Disable all extension behaviour when the dev panel closes
+            chrome.tabs.sendMessage(Number(tabs[i]), {"source": "panel", "type": "disableAllContexts"}, null);
             delete connections[tabs[i]]
             break;
           }

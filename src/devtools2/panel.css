@@ -1,0 +1,183 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url("lib/fonts/opensans.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+body {
+  margin: 0px;
+  font-family: "Open Sans", "Helvetica Neue", "Lucida Grande", sans-serif;
+}
+html, body, .main {
+  height: 100%;
+}
+.panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.center {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.heading {
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+.container div {
+  padding-bottom: 20px;
+}
+
+.context-container {
+  flex: 1 0 auto;
+  display: flex;
+  width: 100%;
+}
+.context {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.tab-container {
+  flex: 1 0 auto;
+  display: flex;
+}
+
+.tab-bar {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
+  height: 30px;
+  width: 100%;
+
+  border-bottom: solid rgb(204, 204, 204) 1px;
+  background-color: rgb(238, 238, 238);
+}
+.tab-bar-element {
+  font-size : 12px;
+  color: #484848;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 30px;
+  line-height: 30px;
+}
+.tab-bar-element:hover {
+  background-color: rgb(225, 225, 225);
+  color: #222222;
+}
+.tab-bar-element-selected {
+  border-bottom: solid rgb(45, 134, 247) 1px;
+  color: #000000;
+}
+.context-bar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  height: 30px;
+  width: 100%;
+  background-color: rgb(238, 238, 238);
+  line-height: 30px;
+  border-top: solid rgb(204, 204, 204) 1px;
+}
+.context-bar-element {
+  font-size : 12px;
+  color: #484848;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 30px;
+  line-height: 30px;
+}
+.context-bar-element:hover {
+  color: #222222;
+  background-color: rgb(225, 225, 225);
+}
+.context-bar-element-selected {
+  color: white !important;
+  background-color: rgb(57, 118, 225) !important;
+  color: #000000;
+}
+
+.split-view {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: stretch;
+}
+.split-view-table {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(243, 243, 243);
+  border-right: solid rgb(204, 204, 204) 1px;
+}
+.split-view-table-element {
+  padding: 0 20px 0 20px;
+  height: 40px;
+  border-bottom: solid rgb(204, 204, 204) 1px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.split-view-table-element-text {
+  justify-content: flex-start;
+}
+.split-view-table-element-selected {
+  background-color: rgb(57, 118, 225);
+  color: white;
+}
+.split-view-content {
+  display: flex;
+  flex: 1 0;
+}
+
+.profile-table {
+  display: flex;
+  flex-direction: row;
+  flex: 1 0;
+}
+.profile-table-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  border-right:rgb(200, 200, 200) 1px solid;
+  min-width: 0;
+}
+.profile-table-column-element-header {
+  background-color: rgb(238, 238, 238);
+  border-top: rgb(200, 200, 200) 1px solid;
+  border-bottom: rgb(200, 200, 200) 1px solid;
+  font-weight: bold;
+}
+.profile-table-column-element {
+  padding: 20px 10px 20px 10px;
+  text-align: center;
+  align-items: center;
+  height: 17px;
+}
+.profile-table-column-element-truncate {
+  max-width: 350px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

@@ -23,12 +23,13 @@
     "src/content_script/texture_viewer.js",
     "src/content_script/webgl_bind.js"
   ],
-  "devtools_page": "src/devtools/devtools.html",
+  "devtools_page": "src/devtools2/devtools.html",
   "background": {
     "scripts": ["src/background_page/background_page_init.js"]
   },
   "permissions": [
-        "tabs"
+        "tabs",
+        "storage"
     ],
   "content_scripts": [
     {

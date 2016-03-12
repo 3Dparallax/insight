@@ -1,7 +1,9 @@
 var messageType = {
   PIXEL_INSPECTOR : "pixelInspector",
-  DEPTH_INSPECTOR : "depthInspector",
+  CALL_STACK: "callStack",
+  CALL_STACK_DRAW: "callStackDraw",
   GET_CALL_STACK : "getCallStack",
+  GET_CALL_STACK_DRAW : "getCallStackDraw",
   TOGGLE_CALL_STACK : "toggleCallStack",
   TOGGLE_FUNCTION_HISTOGRAM : "toggleFunctionHistogram",
   FUNCTION_HISTOGRAM : "functionHistogram",
@@ -26,5 +28,8 @@ var messageType = {
   FRAME_CONTROL_PLAY : "frameControlPlay",
   FRAME_CONTROL_PAUSE : "frameControlPause",
   FRAME_CONTROL_NEXT_FRAME : "frameControlNextFrame",
+  DISABLE_ALL : "disableAll",
+  DISABLE_ALL_CONTEXTS : "disableAllContexts",
   SHADERS : "programShaders",
+  DEPTH_INSPECTOR : "depthInspector",
 }
