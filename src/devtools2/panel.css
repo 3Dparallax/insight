@@ -45,7 +45,6 @@ html, body, .main {
   flex: 1 0 auto;
   display: flex;
   width: 100%;
-  overflow: scroll;
 }
 .context {
   flex: 1 0 auto;
@@ -123,13 +122,12 @@ html, body, .main {
   display: flex;
   flex-direction: row;
   width: 100%;
+  align-items: stretch;
 }
-
 .split-view-table {
   flex: 0 0 200px;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   background-color: rgb(243, 243, 243);
   border-right: solid rgb(204, 204, 204) 1px;
 }
@@ -148,7 +146,30 @@ html, body, .main {
   background-color: rgb(57, 118, 225);
   color: white;
 }
-
 .split-view-content {
   display: flex;
+  flex: 1 0;
+}
+
+.profile-table {
+  display: flex;
+  flex-direction: row;
+  flex: 1 0;
+}
+.profile-table-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  border-right:rgb(200, 200, 200) 1px solid;
+}
+.profile-table-column-element-header {
+  background-color: rgb(238, 238, 238);
+  border-top: rgb(200, 200, 200) 1px solid;
+  border-bottom: rgb(200, 200, 200) 1px solid;
+  font-weight: bold;
+}
+.profile-table-column-element {
+  padding: 20px 0 20px 0;
+  text-align: center;
+  align-items: center;
 }

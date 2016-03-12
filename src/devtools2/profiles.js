@@ -1,4 +1,4 @@
-define(["messages"], function (Messages) {
+define(["messages", "jsx!profile_table"], function (Messages, ProfileTable) {
     var Profiles = React.createClass({
         getInitialState: function() {
             return {selectedTab: 0, profiles: [], selectedProfile: 0, collectingProfile: false};
@@ -11,11 +11,13 @@ define(["messages"], function (Messages) {
                 if (msg.type == messageType.GET_PROGRAM_USAGE_COUNT) {
                     newProfile = [0, JSON.parse(msg.data.programUsageCount)];
                 } else if (msg.type == messageType.GET_DUPLICATE_PROGRAM_USAGE) {
-                    newProfile = [1, JSON.parse(msg.data.duplicateProgramUses)]
+                    newProfile = [1, JSON.parse(msg.data.duplicateProgramUses)];
                 } else if (msg.type == messageType.CALL_STACK) {
                     newProfile = [2, msg.data.functionNames]
+                } else if (msg.type == messageType.CALL_STACK_DRAW) {
+                    newProfile = [3, JSON.parse(msg.data.functionNames)]
                 } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
-                    newProfile = [3, msg.data]
+                    newProfile = [4, JSON.parse(msg.data)];
                 }
 
                 if (newProfile) {
@@ -37,6 +39,7 @@ define(["messages"], function (Messages) {
             programUsage = 0;
             duplicateProgramUsage = 0;
             callStack = 0;
+            drawCallStack = 0;
             histogram = 0;
             for (var i = 0; i < this.state.profiles.length; i++) {
                 var name = ""
@@ -46,6 +49,8 @@ define(["messages"], function (Messages) {
                     name = "Duplicate Program Usage " + duplicateProgramUsage++;
                 } else if (this.state.profiles[i][0] == 2) {
                     name = "Call Stack " + callStack++;
+                } else if (this.state.profiles[i][0] == 3) {
+                    name = "Recent Draw: Call Stack " + drawCallStack++;
                 } else {
                     name = "Histogram " + histogram++;
                 }
@@ -75,6 +80,11 @@ define(["messages"], function (Messages) {
             this.setState({selectedProfile: e.currentTarget.value});
         },
         collectProfileButtonClicked: function() {
+            // When collecting recent draw, it will return itself in 1000ms
+            if (this.state.collectingProfile && this.state.selectedProfile == 3) {
+                return;
+            }
+
             if (this.state.collectingProfile) {
                 this.setState({collectingProfile: false});
                 if (this.state.selectedProfile == 0) {
@@ -82,8 +92,8 @@ define(["messages"], function (Messages) {
                 } else if (this.state.selectedProfile == 1) {
                     Messages.sendMessage(this.props.activeContext, messageType.GET_DUPLICATE_PROGRAM_USAGE, "getDuplicateProgramUse");
                 } else if (this.state.selectedProfile == 2) {
-                    Messages.sendMessage(this.props.activeContext, messageType.GET_CALL_STACK, "bothCallStacks");
-                } else {
+                    Messages.sendMessage(this.props.activeContext, messageType.GET_CALL_STACK, null);
+                } else if (this.state.selectedProfile == 4) {
                     Messages.sendMessage(this.props.activeContext, messageType.FUNCTION_HISTOGRAM, {threshold: 10});
                 }
                 Messages.sendMessage(this.props.activeContext, messageType.DISABLE_ALL, {});
@@ -97,6 +107,11 @@ define(["messages"], function (Messages) {
                 Messages.sendMessage(this.props.activeContext, messageType.TOGGLE_DUPLICATE_PROGRAM_USAGE, {"enabled": true});
             } else if (this.state.selectedProfile == 2) {
                 Messages.sendMessage(this.props.activeContext, messageType.TOGGLE_CALL_STACK, {"enabled": true});
+            } else if (this.state.selectedProfile == 3) {
+                Messages.sendMessage(this.props.activeContext, messageType.TOGGLE_CALL_STACK, {"enabled": true});
+                setTimeout(function() {
+                    Messages.sendMessage(this.props.activeContext, messageType.GET_CALL_STACK_DRAW, null);
+                }.bind(this), 1000);
             } else {
                 Messages.sendMessage(this.props.activeContext, messageType.TOGGLE_FUNCTION_HISTOGRAM, {"enabled": true});
             }
@@ -120,6 +135,10 @@ define(["messages"], function (Messages) {
                 </div>
                 <div>
                     <input name="profiles" type="radio" disabled={this.state.collectingProfile} onChange={this.onProfileChange} value={3} checked={this.state.selectedProfile==3}/>
+                    Fetch Call Stack from Recent Draw Call
+                </div>
+                <div>
+                    <input name="profiles" type="radio" disabled={this.state.collectingProfile} onChange={this.onProfileChange} value={4} checked={this.state.selectedProfile==4}/>
                     View Call Histogram
                 </div>
                 <div>
@@ -128,12 +147,11 @@ define(["messages"], function (Messages) {
             </div>;
         },
         render: function() {
-            console.log(this.state.profiles);
             var tab;
             if (this.state.selectedTab == 0) {
                 tab = this.getProfileMain();
             } else {
-                tab = <div className="center">Hello World</div>
+                tab = <ProfileTable profileData={this.state.profiles[this.state.selectedTab - 1]} />
             }
             return <div className="split-view">
                 <div className="split-view-table">{this.getTabs()}</div>
