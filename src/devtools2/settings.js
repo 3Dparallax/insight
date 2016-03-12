@@ -7,7 +7,7 @@ define([], function () {
             });
         },
         render: function() {
-            return <div className="settings">
+            return <div className="container">
                         <div className="heading">Settings</div>
                         <div>
                             Disable WebGL Insight&nbsp;&nbsp;<button onClick={this.disableExtension}>Disable</button>

@@ -32,6 +32,14 @@ html, body, .main {
   font-weight: bold;
   padding-bottom: 20px;
 }
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+.container div {
+  padding-bottom: 20px;
+}
 
 .context-container {
   flex: 1 0 auto;
@@ -143,22 +151,4 @@ html, body, .main {
 
 .split-view-content {
   display: flex;
-}
-
-.pixel-inspector {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-.pixel-inspector div {
-  padding-bottom: 20px;
-}
-
-.settings {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-.settings div {
-  padding-bottom: 20px;
 }

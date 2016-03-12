@@ -5,7 +5,7 @@ define(["messages"], function (Messages) {
             Messages.sendMessage(this.props.activeContext, messageType.PIXEL_INSPECTOR, data);
         },
         render: function() {
-            return <div className="pixel-inspector">
+            return <div className="container">
                 <div className="heading">
                     Pixel Overwrite Inspector
                 </div>
