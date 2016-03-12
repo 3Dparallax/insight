@@ -1,8 +1,8 @@
 contextTabs = [
     "Shaders",
     "Profiles",
-    "Resources",
     "State",
+    "Resources",
     "Settings"
 ]
 

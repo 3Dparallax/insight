@@ -31,6 +31,7 @@ window.addEventListener('message', function(event) {
     gl.glp().callStack.toggle(false);
     gl.glp().histogram.toggle(false);
     gl.glp().programUsageCounter.toggle(false);
+    gl.glp().programUsageCounter.reset();
     gl.glp().duplicateProgramDetection.toggle(false);
     gl.glp().stateTracker.toggle(false);
   }
@@ -52,6 +53,8 @@ window.addEventListener('message', function(event) {
     gl.glp().messages.pixelInspectorToggle(message.data.enabled);
   } else if (message.type == messageType.GET_CALL_STACK) {
     gl.glp().messages.sendCallStack(message.data);
+  } else if (message.type == messageType.GET_CALL_STACK_DRAW) {
+    gl.glp().messages.sendCallStackDraw(message.data);
   } else if (message.type == messageType.TOGGLE_CALL_STACK) {
     gl.glp().callStack.toggle(message.data.enabled);
   } else if (message.type == messageType.TOGGLE_FUNCTION_HISTOGRAM) {

@@ -45,12 +45,22 @@ glpMessages.prototype.getTexture = function(index) {
 
 /**
  * Sends call stack information to the panel
- * @param {String} Type of stack requested
  */
-glpMessages.prototype.sendCallStack = function(type) {
+glpMessages.prototype.sendCallStack = function() {
   var callStack = this.gl.glp().callStack.getStack();
   this.sendMessage(
     messageType.CALL_STACK,
+    {"functionNames": callStack}
+  );
+}
+
+/**
+ * Sends call stack information for recent draw call to the panel
+ */
+glpMessages.prototype.sendCallStackDraw = function() {
+  var callStack = this.gl.glp().callStack.getStackDraw();
+  this.sendMessage(
+    messageType.CALL_STACK_DRAW,
     {"functionNames": callStack}
   );
 }

@@ -1,6 +1,9 @@
 var messageType = {
   PIXEL_INSPECTOR : "pixelInspector",
+  CALL_STACK: "callStack",
+  CALL_STACK_DRAW: "callStackDraw",
   GET_CALL_STACK : "getCallStack",
+  GET_CALL_STACK_DRAW : "getCallStackDraw",
   TOGGLE_CALL_STACK : "toggleCallStack",
   TOGGLE_FUNCTION_HISTOGRAM : "toggleFunctionHistogram",
   FUNCTION_HISTOGRAM : "functionHistogram",

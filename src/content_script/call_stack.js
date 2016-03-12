@@ -64,26 +64,29 @@ glpCallStack.prototype.toggle = function(enabled) {
  * @param {String} "mostRecentCalls" or "callsSinceDraw"
  */
 glpCallStack.prototype.getStack = function() {
-  var formatted = {};
-  formatted.mostRecentCalls = this.mostRecentCalls;
-  formatted.callsSinceDraw = this.callsSinceDraw;
+  mostRecentCalls = this.mostRecentCalls;
 
-  for (var i = 0; i < formatted.mostRecentCalls.length; i++) {
-    if (!formatted.mostRecentCalls[i].formatted) {
-      formatted.mostRecentCalls[i].name = formatted.mostRecentCalls[i].name + " (" + this.helper.getCallSiteDetails(formatted.mostRecentCalls[i].callSite) + ")";
-      formatted.mostRecentCalls[i].args = JSON.stringify(formatted.mostRecentCalls[i].args);
-      formatted.mostRecentCalls[i].formatted = true;
+  for (var i = 0; i < mostRecentCalls.length; i++) {
+    if (!mostRecentCalls[i].formatted) {
+      mostRecentCalls[i].name = mostRecentCalls[i].name + " (" + this.helper.getCallSiteDetails(mostRecentCalls[i].callSite) + ")";
+      mostRecentCalls[i].args = JSON.stringify(mostRecentCalls[i].args);
+      mostRecentCalls[i].formatted = true;
+    }
+ }
+ return mostRecentCalls;
+}
+
+glpCallStack.prototype.getStackDraw = function() {
+  callsSinceDraw = this.callsSinceDraw;
+
+  for (var i = 0; i < callsSinceDraw.length; i++) {
+    if (!callsSinceDraw[i].formatted) {
+      callsSinceDraw[i].name = callsSinceDraw[i].name + " (" + this.helper.getCallSiteDetails(callsSinceDraw[i].callSite) + ")";
+      callsSinceDraw[i].args = JSON.stringify(callsSinceDraw[i].args);
+      callsSinceDraw[i].formatted = true;
     }
   }
-
-  for (var i = 0; i < formatted.callsSinceDraw.length; i++) {
-    if (!formatted.callsSinceDraw[i].formatted) {
-      formatted.callsSinceDraw[i].name = formatted.callsSinceDraw[i].name + " (" + this.helper.getCallSiteDetails(formatted.callsSinceDraw[i].callSite) + ")";
-      formatted.callsSinceDraw[i].args = JSON.stringify(formatted.callsSinceDraw[i].args);
-      formatted.callsSinceDraw[i].formatted = true;
-    }
-  }
-  return formatted;
+  return callsSinceDraw;
 }
 
 /**
