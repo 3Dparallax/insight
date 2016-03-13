@@ -12,7 +12,6 @@ glpProgramUsageCounter.prototype.toggle = function(enabled) {
   } else {
     this.enabled = false;
   }
-  this.gl.glp().shaderViewer.toggle(enabled);
 }
 
 glpProgramUsageCounter.prototype.reset = function() {
