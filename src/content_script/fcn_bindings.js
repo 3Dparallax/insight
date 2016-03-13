@@ -89,7 +89,7 @@ var glpFcnBindings = {
         if (program && this.glp().pixelInspector.enabled && !this.glp().pixelInspector.hasProgram(program)) {
           this.glp().pixelInspector.switchToProgram();
         }
-        if (program && !this.glp().depthInspector.hasProgram(program)) {
+        if (program && this.glp().depthInspector.enabled && !this.glp().depthInspector.hasProgram(program)) {
           this.glp().depthInspector.switchToProgram();
         }
 
