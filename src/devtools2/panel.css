@@ -20,6 +20,10 @@ html, body, .main {
   align-items: stretch;
 }
 
+input, button {
+  cursor: pointer;
+}
+
 .center {
   height: 100%;
   display: flex;
@@ -76,16 +80,15 @@ html, body, .main {
   color: #484848;
   padding-left: 10px;
   padding-right: 10px;
-  height: 30px;
+  height: 28px;
   line-height: 30px;
+  cursor: pointer;
 }
 .tab-bar-element:hover {
   background-color: rgb(225, 225, 225);
-  color: #222222;
 }
 .tab-bar-element-selected {
-  border-bottom: solid rgb(45, 134, 247) 1px;
-  color: #000000;
+  border-bottom: solid #3B86E3 2px;
 }
 .context-bar {
   flex: 0 0 auto;
@@ -106,15 +109,14 @@ html, body, .main {
   padding-right: 10px;
   height: 30px;
   line-height: 30px;
+  cursor: pointer;
 }
 .context-bar-element:hover {
-  color: #222222;
   background-color: rgb(225, 225, 225);
 }
 .context-bar-element-selected {
   color: white !important;
   background-color: rgb(57, 118, 225) !important;
-  color: #000000;
 }
 
 .split-view {
@@ -138,6 +140,7 @@ html, body, .main {
   display: flex;
   align-items: center;
   text-align: center;
+  cursor: pointer;
 }
 .split-view-table-element-text {
   justify-content: flex-start;
@@ -174,6 +177,7 @@ html, body, .main {
   text-align: center;
   align-items: center;
   height: 17px;
+  cursor: pointer;
 }
 .profile-table-column-element-truncate {
   max-width: 350px;
