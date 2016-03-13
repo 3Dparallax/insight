@@ -1,4 +1,4 @@
-define(["messages", "jsx!profile_table"], function (Messages, ProfileTable) {
+define(["messages", "jsx!profile_table", "jsx!profile_graph"], function (Messages, ProfileTable, ProfileGraph) {
     var Profiles = React.createClass({
         getInitialState: function() {
             return {selectedTab: 0, profiles: [], selectedProfile: 0, collectingProfile: false};
@@ -17,7 +17,7 @@ define(["messages", "jsx!profile_table"], function (Messages, ProfileTable) {
                 } else if (msg.type == messageType.CALL_STACK_DRAW) {
                     newProfile = [3, msg.data.functionNames]
                 } else if (msg.type == messageType.FUNCTION_HISTOGRAM) {
-                    newProfile = [4, JSON.parse(msg.data)];
+                    newProfile = [4, msg.data];
                 }
 
                 if (newProfile) {
@@ -139,7 +139,7 @@ define(["messages", "jsx!profile_table"], function (Messages, ProfileTable) {
                 </div>
                 <div>
                     <input name="profiles" type="radio" disabled={this.state.collectingProfile} onChange={this.onProfileChange} value={4} checked={this.state.selectedProfile==4}/>
-                    View Call Histogram
+                    View Call Stack Histogram
                 </div>
                 <div>
                     <button onClick={this.collectProfileButtonClicked}>{buttonText}</button>
@@ -151,7 +151,12 @@ define(["messages", "jsx!profile_table"], function (Messages, ProfileTable) {
             if (this.state.selectedTab == 0) {
                 tab = this.getProfileMain();
             } else {
-                tab = <ProfileTable profileData={this.state.profiles[this.state.selectedTab - 1]} />
+                var profile = this.state.profiles[this.state.selectedTab - 1];
+                if (profile[0] == 4) {
+                    tab = <ProfileGraph profileData={profile} />
+                } else {
+                    tab = <ProfileTable profileData={profile} />
+                }
             }
             return <div className="split-view">
                 <div className="split-view-table">{this.getTabs()}</div>

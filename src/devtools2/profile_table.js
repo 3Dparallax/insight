@@ -24,7 +24,7 @@ define([], function () {
                 sortList.push({"value": data[x], "key": x});
             }
             sortList.sort(function(a, b) {
-                return a.value > b.value;
+                return a.value - b.value;
             });
 
             var programs = ["Programs"].concat(sortList.map(function(a) {return a.key}));
@@ -53,7 +53,7 @@ define([], function () {
                 sortList.push({"value": histogram[x][0], "key": histogram[x][1]});
             }
             sortList.sort(function(a, b) {
-                return a.value > b.value;
+                return a.value - b.value;
             });
 
             var programId = ["Program ID"].concat(sortList.map(function(a) {return a.key.programId}));
