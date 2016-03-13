@@ -1,4 +1,5 @@
 resourceTabs = [
+    "Resources",
     "Textures",
     "Buffers",
     "Frames Buffers",
@@ -100,31 +101,39 @@ define(["messages"], function (Messages) {
             return tabResult;
         },
         render: function() {
-            var resourceName = resourceNames[this.state.selectedTab];
+            var resourceName = resourceNames[this.state.selectedTab - 1];
             var length = 0;
             switch (this.state.selectedTab) {
-                case 0:
+                case 1:
                     length = this.state.textures;
                     break;
-                case 1:
+                case 2:
                     length = this.state.buffers;
                     break;
-                case 2:
+                case 3:
                     length = this.state.frameBuffers;
                     break;
-                case 3:
+                case 4:
                     length = this.state.renderBuffers;
                     break;
             }
 
-            var render = <div className="split-view">
-                <div className="split-view-table">{this.getBufferList(resourceName, length)}</div>
-                <div className="split-view-content">
-                    {JSON.stringify(this.state.activeContext)}
-                </div>
-            </div>;
-            if (length == 0) {
-                render = <div clasName="center">No resources detected</div>;
+            var render;
+            if (this.state.selectedTab == 0) {
+                render = <div className="container">
+                    <div className="heading">Resources</div>
+                    <div>Resources</div>
+                </div>;
+            } else {
+                render = <div className="split-view">
+                            <div className="split-view-table">{this.getBufferList(resourceName, length)}</div>
+                            <div className="split-view-content">
+                                {JSON.stringify(this.state.activeContext)}
+                            </div>
+                        </div>;
+                if (length == 0) {
+                    render = <div clasName="center">No resources detected</div>;
+                }
             }
 
             return <div className="split-view">
