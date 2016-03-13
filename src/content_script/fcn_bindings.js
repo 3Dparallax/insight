@@ -105,6 +105,7 @@ var glpFcnBindings = {
     createProgram: function(original, args, name) {
       var program = original.apply(this, args);
       program.__uuid = glpHelpers.guid();
+      this.glp().shaderViewer.addProgram(program);
       return program;
     },
     getUniformLocation: function(original, args, name) {

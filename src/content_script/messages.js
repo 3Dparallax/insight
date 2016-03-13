@@ -132,13 +132,23 @@ glpMessages.prototype.sendStateVars = function(data) {
     })
 }
 
-glpMessages.prototype.getShaders = function(programId) {
-  var shaders = JSON.stringify(this.gl.glp().shaderViewer.getShaderSources(programId));
+glpMessages.prototype.getShaders = function() {
+  shaders = []
+  var programs = this.gl.glp().shaderViewer.programIDs;
+  for (var i=0; i<programs.length; i++) {
+    var sources = this.gl.glp().shaderViewer.getShaderSources(programs[i]);
+    if (sources.length == 0) {
+      continue;
+    }
+
+    shaders.push({
+      "programId" : programs[i],
+      "shaderSources" : sources
+    });
+  }
+
   this.sendMessage(
     messageType.SHADERS,
-    {
-      "programId" : programId,
-      "shaderSources" : shaders
-    }
+    JSON.stringify(shaders)
   );
 }

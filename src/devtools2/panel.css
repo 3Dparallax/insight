@@ -181,3 +181,16 @@ html, body, .main {
   white-space: nowrap;
   overflow: hidden;
 }
+
+.program-container {
+  flex: 1;
+  width: 100%;
+}
+.program-table {
+  display: flex;
+  flex-direction: column;
+}
+.program-element {
+  word-wrap: break-all;
+  padding: 0px 20px 0px 20px;
+}
