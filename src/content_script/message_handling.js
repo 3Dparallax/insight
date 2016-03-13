@@ -35,6 +35,7 @@ window.addEventListener('message', function(event) {
     gl.glp().duplicateProgramDetection.toggle(false);
     gl.glp().stateTracker.toggle(false);
     gl.glp().messages.depthInspectorToggle(false, null);
+    gl.glp().frameControl.play();
   }
 
   if (message.type == messageType.DISABLE_ALL_CONTEXTS) {
