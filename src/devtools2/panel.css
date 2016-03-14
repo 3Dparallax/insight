@@ -203,3 +203,14 @@ input, button {
   word-wrap: break-all;
   padding: 0px 20px 0px 20px;
 }
+
+.resource-container {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(238, 238, 238);
+}
+.resource-container img {
+  margin: 20px;
+  text-align: center;
+  background: url("../../static/checkerboard-512x512.png");
+}

@@ -45,11 +45,37 @@ helpers.getGLArgsString = function(gl, args) {
 }
 
 helpers.getGLArgsList = function(gl, calls) {
-  var argsList = [];
-  for (var i = 0; i < calls.length; i++) {
-    argsList.push(this.getGLArgsString(gl, calls[i]));
+  if (calls) {
+    var argsList = [];
+    for (var i = 0; i < calls.length; i++) {
+      argsList.push(this.getGLArgsString(gl, calls[i]));
+    }
+    return argsList;
   }
-  return argsList;
+  return null;
+}
+
+helpers.getTextureSize = function(texture) {
+    var size = {};
+    size.width = 16;
+    size.height = 16;
+
+    if (texture.texImage2DCalls) {
+        for (var i = 0; i < texture.texImage2DCalls.length; i++) {
+            var args = texture.texImage2DCalls[i];
+            if (args[1] == 0) {
+                if (args.length == 9) {
+                    size.width = Math.max(args[3], size.width);
+                    size.height = Math.max(args[4], size.height);
+                } else if (args[5]) {
+                    size.width = Math.max(args[5].width, size.width);
+                    size.height = Math.max(args[5].height, size.height);
+                }
+            }
+        }
+    }
+
+    return size;
 }
 
 return helpers;

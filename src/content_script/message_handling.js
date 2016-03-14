@@ -85,8 +85,12 @@ window.addEventListener('message', function(event) {
     gl.glp().bufferViewer.getBuffer(message.data.index);
   } else if (message.type == messageType.GET_BUFFERS) {
     gl.glp().bufferViewer.getBuffers();
+  } else if (message.type == messageType.GET_FRAME_BUFFER) {
+    gl.glp().bufferViewer.getFrameBuffer(message.data.index);
   } else if (message.type == messageType.GET_FRAME_BUFFERS) {
     gl.glp().bufferViewer.getFrameBuffers();
+  } else if (message.type == messageType.GET_RENDER_BUFFER) {
+    gl.glp().bufferViewer.getRenderBuffer(message.data.index);
   } else if (message.type == messageType.GET_RENDER_BUFFERS) {
     gl.glp().bufferViewer.getRenderBuffers();
   } else if (message.type == messageType.STATE_VARS) {
