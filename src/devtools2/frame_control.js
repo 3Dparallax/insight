@@ -27,7 +27,7 @@ define(["messages"], function (Messages) {
                     Frame Control
                 </div>
                 <div>
-                    Detects how how many times a pixel has been drawn. The color ranges from green to red, red being drawn multiple times while green been drawn only on clear.
+                    Pauses and controls animated frames.
                 </div>
                 <div>{button}&nbsp;&nbsp;<button onClick={this.nextFrame}>Next Frame</button>
                 </div>

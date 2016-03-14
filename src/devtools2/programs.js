@@ -44,7 +44,7 @@ define(["messages", "jsx!program"], function (Messages, Program) {
         getProgramMain: function() {
             return <div className="container">
                 <div className="heading">Programs</div>
-                <div>Something something view programs</div>
+                <div>Here, you can view all programs (active and inactive) in the application. Each program consists of an ID, vertex shader, and fragment shader.</div>
             </div>;
         },
         render: function() {

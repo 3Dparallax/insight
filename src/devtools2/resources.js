@@ -311,7 +311,11 @@ define(["messages"], function (Messages) {
             if (this.state.selectedTab == 0) {
                 render = <div className="container">
                     <div className="heading">Resources</div>
-                    <div>Resources</div>
+                    <div>View textures, buffers, frame buffers, and render buffers.</div>
+                    <div><b>Textures</b> - shows a preview of the textures used in the application and the associated creation call(s).</div>
+                    <div><b>Buffers</b> - shows the buffer information and whether it has been deleted.</div>
+                    <div><b>Frame Buffer</b> - shows a preview of the frame buffer, whether it has been deleted, and the associated call(s).</div>
+                    <div><b>Render Buffer</b> - shows whether it has been deleted, the status, and the associated call(s).</div>
                 </div>;
             } else {
                 render = <div className="split-view">

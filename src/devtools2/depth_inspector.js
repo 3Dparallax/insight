@@ -28,7 +28,8 @@ define(["messages"], function (Messages) {
                     Far:&nbsp;<input ref="depthInspectorFar" type="number" defaultValue="1000" onChange={this.toggleDepthInspector} />
                 </div>
                 <div>
-                    Hint: If only white is displayed then the <b>far</b> value may be too small.  Likewise, if only black is displayed then the <b>far</b> value may be too large.
+                    Hint: The depth color is interpolated between the near and far value. If only white is displayed, then the far value may be too small. Likewise, if only black is displayed then the far and/or near value may be too large.
+                    A good strategy to determine the right near and far values for your application is to start with your near and far clipping planes, and adjust accordingly.
                 </div>
             </div>;
         }
