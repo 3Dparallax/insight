@@ -57,6 +57,7 @@ function bindWebGL() {
         modules.stateTracker = new glpStateTracker(this);
         modules.textureViewer = new glpTextureViewer(this);
         modules.shaderViewer = new glpShaderViewer(this);
+        modules.mipmapViewer = new glpMipmapViewer(this);
         _glpModuleInstances[this.__uuid] = modules;
         return modules;
     }

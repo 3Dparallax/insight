@@ -55,6 +55,10 @@ window.addEventListener('message', function(event) {
     gl.glp().messages.pixelInspectorToggle(message.data.enabled);
   } else if (message.type == messageType.DEPTH_INSPECTOR) {
     gl.glp().messages.depthInspectorToggle(message.data.enabled, message.data.range);
+  } else if (message.type == messageType.ENABLE_MIPMAP_TEXTURE) {
+    gl.glp().messages.mipmapViewerToggle(message.data.enabled, message.data.texture);
+  } else if (message.type == messageType.MIPMAP_TEXTURES) {
+    gl.glp().messages.mipmapGetTextures();
   } else if (message.type == messageType.GET_CALL_STACK) {
     gl.glp().messages.sendCallStack(message.data);
   } else if (message.type == messageType.GET_CALL_STACK_DRAW) {
