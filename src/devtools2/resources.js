@@ -54,11 +54,6 @@ define(["messages"], function (Messages) {
         switchTab: function(i) {
             Messages.sendMessage(this.props.activeContext, messageType.DISABLE_ALL, {});
             this.setState({selectedTab: i, selectedResource:0, activeResource: null});
-
-            Messages.sendMessage(this.props.activeContext, messageType.GET_TEXTURES, {});
-            Messages.sendMessage(this.props.activeContext, messageType.GET_BUFFERS, {});
-            Messages.sendMessage(this.props.activeContext, messageType.GET_FRAME_BUFFERS, {});
-            Messages.sendMessage(this.props.activeContext, messageType.GET_RENDER_BUFFERS, {});
         },
         switchResource: function(i) {
             this.setState({selectedResource: i});
@@ -115,40 +110,76 @@ define(["messages"], function (Messages) {
 
                     var resource = this.state.activeResource;
                     var source = resource.source;
+                    var el;
 
                     if (source.imgSrc) {
-                        resourceView.push(<div className="resource-container">
-                            <img src={source.imgSrc} height={source.height} width={source.width}></img>
-                        </div>);
+                        el = <div className="container">
+                            <div className="resource-img-container">
+                                <img src={source.imgSrc} height={source.height} width={source.width}></img>
+                            </div>
+                        </div>;
+                        resourceView.push(el);
                     } else if (source.videoSrc) {
-                        resourceView.push(<a href={source.videoSrc} target="_blank">{source.videoSrc}</a>);
+                        el = <div className="container">
+                            <div className="heading">Video</div>
+                            <div><a href={source.videoSrc} target="_blank">{source.videoSrc}</a></div>
+                        </div>;
+                        resourceView.push(el);
                     } else {
                         resourceView.push(<div>{JSON.stringify(source.arraySrc)}</div>);
                     }
 
                     if (resource.texImage2DCalls) {
-                        resourceView.push(<div>texImage2D</div>);
-                        for (var i = 0; i < resource.texImage2DCalls.length; i++) {
-                            resourceView.push(<div>{resource.texImage2DCalls[i]}</div>);
-                        }
+                        el = <div className="container">
+                            <div className="heading">texImage2D</div>
+                            <ul>
+                            {
+                                resource.texImage2DCalls.map(function(call) {
+                                    return <li>{call}</li>
+                                })
+                            }
+                            </ul>
+                        </div>;
+                        resourceView.push(el);
                     }
                     if (resource.texSubImage2DCalls) {
-                        resourceView.push(<div>texSubImage2DCalls</div>);
-                        for (var i = 0; i < resource.texSubImage2DCalls.length; i++) {
-                            resourceView.push(<div>{resource.texSubImage2DCalls[i]}</div>);
-                        }
+                        el = <div className="container">
+                            <div className="heading">texSubImage2D</div>
+                            <ul>
+                            {
+                                resource.texSubImage2DCalls.map(function(call) {
+                                    return <li>{call}</li>
+                                })
+                            }
+                            </ul>
+                        </div>;
+                        resourceView.push(el);
                     }
                     if (resource.texParameteriCalls) {
-                        resourceView.push(<div>texParameteriCalls</div>);
-                        for (var i = 0; i < resource.texParameteriCalls.length; i++) {
-                            resourceView.push(<div>{resource.texParameteriCalls[i]}</div>);
-                        }
+                        el = <div className="container">
+                            <div className="heading">texParameteri</div>
+                            <ul>
+                            {
+                                resource.texParameteriCalls.map(function(call) {
+                                    return <li>{call}</li>
+                                })
+                            }
+                            </ul>
+                        </div>;
+                        resourceView.push(el);
                     }
                     if (resource.texParameterfCalls) {
-                        resourceView.push(<div>texParameterfCalls</div>);
-                        for (var i = 0; i < resource.texParameterfCalls.length; i++) {
-                            resourceView.push(<div>{resource.texParameterfCalls[i]}</div>);
-                        }
+                        el = <div className="container">
+                            <div className="heading">texParameterf</div>
+                            <ul>
+                            {
+                                resource.texParameterfCalls.map(function(call) {
+                                    return <li>{call}</li>
+                                })
+                            }
+                            </ul>
+                        </div>;
+                        resourceView.push(el);
                     }
 
                 } else if (this.state.selectedTab == 2) {
@@ -156,8 +187,17 @@ define(["messages"], function (Messages) {
                     var resource = this.state.activeResource;
                     var source = resource.source;
 
-                    resourceView.push(<div>{JSON.stringify(source.arraySrc)}</div>);
-                    resourceView.push(<div>Deleted: {source.deleted.toString()}</div>);
+                    el = <div className="container">
+                        <div className="heading">Buffer</div>
+                        <div>{JSON.stringify(source.arraySrc)}</div>
+                    </div>;
+                    resourceView.push(el);
+
+                    el = <div className="container">
+                        <div className="heading">Buffer Deleted</div>
+                        <div>{source.deleted.toString()}</div>
+                    </div>;
+                    resourceView.push(el);
 
                 } else if (this.state.selectedTab == 3) {
 
@@ -165,45 +205,83 @@ define(["messages"], function (Messages) {
                     var source = resource.source;
 
                     if (source.imgSrc) {
-                        resourceView.push(<div className="resource-container">
-                            <img src={source.imgSrc} height={source.height} width={source.width}></img>
-                        </div>);
+                        el = <div className="container">
+                            <div className="resource-img-container">
+                                <img src={source.imgSrc} height={source.height} width={source.width}></img>
+                            </div>
+                        </div>;
+                        resourceView.push(el);
                     }
 
-                    resourceView.push(<div>Deleted: {source.deleted.toString()}</div>);
+                    el = <div className="container">
+                        <div className="heading">Frame Buffer Deleted</div>
+                        <div>{source.deleted.toString()}</div>
+                    </div>;
+                    resourceView.push(el);
 
                     if (resource.framebufferRenderbufferCalls) {
-                        resourceView.push(<div>framebufferRenderbufferCalls</div>);
-                        for (var i = 0; i < resource.framebufferRenderbufferCalls.length; i++) {
-                            resourceView.push(<div>{resource.framebufferRenderbufferCalls[i]}</div>);
-                        }
+                        el = <div className="container">
+                            <div className="heading">framebufferRenderbuffer</div>
+                            <ul>
+                            {
+                                resource.framebufferRenderbufferCalls.map(function(call) {
+                                    return <li>{call}</li>
+                                })
+                            }
+                            </ul>
+                        </div>;
+                        resourceView.push(el);
                     }
                     if (resource.framebufferTexture2DCalls) {
-                        resourceView.push(<div>framebufferTexture2DCalls</div>);
-                        for (var i = 0; i < resource.framebufferTexture2DCalls.length; i++) {
-                            resourceView.push(<div>{resource.framebufferTexture2DCalls[i]}</div>);
-                        }
+                        el = <div className="container">
+                            <div className="heading">framebufferTexture2D</div>
+                            <ul>
+                            {
+                                resource.framebufferTexture2DCalls.map(function(call) {
+                                    return <li>{call}</li>
+                                })
+                            }
+                            </ul>
+                        </div>;
+                        resourceView.push(el);
                     }
 
                 } else if (this.state.selectedTab == 4) {
 
                     var resource = this.state.activeResource;
 
-                    resourceView.push(<div>Deleted: {resource.deleted.toString()}</div>);
+                    el = <div className="container">
+                        <div className="heading">Render Buffer Deleted</div>
+                        <div>{resource.deleted.toString()}</div>
+                    </div>;
+                    resourceView.push(el);
 
-                    for (var i = 0; i < resource.renderbufferStatus.length; i++) {
-                        var status = resource.renderbufferStatus[i];
-                        for (var key in status) {
-                            resourceView.push(<div>{key}</div>);
-                            resourceView.push(<div>{status[key]}</div>);
+                    el = <div className="container">
+                        <div className="heading">renderbufferStatus</div>
+                        <ul>
+                        {
+                            resource.renderbufferStatus.map(function(call) {
+                                for (var key in call) {
+                                    return <li>{key}: {call[key]}</li>
+                                }
+                            })
                         }
-                    }
+                        </ul>
+                    </div>;
+                    resourceView.push(el);
 
                     if (resource.framebufferRenderbufferCalls) {
-                        resourceView.push(<div>framebufferRenderbufferCalls</div>);
-                        for (var i = 0; i < resource.framebufferRenderbufferCalls.length; i++) {
-                            resourceView.push(<div>{resource.framebufferRenderbufferCalls[i]}</div>);
-                        }
+                        el = <div className="container">
+                            <div className="heading">framebufferRenderbuffer</div>
+                            <ul>
+                            {
+                                resource.framebufferRenderbufferCalls.map(function(call) {
+                                    return <li>{call}</li>
+                                })
+                            }
+                            </ul>
+                        </div>;
+                        resourceView.push(el);
                     }
 
                 }
@@ -240,7 +318,7 @@ define(["messages"], function (Messages) {
                     <div className="split-view-table">
                         {this.getResourceList(resourceName, length)}
                     </div>
-                    <div className="split-view-content">
+                    <div className="split-view-content resource-container">
                         {this.getResourceView()}
                     </div>
                 </div>;
