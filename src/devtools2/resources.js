@@ -318,8 +318,10 @@ define(["messages"], function (Messages) {
                     <div className="split-view-table">
                         {this.getResourceList(resourceName, length)}
                     </div>
-                    <div className="split-view-content resource-container">
+                    <div className="split-view-content">
+                        <div className="resource-container">
                         {this.getResourceView()}
+                        </div>
                     </div>
                 </div>;
 
