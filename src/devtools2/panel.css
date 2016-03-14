@@ -221,11 +221,12 @@ input, button {
 }
 
 .resource-container {
-  display: flex;
   flex-direction: column;
+}
+.resource-img-container {
   background-color: rgb(238, 238, 238);
 }
-.resource-container img {
+.resource-img-container img {
   margin: 20px;
   text-align: center;
   background: url("../../static/checkerboard-512x512.png");
