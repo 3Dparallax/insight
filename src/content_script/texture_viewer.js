@@ -69,29 +69,6 @@ glpTextureViewer.prototype.texParameterf = function(args) {
     }
 }
 
-glpTextureViewer.prototype.getTextureSize = function(texture) {
-    var size = {};
-    size.width = 16;
-    size.height = 16;
-
-    if (texture.texImage2DCalls) {
-        for (var i = 0; i < texture.texImage2DCalls.length; i++) {
-            var args = texture.texImage2DCalls[i];
-            if (args[1] == 0) {
-                if (args.length == 9) {
-                    size.width = Math.max(args[3], size.width);
-                    size.height = Math.max(args[4], size.height);
-                } else if (args[5]) {
-                    size.width = Math.max(args[5].width, size.width);
-                    size.height = Math.max(args[5].height, size.height);
-                }
-            }
-        }
-    }
-
-    return size;
-}
-
 glpTextureViewer.prototype.createBase64Url = function(gl, texture) {
     var frameBuffer = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
@@ -101,7 +78,7 @@ glpTextureViewer.prototype.createBase64Url = function(gl, texture) {
 
     var canRead = (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE);
     if (canRead) {
-        var size = this.getTextureSize(texture);
+        var size = helpers.getTextureSize(texture);
         var pixels = new Uint8Array(size.width * size.height * 4);
         gl.readPixels(0, 0, size.width, size.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
@@ -136,7 +113,7 @@ glpTextureViewer.prototype.getTextureSource = function(texture) {
         for (var i = 0; i < texture.texImage2DCalls.length; i++) {
             var args = texture.texImage2DCalls[i];
             if (args[1] == 0) {
-                if (args.length == 9) {
+                if (args.length == 9 && args[8]) {
                     data.width = Math.max(args[3], data.width);
                     data.height = Math.max(args[4], data.height);
                     data.arraySrc = Array.prototype.slice.call(args[8]);

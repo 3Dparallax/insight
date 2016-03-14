@@ -195,12 +195,28 @@ var glpFcnBindings = {
       this.glp().bufferViewer.unbindFramebuffer();
       return original.apply(this, args);
     },
+    deleteFramebuffer: function(original, args, name) {
+      this.glp().bufferViewer.deleteFramebuffer(args[0]);
+      return original.apply(this, args);
+    },
     framebufferRenderbuffer: function(original, args, name) {
       this.glp().bufferViewer.framebufferRenderbuffer(args);
       return original.apply(this, args);
     },
     framebufferTexture2D: function(original, args, name) {
       this.glp().bufferViewer.framebufferTexture2D(args);
+      return original.apply(this, args);
+    },
+    bindRenderbuffer: function(original, args, name) {
+      this.glp().bufferViewer.bindRenderbuffer(args[1]);
+      return original.apply(this, args);
+    },
+    unbindRenderbuffer: function(original, args, name) {
+      this.glp().bufferViewer.unbindRenderbuffer();
+      return original.apply(this, args);
+    },
+    deleteRenderbuffer: function(original, args, name) {
+      this.glp().bufferViewer.deleteRenderbuffer(args[0]);
       return original.apply(this, args);
     },
     pixelStorei: function(original, args, name) {

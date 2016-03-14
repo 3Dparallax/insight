@@ -43,8 +43,6 @@ define(["messages"], function (Messages) {
                     this.setState({activeResource: JSON.parse(msg.data)});
                 }
 
-                console.log(msg.data);
-
             }.bind(this));
 
             Messages.sendMessage(this.props.activeContext, messageType.DISABLE_ALL, {});
@@ -166,16 +164,47 @@ define(["messages"], function (Messages) {
                     var resource = this.state.activeResource;
                     var source = resource.source;
 
-                    resourceView.push(<div>{JSON.stringify(source.arraySrc)}</div>);
+                    if (source.imgSrc) {
+                        resourceView.push(<div className="resource-container">
+                            <img src={source.imgSrc} height={source.height} width={source.width}></img>
+                        </div>);
+                    }
+
                     resourceView.push(<div>Deleted: {source.deleted.toString()}</div>);
+
+                    if (resource.framebufferRenderbufferCalls) {
+                        resourceView.push(<div>framebufferRenderbufferCalls</div>);
+                        for (var i = 0; i < resource.framebufferRenderbufferCalls.length; i++) {
+                            resourceView.push(<div>{resource.framebufferRenderbufferCalls[i]}</div>);
+                        }
+                    }
+                    if (resource.framebufferTexture2DCalls) {
+                        resourceView.push(<div>framebufferTexture2DCalls</div>);
+                        for (var i = 0; i < resource.framebufferTexture2DCalls.length; i++) {
+                            resourceView.push(<div>{resource.framebufferTexture2DCalls[i]}</div>);
+                        }
+                    }
 
                 } else if (this.state.selectedTab == 4) {
 
                     var resource = this.state.activeResource;
-                    var source = resource.source;
 
-                    resourceView.push(<div>{JSON.stringify(source.arraySrc)}</div>);
-                    resourceView.push(<div>Deleted: {source.deleted.toString()}</div>);
+                    resourceView.push(<div>Deleted: {resource.deleted.toString()}</div>);
+
+                    for (var i = 0; i < resource.renderbufferStatus.length; i++) {
+                        var status = resource.renderbufferStatus[i];
+                        for (var key in status) {
+                            resourceView.push(<div>{key}</div>);
+                            resourceView.push(<div>{status[key]}</div>);
+                        }
+                    }
+
+                    if (resource.framebufferRenderbufferCalls) {
+                        resourceView.push(<div>framebufferRenderbufferCalls</div>);
+                        for (var i = 0; i < resource.framebufferRenderbufferCalls.length; i++) {
+                            resourceView.push(<div>{resource.framebufferRenderbufferCalls[i]}</div>);
+                        }
+                    }
 
                 }
 
