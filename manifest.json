@@ -1,19 +1,6 @@
 {
   "name": "WebGL Insight",
-  "description": "Insight is a WebGL debugging toolkit providing a variety of capabilities enabling more productive WebGL development and more efficient WebGL applications.
-
-Features
-- Chrome Extension embedded in the Chrome DevTools panel
-- Overdraw Inspector
-- Mipmap Inspector
-- Depth Inspector
-- Call Stack Timeline and Statistics
-- Program Usage Count
-- Duplicate Program Usage Detector
-- Program Viewer
-- Frame Control
-- State Variable Editor
-- Resource Viewer",
+  "description": "A helpful Chrome extension for WebGL development",
   "manifest_version": 2,
   "version": "1.01",
   "web_accessible_resources": [
