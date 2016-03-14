@@ -47,7 +47,7 @@ define(["messages"], function (Messages) {
         },
         sendEnumUpdate: function(variableName, value) {
             Messages.sendMessage(this.props.activeContext, messageType.STATE_VARS, {
-                type: "emum",
+                type: "enum",
                 variable: variableName,
                 value: value
             });
