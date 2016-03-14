@@ -10,6 +10,7 @@ src/content_script/program_usage_counter.js \
 src/content_script/duplicate_program_detection.js \
 src/content_script/pixel_inspector.js \
 src/content_script/depth_inspector.js \
+src/content_script/mipmap_viewer.js \
 src/content_script/texture_viewer.js \
 src/content_script/contexts.js \
 src/content_script/messages.js \

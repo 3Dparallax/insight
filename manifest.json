@@ -2,7 +2,7 @@
   "name": "WebGL Insight",
   "description": "Helpful tools for WebGL development",
   "manifest_version": 2,
-  "version": "1.0",
+  "version": "1.01",
   "web_accessible_resources": [
     "src/shared/message_types.js",
     "src/content_script/buffer_viewer.js",
