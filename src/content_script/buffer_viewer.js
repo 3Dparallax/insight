@@ -63,30 +63,97 @@ glpBufferViewer.prototype.deleteBuffer = function(buffer) {
   buffer.deleted = true;
 }
 
+glpBufferViewer.prototype.bindFramebuffer = function(buffer) {
+  this.boundFramebuffer = buffer;
+}
+
+glpBufferViewer.prototype.unbindFramebuffer = function() {
+  this.boundFramebuffer = null;
+}
+
+glpBufferViewer.prototype.framebufferRenderbuffer = function(args) {
+  if (this.boundFramebuffer != null && args != null) {
+    if (!this.boundFramebuffer.framebufferRenderbufferCall) {
+      this.boundFramebuffer.framebufferRenderbufferCall = [];
+    }
+    this.boundFramebuffer.framebufferRenderbufferCall.push(args);
+  }
+}
+
+glpBufferViewer.prototype.framebufferTexture2D = function(args) {
+  if (this.boundFramebuffer != null && args != null) {
+    if (!this.boundFramebuffer.framebufferTexture2DCall) {
+      this.boundFramebuffer.framebufferTexture2DCall = [];
+    }
+    this.boundFramebuffer.framebufferTexture2DCall.push(args);
+  }
+}
+
 glpBufferViewer.prototype.getBuffer = function(index) {
   if (index < 0 || index >= this.buffers.length) {
     return;
   }
 
   var buffer = this.buffers[index];
+
+  var source = {};
+  source.arraySrc = Array.prototype.slice.call(buffer.buffer);
+  source.deleted = buffer.deleted;
+
   this.gl.glp().messages.sendMessage(messageType.GET_BUFFER, JSON.stringify({
     "index" : index,
-    "buffer" : Array.prototype.slice.call(buffer.buffer),
-    "deleted" : buffer.deleted,
+    "source" : source,
+  }));
+}
+
+glpBufferViewer.prototype.getFrameBuffer = function(index) {
+  if (index < 0 || index >= this.buffers.length) {
+    return;
+  }
+
+  var buffer = this.buffers[index];
+
+  var source = {};
+  source.arraySrc = Array.prototype.slice.call(buffer.buffer);
+  source.deleted = buffer.deleted;
+
+  this.gl.glp().messages.sendMessage(messageType.GET_BUFFER, JSON.stringify({
+    "index" : index,
+    "source" : source,
+  }));
+}
+
+glpBufferViewer.prototype.getRenderBuffer = function(index) {
+  if (index < 0 || index >= this.buffers.length) {
+    return;
+  }
+
+  var buffer = this.buffers[index];
+
+  var source = {};
+  source.arraySrc = Array.prototype.slice.call(buffer.buffer);
+  source.deleted = buffer.deleted;
+
+  this.gl.glp().messages.sendMessage(messageType.GET_BUFFER, JSON.stringify({
+    "index" : index,
+    "source" : source,
   }));
 }
 
 glpBufferViewer.prototype.pushBuffer = function(buffer) {
   this.buffers.push(buffer);
+  buffer.deleted = false;
   return buffer;
 }
 
 glpBufferViewer.prototype.pushFrameBuffer = function(buffer) {
   this.frameBuffers.push(buffer);
+  buffer.deleted = false;
   return buffer;
 }
 
 glpBufferViewer.prototype.pushRenderBuffer = function(buffer) {
   this.renderBuffers.push(buffer);
+  buffer.deleted = false;
   return buffer;
 }

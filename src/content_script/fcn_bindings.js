@@ -132,7 +132,7 @@ var glpFcnBindings = {
       return this.glp().textureViewer.pushTexture(texture);
     },
     bindTexture : function(original, args, name) {
-      this.glp().textureViewer.bindTexture(args[1]);
+      this.glp().textureViewer.bindTexture(args[0], args[1]);
       return original.apply(this, args);
     },
     unbindTexture : function(original, args, name) {
@@ -143,19 +143,27 @@ var glpFcnBindings = {
       this.glp().textureViewer.texImage2D(args);
       return original.apply(this, args);
     },
+    texSubImage2D : function(original, args, name) {
+      this.glp().textureViewer.texSubImage2D(args);
+      return original.apply(this, args);
+    },
     texParameteri : function(original, args, name) {
       this.glp().textureViewer.texParameteri(args);
+      return original.apply(this, args);
+    },
+    texParameterf : function(original, args, name) {
+      this.glp().textureViewer.texParameterf(args);
       return original.apply(this, args);
     },
     createBuffer: function(original, args, name) {
       var buffer = original.apply(this, args);
       return this.glp().bufferViewer.pushBuffer(buffer);
     },
-    createFrameBuffer: function(original, args, name) {
+    createFramebuffer: function(original, args, name) {
       var buffer = original.apply(this, args);
       return this.glp().bufferViewer.pushFrameBuffer(buffer);
     },
-    createRenderBuffer: function(original, args, name) {
+    createRenderbuffer: function(original, args, name) {
       var buffer = original.apply(this, args);
       return this.glp().bufferViewer.pushRenderBuffer(buffer);
     },
@@ -177,6 +185,22 @@ var glpFcnBindings = {
     },
     deleteBuffer: function(original, args, name) {
       this.glp().bufferViewer.deleteBuffer(args[0]);
+      return original.apply(this, args);
+    },
+    bindFramebuffer: function(original, args, name) {
+      this.glp().bufferViewer.bindFramebuffer(args[1]);
+      return original.apply(this, args);
+    },
+    unbindFramebuffer: function(original, args, name) {
+      this.glp().bufferViewer.unbindFramebuffer();
+      return original.apply(this, args);
+    },
+    framebufferRenderbuffer: function(original, args, name) {
+      this.glp().bufferViewer.framebufferRenderbuffer(args);
+      return original.apply(this, args);
+    },
+    framebufferTexture2D: function(original, args, name) {
+      this.glp().bufferViewer.framebufferTexture2D(args);
       return original.apply(this, args);
     },
     pixelStorei: function(original, args, name) {

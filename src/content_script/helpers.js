@@ -45,11 +45,14 @@ helpers.getGLArgsString = function(gl, args) {
 }
 
 helpers.getGLArgsList = function(gl, calls) {
-  var argsList = [];
-  for (var i = 0; i < calls.length; i++) {
-    argsList.push(this.getGLArgsString(gl, calls[i]));
+  if (calls) {
+    var argsList = [];
+    for (var i = 0; i < calls.length; i++) {
+      argsList.push(this.getGLArgsString(gl, calls[i]));
+    }
+    return argsList;
   }
-  return argsList;
+  return null;
 }
 
 return helpers;
