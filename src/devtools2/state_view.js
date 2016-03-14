@@ -160,7 +160,7 @@ define(["messages"], function (Messages) {
                         <div className="state-container">
                             <div className="state-container-child">
                                 <div className="heading">States</div>
-                                <div>Something about how awesome states are</div>
+                                <div>Edit WebGL states. </div>
                                 <div>
                                     Enable State Editor&nbsp;&nbsp;
                                     <input ref="stateEditor" type="checkbox" onClick={this.toggleStateEditor} />

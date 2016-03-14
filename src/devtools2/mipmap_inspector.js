@@ -10,7 +10,9 @@ define(["messages"], function (Messages) {
                     Mipmap Inspector
                 </div>
                 <div>
-                    Detects how how many times a pixel has been drawn. The color ranges from green to red, red being drawn multiple times while green been drawn only on clear.
+                    Displays the mipmap levels for a selected texture in different colors.
+                    Depending on how many mipmap levels there are and the maximum mipmap level, the colors will vary.
+                    This can be used to show whether certain mipmap levels of a selected texture is used.
                 </div>
                 <div>
                     Enable Mipmap Inspector&nbsp;&nbsp;

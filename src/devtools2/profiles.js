@@ -119,27 +119,27 @@ define(["messages", "jsx!profile_table", "jsx!profile_graph"], function (Message
         getProfileMain: function() {
             var buttonText = this.state.collectingProfile ? "Stop" : "Start";
             return <div className="container">
-                <div className="heading">Profiles</div>
-                <div>Blah Blah Important text</div>
+                <div className="heading">Usages</div>
+                <div>Collect information about usages in a given period of time. Select a usage type. Press start to begin recording and stop to end recording.</div>
                 <div>
                     <input name="profiles" type="radio" disabled={this.state.collectingProfile} onChange={this.onProfileChange} value={0} checked={this.state.selectedProfile==0}/>
-                    Record Program Usage
+                    <b>Record Program Usage</b> - records how many times each shader program has been called by useProgram.
                 </div>
                 <div>
                     <input name="profiles" type="radio" disabled={this.state.collectingProfile} onChange={this.onProfileChange} value={1} checked={this.state.selectedProfile==1}/>
-                    Detect Duplicate Program Usage
+                    <b>Detect Duplicate Program Usage</b> - detects whether there are any duplicate useProgram calls on the same program.
                 </div>
                 <div>
                     <input name="profiles" type="radio" disabled={this.state.collectingProfile} onChange={this.onProfileChange} value={2} checked={this.state.selectedProfile==2}/>
-                    Collect Call Stack
+                    <b>Collect Call Stack</b> - collects WebGL calls during that time.
                 </div>
                 <div>
                     <input name="profiles" type="radio" disabled={this.state.collectingProfile} onChange={this.onProfileChange} value={3} checked={this.state.selectedProfile==3}/>
-                    Fetch Call Stack from Recent Draw Call
+                    <b>Fetch Call Stack from Recent Draw Call</b> - collects WebGL calls since last draw call.
                 </div>
                 <div>
                     <input name="profiles" type="radio" disabled={this.state.collectingProfile} onChange={this.onProfileChange} value={4} checked={this.state.selectedProfile==4}/>
-                    View Call Stack Histogram
+                    <b>View Call Stack Histogram</b> - counts WebGL calls during that time and displays the result in a histogram.
                 </div>
                 <div>
                     <button onClick={this.collectProfileButtonClicked}>{buttonText}</button>

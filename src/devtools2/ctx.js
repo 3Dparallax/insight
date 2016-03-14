@@ -1,6 +1,6 @@
 contextTabs = [
     "Shaders",
-    "Profiles",
+    "Usages",
     "Programs",
     "States",
     "Resources",

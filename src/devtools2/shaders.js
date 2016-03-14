@@ -1,6 +1,6 @@
 shaderTabs = [
-    "Pixel Inspector",
-    "Mip Map Inspector",
+    "Overdraw Inspector",
+    "Mipmap Inspector",
     "Depth Inspector",
     "Frame Control",
 ]
