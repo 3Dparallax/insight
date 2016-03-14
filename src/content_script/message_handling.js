@@ -36,6 +36,7 @@ window.addEventListener('message', function(event) {
     gl.glp().stateTracker.toggle(false);
     gl.glp().messages.depthInspectorToggle(false, null);
     gl.glp().frameControl.play();
+    gl.glp().mipmapViewer.disable();
   }
 
   if (message.type == messageType.DISABLE_ALL_CONTEXTS) {
