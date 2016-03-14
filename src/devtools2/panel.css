@@ -204,6 +204,22 @@ input, button {
   padding: 0px 20px 0px 20px;
 }
 
+.state-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.state-container-child {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  padding: 20px;
+}
+.state-container-child div {
+  padding: 5px;
+}
+
 .resource-container {
   display: flex;
   flex-direction: column;
