@@ -59,16 +59,16 @@ define(["messages"], function (Messages) {
                 value: Number(value)
             });
         },
-        boolChange: function(value, e) {
-            var variableName = e.target.checked;
+        boolChange: function(variableName, e) {
+            var value = e.target.checked;
             this.sendBoolUpdate(variableName, value);
         },
-        enumChange: function(value, e) {
-            var variableName = e.target.value;
+        enumChange: function(variableName, e) {
+            var value  = e.target.value;
             this.sendEnumUpdate(variableName, value);
         },
-        numberChange: function(value, e) {
-            var variableName = e.target.value;
+        numberChange: function(variableName, e) {
+            var value = e.target.value;
             this.sendNumberUpdate(variableName, value);
         },
         getStateColumn: function(data) {
@@ -86,7 +86,7 @@ define(["messages"], function (Messages) {
                     if (type == "bool") {
                         subEl = <input
                                     type="checkbox"
-                                    defaultValue={value}
+                                    checked={value}
                                     onClick={this.boolChange.bind(this, name)}/>;
                     } else if (type == "enum") {
                         if (this.state.enumOptions[name] && this.state.enumOptions[name].length > 1) {
