@@ -37,13 +37,11 @@ define([], function () {
                 globalGraph.destroy();
             }
             var graph = new Chart(ctx);
-            globalGraph = graph.HorizontalBar(data, {});
+            globalGraph = graph.HorizontalBar(data, {responsive: true});
         },
         render: function() {
             return <canvas
-                style={{"padding-left":"50px"}}
-                height={400}
-                width={600}
+                style={{"margin-left":"50px", "margin-right": "100px"}}
                 className="profile-graph"
                 ref={"canvas"}>
             </canvas>;
