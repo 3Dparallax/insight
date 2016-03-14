@@ -222,9 +222,16 @@ input, button {
 
 .resource-container {
   flex-direction: column;
+  flex: 1 0 auto;
+  overflow: auto;
+  padding: 20px;
+}
+.resource-container div {
+  flex: 1 0;
 }
 .resource-img-container {
   background-color: rgb(238, 238, 238);
+  padding: 0px !important;
 }
 .resource-img-container img {
   margin: 20px;
