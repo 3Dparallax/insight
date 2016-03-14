@@ -46,9 +46,10 @@ input, button {
 }
 
 .context-container {
-  flex: 1 0 auto;
+  flex: 1;
   display: flex;
   width: 100%;
+  overflow-y: auto;
 }
 .context {
   flex: 1 0 auto;
@@ -58,8 +59,9 @@ input, button {
 }
 
 .tab-container {
-  flex: 1 0 auto;
+  flex: 1;
   display: flex;
+  overflow: auto;
 }
 
 .tab-bar {
@@ -120,11 +122,12 @@ input, button {
 }
 
 .split-view {
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: row;
   width: 100%;
   align-items: stretch;
+  overflow: auto;
 }
 .split-view-table {
   flex: 0 0 200px;
@@ -132,10 +135,11 @@ input, button {
   flex-direction: column;
   background-color: rgb(243, 243, 243);
   border-right: solid rgb(204, 204, 204) 1px;
+  overflow: auto;
 }
 .split-view-table-element {
+  flex: 0 0 40px;
   padding: 0 20px 0 20px;
-  height: 40px;
   border-bottom: solid rgb(204, 204, 204) 1px;
   display: flex;
   align-items: center;
@@ -152,6 +156,7 @@ input, button {
 .split-view-content {
   display: flex;
   flex: 1 0;
+  overflow: auto;
 }
 
 .profile-table {
@@ -163,7 +168,6 @@ input, button {
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
-  border-right:rgb(200, 200, 200) 1px solid;
   min-width: 0;
 }
 .profile-table-column-element-header {
@@ -177,7 +181,8 @@ input, button {
   text-align: center;
   align-items: center;
   height: 17px;
-  cursor: pointer;
+  flex: 0 0 17px;
+  border-right:rgb(200, 200, 200) 1px solid;
 }
 .profile-table-column-element-truncate {
   max-width: 350px;
