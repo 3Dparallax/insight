@@ -1,4 +1,5 @@
-# Insight
+![WebGL Insight](http://i.imgur.com/Zb2PHLp.png)
+
 
 ## About
 
@@ -22,13 +23,11 @@ Insight is a WebGL debugging toolkit providing a variety of capabilities enablin
 
 ## Installation & Usage
 
-You can find us on the Chrome Web Store!
-
-<LINK BUTTON>
+You can find us on the [Chrome Web Store](https://chrome.google.com/webstore/detail/webgl-insight/djdcbmfacaaocoomokenoalbomllhnko).
 
 Simply click "Add to Chrome" and wait for the installation to finish.
 
-Once complete, open up the Chrome DevTools panel, click on the "WebGL Insight" tab, and fire up at canvas-based WebGL application.
+Once complete, open up the Chrome DevTools panel, click on the "WebGL Insight" tab, and fire up a canvas-based WebGL application.
 
 
 ### Overdraw Inspector
