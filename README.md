@@ -23,11 +23,9 @@ Insight is a WebGL debugging toolkit providing a variety of capabilities enablin
 
 ## Installation & Usage
 
-You can find us on the [Chrome Web Store](https://chrome.google.com/webstore/detail/webgl-insight/djdcbmfacaaocoomokenoalbomllhnko).
+Install Insight from the [Chrome Web Store](https://chrome.google.com/webstore/detail/webgl-insight/djdcbmfacaaocoomokenoalbomllhnko).
 
-Simply click "Add to Chrome" and wait for the installation to finish.
-
-Once complete, open up the Chrome DevTools panel, click on the "WebGL Insight" tab, and fire up a canvas-based WebGL application.
+When the extension is installed, open up the Chrome DevTools panel, click on the "WebGL Insight" tab, and browse to a WebGL application.
 
 
 ### Overdraw Inspector
@@ -95,7 +93,6 @@ View textures, buffers, frame buffers, and render buffers.
 
 ![Resource Viewer](http://i.imgur.com/y1YETWv.jpg)
 
-## Known Problems
+## Known Issues
 
-* This doesn't work with my Unity Web Game!
-* This doesn't work with dynamically created canvases!
+* Unity Web Game support is limited
