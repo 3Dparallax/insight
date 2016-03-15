@@ -32,6 +32,11 @@
         "tabs",
         "storage"
     ],
+  "icons": {
+        "16": "static/logo-16.png",
+        "48": "static/logo-48.png",
+        "128": "static/logo-128.png"
+  },
   "content_scripts": [
     {
       "run_at": "document_start",
