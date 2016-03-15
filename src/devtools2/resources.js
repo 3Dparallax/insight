@@ -330,7 +330,13 @@ define(["messages"], function (Messages) {
                 </div>;
 
                 if (length == 0) {
-                    render = <div clasName="center">No resources detected</div>;
+                    render = <div className="container">
+                        <div className="heading">
+                            <div className="center">
+                                No resources detected
+                            </div>
+                        </div>
+                    </div>;
                 }
             }
 
