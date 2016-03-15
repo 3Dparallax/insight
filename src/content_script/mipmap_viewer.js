@@ -79,10 +79,20 @@ glpMipmapViewer.prototype.getTextureList = function() {
     });
     i++;
   }
+  if (!textures.length) {
+    textures.push({
+      name: "NO MIPMAPS FOUND",
+      uuid: "",
+      active: true
+    });
+  }
   return textures;
 }
 
 glpMipmapViewer.prototype.enable = function(textureKey) {
+  if(!this.activeTexture) {
+    return;
+  }
   if (this.enabled) {
     this.disable();
   } else {
@@ -90,7 +100,6 @@ glpMipmapViewer.prototype.enable = function(textureKey) {
   }
   var texture = textureKey ? this.uuidToTexture[textureKey] : this.activeTexture;
   this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-  console.log()
   this.enabled = true;
   this.enableMipmapView(texture);
 }
