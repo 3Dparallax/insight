@@ -264,7 +264,7 @@ glpMipmapViewer.prototype.texSubImage2D = function(original, args) {
   // figure out which function type it's using
   var textureObj = this.textureUsage[this.activeTexture.__uuid];
   var level = args[1];
-  if (args.length == 6) {
+  if (args.length == 7) {
     textureObj.imageLevels.splice(level, 1, {
       functionType : this.texImage2DFcnType.TEX_IMAGE_2D_6,
       arguments : args });
@@ -273,7 +273,7 @@ glpMipmapViewer.prototype.texSubImage2D = function(original, args) {
       functionType : this.texImage2DFcnType.TEX_IMAGE_2D_9,
       arguments : args });
   } else {
-    console.error("texImage2D function args is not valid");
+    console.error("texSubImage2D function args is not valid");
     return;
   }
 
