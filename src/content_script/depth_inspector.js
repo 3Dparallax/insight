@@ -127,28 +127,7 @@ glpDepthInspector.prototype.disable = function() {
       this.gl.useProgram(newProgram);
       this.copyUniforms(currentProgram, newProgram);
     }
-}
-
-glpDepthInspector.prototype.bindFrameBuffer = function(enable) {
-  this.framebufferIsBound = !!enable;
-  this.toggleByBuffer(!!enable);
-}
-
-glpDepthInspector.prototype.bindRenderBuffer = function(enable) {
-  this.renderbufferIsBound = !!enable;
-  this.toggleByBuffer(!!enable);
-}
-
-glpDepthInspector.prototype.toggleByBuffer = function(enable) {
-  if (!this.enabled) {
-    return;
-  }
-
-  if (!this.framebufferIsBound && !this.renderbufferIsBound) {
-    this.enable();
-  } else {
-    this.disable();
-  }
+    this.locationMap = {}
 }
 
 /**
@@ -273,15 +252,27 @@ glpDepthInspector.prototype.uniforms = function(args) {
     var program = args[0];
     var location = args[1];
     if (this.programs.indexOf(program.__uuid) >= 0) {
+      // the program is a pixel inspector
+      // lets check if the location is from the original program
+      // if so, switch the location
+      // else, switch the program to the original program
       if (location in this.locationMap[program.__uuid]) {
-        // the program is the pixel inspector version and we're using the original location
         args[1] = this.locationMap[program.__uuid][location.__uuid];
       } else {
+        args[0] = this.originalPrograms[program.__uuid];
       }
     } else {
       // the program is not a pixel inspector
-      // if they're using the wrong location, lets just swap programs
-      args[0] = this.gl.getParameter(this.gl.CURRENT_PROGRAM);
+      // lets check if the location is from the original program
+      // if so, switch programs and location
+      if (program.__uuid in this.locationMap){
+        if (this.locationMap[program.__uuid] && location.__uuid in this.locationMap[program.__uuid]) {
+          args[0] = this.gl.getParameter(this.gl.CURRENT_PROGRAM);
+        } else {
+          args[1] = this.locationMap[program.__uuid][location.__uuid];
+        }
+      }
+      //else switch program was never called and no changes need to be made
     }
   }
   return args;
