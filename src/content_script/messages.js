@@ -117,6 +117,16 @@ glpMessages.prototype.mipmapGetTextures = function() {
       "textures": JSON.stringify(this.gl.glp().mipmapViewer.getTextureList())
     })
 }
+
+glpMessages.prototype.mipmapGetColours = function() {
+  var colours = this.gl.glp().mipmapViewer.getMipmapColours();
+  this.sendMessage(
+    messageType.MIPMAP_COLOURS,
+    {
+      "colours": Array.prototype.slice.call(colours)
+    });
+}
+
 /**
  * Toggles the status of the depth inspector being enabled/disabled
  * @param {Bool} Enabled

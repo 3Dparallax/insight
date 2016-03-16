@@ -62,9 +62,19 @@ glpMipmapViewer.prototype.generateColorImage = function(width, height, level, ma
     }
   }
   return pixels;
+}
 
-  return null;
+glpMipmapViewer.prototype.getMipmapColours = function() {
+  var maxTextureSize = this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE);
+  var maxMipmapLevel = Math.log2(maxTextureSize);
 
+  var colours = [];
+
+  for (var i = 0; i < maxMipmapLevel; i++) {
+    colours.push(this.getMipmapLevelColor(i, maxMipmapLevel));
+  }
+
+  return colours;
 }
 
 glpMipmapViewer.prototype.getTextureList = function() {

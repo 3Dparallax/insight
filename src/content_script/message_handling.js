@@ -60,6 +60,8 @@ window.addEventListener('message', function(event) {
     gl.glp().messages.mipmapViewerToggle(message.data.enabled, message.data.texture);
   } else if (message.type == messageType.MIPMAP_TEXTURES) {
     gl.glp().messages.mipmapGetTextures();
+  } else if (message.type == messageType.MIPMAP_COLOURS) {
+    gl.glp().messages.mipmapGetColours();
   } else if (message.type == messageType.GET_CALL_STACK) {
     gl.glp().messages.sendCallStack(message.data);
   } else if (message.type == messageType.GET_CALL_STACK_DRAW) {

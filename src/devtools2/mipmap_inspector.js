@@ -24,9 +24,13 @@ define(["messages"], function (Messages) {
 
                 if (msg.type == messageType.MIPMAP_TEXTURES) {
                     this.setState({"textures": JSON.parse(msg.data.textures)});
+                } else if (msg.type == messageType.MIPMAP_COLOURS) {
+                    this.setState({"colours": msg.data.colours});
                 }
             }.bind(this));
+
             Messages.sendMessage(this.props.activeContext, messageType.MIPMAP_TEXTURES, {});
+            Messages.sendMessage(this.props.activeContext, messageType.MIPMAP_COLOURS, {});
         },
         textureChange: function(value, e) {
             this.setState({"activeTexture": e.target.value})
@@ -48,6 +52,8 @@ define(["messages"], function (Messages) {
                 }
             }
             subEl = <select defaultValue={defaultValue} onChange={this.textureChange.bind(this, name)}>{optionEls}</select>
+
+            var colours = this.state.colours ? this.state.colours : [];
             return <div className="container">
                 <div className="heading">
                     Mipmap Inspector
@@ -61,6 +67,16 @@ define(["messages"], function (Messages) {
                     Enable Mipmap Inspector&nbsp;&nbsp;
                     <input ref="mipmapInspector" type="checkbox" onClick={this.toggleMipmapInspector} />
                     {subEl}
+                </div>
+                <div>
+                    {
+                        colours.map(function(colour) {
+                            var backgroundColor = "rgb(" + (colour[0]/0xFF) + "," + (colour[1]/0xFF) + "," + (colour[2]/0xFF) + ");";
+                            var style = {"background-color" : backgroundColor};
+                            var mipmapLevel = colours.indexOf(colour);
+                            return <span style={style}>&nbsp;&nbsp;{mipmapLevel}&nbsp;&nbsp;</span>
+                        })
+                    }
                 </div>
             </div>;
         }

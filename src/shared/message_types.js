@@ -30,6 +30,7 @@ var messageType = {
   FRAME_CONTROL_NEXT_FRAME : "frameControlNextFrame",
   ENABLE_MIPMAP_TEXTURE : "enableMipmapTexture",
   MIPMAP_TEXTURES : "mipmapTextures",
+  MIPMAP_COLOURS : "mipmapColours",
   DISABLE_ALL : "disableAll",
   DISABLE_ALL_CONTEXTS : "disableAllContexts",
   SHADERS : "programShaders",
