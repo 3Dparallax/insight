@@ -158,7 +158,7 @@ glpBufferViewer.prototype.createBase64Url = function(framebuffer) {
     if (texture != null) {
       var size = helpers.getTextureSize(texture);
       var pixels = new Uint8Array(size.width * size.height * 4);
-      this.gl.readPixels(0, 0, size.width, size.height, this.gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+      this.gl.readPixels(0, 0, size.width, size.height, this.gl.RGBA, this.gl.UNSIGNED_BYTE, pixels);
 
       var canvas = document.createElement("canvas");
       canvas.width = size.width;
