@@ -114,14 +114,14 @@ var glpFcnBindings = {
       if (!(this.glp().pixelInspector.hasUniformLocation(program, n))) {
         var location = original.apply(this, args);
         if (!location) {
-          return;
+          return location;
         }
         return this.glp().pixelInspector.setUniformLocation(program, n, location);
       }
       if (!(this.glp().depthInspector.hasUniformLocation(program, n))) {
         var location = original.apply(this, args);
         if (!location) {
-          return;
+          return location;
         }
         return this.glp().depthInspector.setUniformLocation(program, n, location);
       }
