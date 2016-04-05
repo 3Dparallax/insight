@@ -248,6 +248,6 @@ input, button {
 }
 .panel > .refresh-icon {
   position: absolute;
-  bottom: 2px;
+  bottom: 3px;
   right: 4px;
 }
