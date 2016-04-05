@@ -9,6 +9,7 @@
 body {
   margin: 0px;
   font-family: "Open Sans", "Helvetica Neue", "Lucida Grande", sans-serif;
+  overflow-x: hidden;
 }
 html, body, .main {
   height: 100%;
@@ -100,6 +101,7 @@ input, button {
   align-items: center;
   height: 30px;
   width: 100%;
+  padding-right: 30px;
   background-color: rgb(238, 238, 238);
   line-height: 30px;
   border-top: solid rgb(204, 204, 204) 1px;
@@ -237,4 +239,15 @@ input, button {
   margin: 20px;
   text-align: center;
   background: url("../../static/checkerboard-512x512.png");
+}
+.refresh-icon {
+  cursor: pointer;
+}
+.center > .refresh-icon {
+  margin-bottom: 20px;
+}
+.panel > .refresh-icon {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
 }

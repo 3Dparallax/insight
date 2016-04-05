@@ -1,5 +1,5 @@
-define(["jsx!ctx", "messages", "jsx!no_contexts", "jsx!context_bar_element"],
-function (Ctx, Messages, NoContexts, ContextBarElement) {
+define(["jsx!ctx", "messages", "jsx!no_contexts", "jsx!context_bar_element", "jsx!refresh_icon"],
+function (Ctx, Messages, NoContexts, ContextBarElement, RefreshIcon) {
     var Panel = React.createClass({
         getInitialState: function() {
             return {"contexts": [], "activeContext": null}
@@ -62,6 +62,7 @@ function (Ctx, Messages, NoContexts, ContextBarElement) {
                 <div className="context-bar">
                     {this.getContextElements()}
                 </div>
+                <RefreshIcon/>
             </div>;
         }
     });
