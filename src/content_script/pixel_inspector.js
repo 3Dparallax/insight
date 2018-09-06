@@ -250,6 +250,11 @@ glpPixelInspector.prototype.getProgram = function(originalProgram) {
 
     var program = this.gl.createProgram();
 
+    const attachedShaders = this.gl.getAttachedShaders(originalProgram);
+    attachedShaders.forEach(shader => {
+      this.storeShaders(program, shader);
+    });
+
     this.gl.attachShader(program, this.vertexShaders[originalProgram.__uuid]);
     this.gl.attachShader(program, this.getFragShader());
     this.gl.linkProgram(program);
