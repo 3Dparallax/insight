@@ -68,7 +68,7 @@ glpMipmapViewer.prototype.generateColorImage = function(width, height, level, ma
 }
 
 glpMipmapViewer.prototype.getTextureList = function() {
-  textures = [];
+  var textures = [];
   var i = 0;
   for (key in this.textureUsage) {
     var active = this.activeTexture ? (key == this.activeTexture.__uuid) : false
