@@ -4,11 +4,12 @@ contextTabs = [
     "Programs",
     "States",
     "Resources",
-    "Settings"
+    "Settings",
+    "Feedback",
 ]
 
-define(["jsx!tab_bar", "jsx!shaders", "jsx!profiles", "jsx!state_view", "jsx!settings", "messages", "jsx!resources", "jsx!programs"],
-function (TabBar, Shaders, Profiles, StateView, Settings, Messages, Resources, Programs) {
+define(["jsx!tab_bar", "jsx!shaders", "jsx!profiles", "jsx!state_view", "jsx!settings", "messages", "jsx!resources", "jsx!programs", "jsx!feedback"],
+function (TabBar, Shaders, Profiles, StateView, Settings, Messages, Resources, Programs, Feedback) {
     var ctx = React.createClass({
         getInitialState: function() {
             return {"currentTab": 0}
@@ -36,8 +37,10 @@ function (TabBar, Shaders, Profiles, StateView, Settings, Messages, Resources, P
                 tab = <StateView key={key} activeContext={this.props.activeContext}/>;
             } else if (this.state.currentTab == 4) {
                 tab = <Resources key={key} activeContext={this.props.activeContext}/>;
-            } else {
+            } else if (this.state.currentTab == 5) {
                 tab = <Settings key={key} activeContext={this.props.activeContext}/>;
+            } else {
+                tab = <Feedback key={key} activeContext={this.props.activeContext}/>;
             }
             return <div className="context">
                 <TabBar tabs={contextTabs} changeTab={this.changeTab} />
