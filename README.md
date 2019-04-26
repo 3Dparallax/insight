@@ -96,3 +96,17 @@ View textures, buffers, frame buffers, and render buffers.
 ## Known Issues
 
 * Unity Web Game support is limited
+
+# Development
+
+Just load the folder as an unpacked Extension. 
+
+There are 3 possible DevTools to open to debug the extension.
+
+1. The extension's background page. This isn't useful.
+1. The DevTools you have open to inspect the page (and view the extension panel). Obviously neccessary, and since the instrumentation is injected into the page, much of the extension code is debuggable here.
+1. [DevTools on DevTools](https://stackoverflow.com/a/12291163/89484). Much of the tricky stuff runs in this context, so you'll want to keep it open.
+
+# Releasing
+
+(Guesses from a non-maintainer) Run build/build.sh, which should concatenate the src files and copy to your (Mac) clipboard. Then paste into the top of `content_script_init.js`. 

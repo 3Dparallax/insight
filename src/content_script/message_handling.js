@@ -7,7 +7,7 @@ function _glpInit() {
 _glpInit();
 
 // Send contexts whenever page is loaded
-document.addEventListener("DOMContentLoaded", setTimeout(glpContexts.sendContexts, 500));
+document.addEventListener("DOMContentLoaded", _ => setTimeout(glpContexts.sendContexts, 500));
 
 /**
  * Receive messages from the devtools panel
