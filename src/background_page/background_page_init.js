@@ -23,7 +23,7 @@ chrome.runtime.onConnect.addListener(function (port) {
           return;
         }
 
-        chrome.tabs.sendMessage(Number(contentTabID), message, null);
+        chrome.tabs.sendMessage(Number(contentTabID), message, null, null);
     };
     port.onMessage.addListener(extensionListener);
 
@@ -35,7 +35,7 @@ chrome.runtime.onConnect.addListener(function (port) {
         for (var i=0, len=tabs.length; i < len; i++) {
           if (connections[tabs[i]] == port) {
             // Disable all extension behaviour when the dev panel closes
-            chrome.tabs.sendMessage(Number(tabs[i]), {"source": "panel", "type": "disableAllContexts"}, null);
+            chrome.tabs.sendMessage(Number(tabs[i]), {"source": "panel", "type": "disableAllContexts"}, null, null);
             delete connections[tabs[i]]
             break;
           }
