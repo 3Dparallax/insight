@@ -14,7 +14,8 @@ contexts.getWebGLContexts = function() {
     var canvas = canvases[i];
     var webGLContext = canvas.getContext("webgl");
     if (webGLContext == null) {
-      continue;
+      webGLContext = canvas.getContext("webgl2");
+      if (!webGLContext) continue;
     }
 
     if (webGLContext.__uuid == null) {

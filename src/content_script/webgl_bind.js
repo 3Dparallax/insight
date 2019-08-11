@@ -14,6 +14,13 @@ function _glpBind(origFunc, newFunc, name) {
 _glpModuleInstances = {};
 
 function bindWebGL() {
+    doBindWebGL(WebGLRenderingContext);
+    if (typeof window.WebGL2RenderingContext !== 'undefined') {
+        doBindWebGL(WebGL2RenderingContext);
+    }
+}
+
+function doBindWebGL(WebGLRenderingContext) {
     /**
      * Bind WebGLRenderingContext functions to functions found in glpFcnBindings
      * If defined, functions are first bound the function found in glpFcnBindings
