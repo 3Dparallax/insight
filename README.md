@@ -1,3 +1,5 @@
+_This project is **DEPRECATED** and no longer available on the Chrome Web Store._
+
 ![WebGL Insight](http://i.imgur.com/Zb2PHLp.png)
 
 
