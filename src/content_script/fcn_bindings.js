@@ -196,6 +196,7 @@ var glpFcnBindings = {
     },
     bindFramebuffer: function(original, args, name) {
       this.glp().bufferViewer.bindFramebuffer(args[1]);
+      this.glp().pixelInspector.bindFrameBuffer(args[1])
       return original.apply(this, args);
     },
     unbindFramebuffer: function(original, args, name) {
@@ -216,6 +217,7 @@ var glpFcnBindings = {
     },
     bindRenderbuffer: function(original, args, name) {
       this.glp().bufferViewer.bindRenderbuffer(args[1]);
+      this.glp().pixelInspector.bindRenderBuffer(args[1])
       return original.apply(this, args);
     },
     unbindRenderbuffer: function(original, args, name) {
